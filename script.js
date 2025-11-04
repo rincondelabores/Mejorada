@@ -341,55 +341,55 @@ function calcularPatron() {
         resultado += `<p>Se tejerá en una sola pieza desde la cintura de la espalda hasta la cintura del delantero.</p>\n`;
         
         resultado += `<u>Datos Clave:</u>\n`;
-        resultado += `* **Puntos a montar (Cintura Espalda):** **${puntosMontar} puntos** (corresponde a ${CC / 2} cm de cintura).\n`;
-        resultado += `* **Puntos en EntrePierna:** **${puntosEP} puntos** (corresponde a ${EP} cm).\n`;
-        resultado += `* **Puntos a alcanzar (Antes del cierre delantero):** **${puntosObjetivoDelantero} puntos**.\n\n`;
+        resultado += `* **Comienza montando:** **${puntosMontar} puntos** (corresponde a ${CC / 2} cm de cintura).\n`;
+        //resultado += `* **Puntos que habrán en la entre pierna:** **${puntosEP} puntos** (corresponde a ${EP} cm).\n`;
+        //resultado += `* **Puntos a alcanzar (Antes del cierre delantero):** **${puntosObjetivoDelantero} puntos**.\n\n`;
 
         resultado += `<u>1. Espalda (Cintura a Entrepierna)</u>\n`;
         
         // 1. Altura Lateral
-        resultado += `* **Tramo 1 (Cintura a Muslo):** Tejer recto **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
+        resultado += `* ** Tejer recto **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
         
         // 2. Línea de Disminuciones
-        resultado += `* **Tramo 2 (Línea de Disminuciones):** Disminuir **${menguadosPorLado} veces** un punto a cada lado.\n`;
+        resultado += `* **Ahora has llegado al muslo y hay que empezar a disminuir:** Disminuir **${menguadosPorLado} veces** un punto a cada lado.\n`;
         if (densidadH && cmDisminucion) {
-             resultado += `<p style="padding-left: 20px;">- Frecuencia: **1 disminución a cada lado cada 2 pasadas**.\n`;
+             resultado += `<p style="padding-left: 20px;">- Haz: **1 disminución a cada lado cada 2 pasadas**.\n`;
              resultado += `- Altura de este tramo: **${cmDisminucion} cm** (**${hilerasDisminucion} pasadas**). (Llegará a **${puntosEP} puntos**).</p>\n`;
         } else if (menguadosPorLado > 0) {
-             resultado += `<p style="padding-left: 20px;">- Frecuencia: **1 disminución a cada lado cada 2 pasadas** hasta tener **${puntosEP} puntos** en la aguja.</p>\n`;
+             resultado += `<p style="padding-left: 20px;">- Haz: **1 disminución a cada lado cada 2 pasadas** hasta tener **${puntosEP} puntos** en la aguja.</p>\n`;
         }
         
         // 3. Tramo Recto
-        resultado += `* **Tramo 3 (Tramo Recto):** Tejer recto los **${puntosEP} puntos** durante **${TR} cm** ${hilerasTR !== null ? `(**${hilerasTR} pasadas**)` : ''}.\n\n`;
+        resultado += `* **Has llegado a la entrepierna, ahora hay que hacer unas pasadas rectas antes de empezar el delantero :** Tejer recto los **${puntosEP} puntos** durante **${TR} cm** ${hilerasTR !== null ? `(**${hilerasTR} pasadas**)` : ''}.\n\n`;
 
         resultado += `<u>2. Delantero (Entrepierna a Cintura)</u>\n`;
         
         // 4. Línea de Aumentos
-        resultado += `* **Tramo 4 (Línea de Aumentos):** Aumentar **${aumentosPorLado} veces** un punto a cada lado.\n`;
+        resultado += `* **Ahora tienes que ** aumentar **${aumentosPorLado} veces** un punto a cada lado.\n`;
         if (densidadH && cmAumento) {
-             resultado += `<p style="padding-left: 20px;">- Frecuencia: **1 aumento a cada lado cada 2 pasadas**.\n`;
+             resultado += `<p style="padding-left: 20px;">- Haz: **1 aumento a cada lado cada 2 pasadas**.\n`;
              resultado += `- Altura de este tramo: **${cmAumento} cm** (**${hilerasAumento} pasadas**). (Llegará a **${puntosObjetivoDelantero} puntos**).</p>\n`;
         } else if (aumentosPorLado > 0) {
-             resultado += `<p style="padding-left: 20px;">- Frecuencia: **1 aumento a cada lado cada 2 pasadas** hasta tener **${puntosObjetivoDelantero} puntos** en la aguja.</p>\n`;
+             resultado += `<p style="padding-left: 20px;">- Haz: **1 aumento a cada lado cada 2 pasadas** hasta tener **${puntosObjetivoDelantero} puntos** en la aguja.</p>\n`;
         } else {
              resultado += `<p style="padding-left: 20px;">- No se requieren aumentos en este tramo.</p>\n`;
         }
         
         // 5. Línea Cierre Delantero
-        resultado += `* **Tramo 5 (Línea de Cierre Delantero):** Aumentar de una vez **${puntosLCD} puntos** a cada lado. (Volverá a tener **${puntosMontar} puntos**).\n`;
+        resultado += `* **Acabados los aumentos, antes de empezar a tejer el ultimo tramo para llegar a la cintura tendrás que:** Aumentar de una vez **${puntosLCD} puntos** a cada lado. (Volverá a tener **${puntosMontar} puntos, para volver a tener los mismos puntos con los que empezaste a tejer**).\n`;
         
         // 6. Altura Lateral Delantero
-        resultado += `* **Tramo 6 (Cintura Delantera):** Continuar tejiendo recto **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
+        resultado += `* **ahora debes de** continuar tejiendo recto **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
         
         // 7. Cierre y Costura
         resultado += `\n<u>3. Acabado</u>\n`;
-        resultado += `* **Finalizar:** Cerrar los **${puntosMontar} puntos** de la cintura delantera.\n`;
-        resultado += `* **Costura:** Coser los laterales.\n`;
+        resultado += `* ** Cerrar los **${puntosMontar} puntos** de la cintura delantera.\n`;
+        resultado += `* **Coser ** los laterales.\n`;
         
         // 8. Sugerencias
         resultado += `\n<u>4. Sugerencias de Terminación</u>\n`;
-        resultado += `* **Elástico/Cintura:** Sugerimos tejer los primeros y últimos **${elásticoCm} cm** en punto elástico o añadir una vuelta de **pasacintas** (2p juntos al derecho, hebra, repetir) a la mitad de ese tramo.\n`;
-        resultado += `* **Bordes:** Para un borde rematado, haga los aumentos y disminuciones a 3 o 4 puntos de la orilla. Opcionalmente, puede recoger puntos en el borde de las piernas y cintura para hacer una tira de terminación tejida por separado.\n`;
+        resultado += `* **Elástico/Cintura:** Sugerimos tejer los primeros y últimos **${elásticoCm} cm** en punto elástico o añadir una vuelta de **pasacintas** (*2p juntos al derecho, hebra*, repetir de *a* toda la pasada) a la mitad de esos cm. Esta cinturilla la puedes hacer en el ancho que te guste.\n`;
+        resultado += `* **Bordes:** Para un borde rematado, haga los aumentos y disminuciones a 3 o 4 puntos de la orilla. Tambien puedes recoger desues los puntos del borde de las piernas y para hacer una tira de terminación tejida en el punto que elijas.\n`;
 
     } else {
         // --- LÓGICA EXISTENTE PARA JERSEY, CHAQUETA, ETC. ---
