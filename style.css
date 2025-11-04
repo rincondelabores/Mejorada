@@ -42,87 +42,48 @@ header h1 {
 .container {
     display: flex;
     max-width: 1200px;
-    margin: 20px auto;
+    margin: 30px auto;
     padding: 0 20px;
-    gap: 20px;
+    gap: 30px;
 }
 
-/* --- Tarjeta de Presentación (ASIDE) --- */
-.contact-card {
+.calculator-form, .results-container {
+    flex: 1;
     background-color: white;
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px var(--color-sombra);
-    width: 100%; 
-    margin-top: 25px; 
-    height: fit-content;
-    text-align: center;
-    border-top: 5px solid var(--color-secundario);
+    box-shadow: 0 2px 8px var(--color-sombra);
 }
 
-.contact-card h2 {
-    color: var(--color-secundario);
-    font-size: 1.8em;
-    margin-bottom: 15px;
-}
-
-.contact-info {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.icon-link {
-    font-size: 1.5em;
+.calculator-form h2, .results h2, .contact-info p.script-font {
     color: var(--color-primario);
-    transition: color 0.3s ease;
-}
-
-.icon-link:hover {
-    color: var(--color-secundario);
-}
-
-.address {
-    font-size: 0.9em;
-    color: #666;
-}
-
-/* --- Formularios y Resultados (MAIN) --- */
-.calculator-form, .results {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px var(--color-sombra);
-    flex: 1; /* Ocupan el espacio restante en escritorio */
-}
-
-.calculator-form h2, .results h2 {
-    color: var(--color-texto-oscuro);
+    border-bottom: 2px solid var(--color-borde);
+    padding-bottom: 10px;
     margin-bottom: 20px;
-    border-bottom: 2px solid var(--color-primario);
-    padding-bottom: 5px;
 }
 
 .input-group {
     margin-bottom: 15px;
 }
 
-label {
+.input-group label {
     display: block;
-    margin-bottom: 5px;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
-input[type="number"], select {
+.input-group input[type="number"], 
+.input-group select {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--color-borde);
     border-radius: 4px;
+    box-sizing: border-box; /* Asegura que el padding no cambie el ancho total */
+    font-size: 1em;
 }
 
 button {
+    width: 100%;
     background-color: var(--color-primario);
     color: white;
     border: none;
@@ -150,6 +111,44 @@ button:hover {
     color: var(--color-primario);
 }
 
+/* --- CONTACT INFO & ICONS --- */
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-info {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--color-sombra);
+    text-align: center;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.social-icons a {
+    color: var(--color-primario);
+    font-size: 1.5em;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: var(--color-secundario);
+}
+
+.address {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
 /* --- FOOTER --- */
 footer {
     text-align: center;
@@ -167,20 +166,26 @@ footer {
     .container {
         /* Fuerza a que los bloques (formulario y resultados) se apilen verticalmente */
         flex-direction: column; 
-        margin: 10px auto; 
-        padding: 0 10px; 
-        gap: 15px; 
+        margin: 10px auto;
     }
 
-    /* CORRECCIÓN: Forzamos el ancho al 100% y eliminamos las propiedades flex para que se expandan completamente al apilarse */
-    .calculator-form, .results {
-        width: 100%; 
-        flex: none; 
-        padding: 20px;
+    .calculator-form, .results-container, .contact-info {
+        flex: none;
+        width: 100%;
+        padding: 15px;
     }
 
-    /* Reducir el tamaño de la cabecera en móviles */
     header h1 {
         font-size: 1.8em;
     }
+}
+
+/* Clases de utilidad */
+.error {
+    color: red;
+    font-weight: bold;
+    padding: 10px;
+    border: 1px solid red;
+    background-color: #ffe0e0;
+    border-radius: 4px;
 }
