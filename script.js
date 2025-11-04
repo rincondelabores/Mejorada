@@ -79,7 +79,7 @@ const ORDEN_TALLAS = {
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
     'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
     'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses '],
-    'Gorro (Tallas)': ['Adultos'] // NUEVA ENTRADA
+    'Gorro (Tallas)': ['RN-0', '1-3 meses', '3-6 meses', '6 meses-2 años', 'Niños', 'Adolescentes', 'Adultos', ]
 };
 
 
