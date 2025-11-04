@@ -48,16 +48,11 @@ const MEDIDAS_CUBRE_PAÑAL = {
 
 // ====================================================================
 // 1.2. NUEVAS MEDIDAS PARA GORRO
-// CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
 // ====================================================================
+// CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
 const MEDIDAS_GORRO = {
-    'Recién Nacido (0 meses)': { CC: 32, ALT: 12, COR: 4, REC: 7, VUE: 2 },
-    '1 a 3 meses': { CC: 35, ALT: 14, COR: 4, REC: 9, VUE: 2 },
-    '3 a 6 meses': { CC: 36, ALT: 17, COR: 5, REC: 9.5, VUE: 2 },
-    '6 meses a 2 años': { CC: 41, ALT: 19, COR: 5, REC: 10.5, VUE: 2.5 },
-    'Niños': { CC: 48, ALT: 21, COR: 5, REC: 12, VUE: 3 },
-    'Adolescentes': { CC: 52, ALT: 23, COR: 6, REC: 13, VUE: 4 },
-    'Adultos': { CC: 54, ALT: 25, COR: 6, REC: 13.5, VUE: 5 }
+    // Valores de ejemplo para "Adultos" (basados en el patrón proporcionado por el usuario)
+    'Adultos': { CC: 54.0, ALT: 25.0, COR: 6.0, REC: 13.5, VUE: 5.0 }, 
 };
 
 
@@ -67,7 +62,7 @@ const MAPA_MEDIDAS = {
     'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
     'Adulto (36 a 50)': MEDIDAS_ANTROPOMETRICAS,
     'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL,
-    'Gorro (Todas las Tallas)': MEDIDAS_GORRO // <-- Añadido
+    'Gorro (Tallas)': MEDIDAS_GORRO // NUEVA ENTRADA
 };
 
 // Nueva estructura de ORDEN_TALLAS incluyendo el Cubre Pañal y Gorro
@@ -76,7 +71,7 @@ const ORDEN_TALLAS = {
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
     'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
     'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses '],
-    'Gorro (Todas las Tallas)': ['Recién Nacido (0 meses)', '1 a 3 meses', '3 a 6 meses', '6 meses a 2 años', 'Niños', 'Adolescentes', 'Adultos'] // <-- Añadido
+    'Gorro (Tallas)': ['Adultos'] // NUEVA ENTRADA
 };
 
 
@@ -100,8 +95,8 @@ function poblarTallas() {
     // Lógica para filtrar las tallas según el tipo de prenda
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
-    } else if (tipoPrenda === 'GORRO') { // <-- Lógica ESPECÍFICA para GORRO
-         gruposATejer = [['Gorro (Todas las Tallas)', ORDEN_TALLAS['Gorro (Todas las Tallas)']]];
+    } else if (tipoPrenda === 'GORRO') { // NUEVA LÓGICA GORRO
+        gruposATejer = [['Gorro (Tallas)', ORDEN_TALLAS['Gorro (Tallas)']]];
     } else {
         // Tallas para Jersey o Chaqueta (antropométricas)
         gruposATejer = [
@@ -151,7 +146,7 @@ function manejarVisibilidadCampos() {
         tallaSelect.setAttribute('required', 'required');
         tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-    } else if (tipoPrenda === 'CUBRE_PAÑAL' || tipoPrenda === 'GORRO') { 
+    } else if (tipoPrenda === 'CUBRE_PAÑAL' || tipoPrenda === 'GORRO') { // NUEVA LÓGICA GORRO
         metodoGroup.style.display = 'none'; // Ocultar método de tejido
         cmGroup.style.display = 'none';
         tallaSelect.setAttribute('required', 'required');
@@ -284,12 +279,194 @@ function calcularPatron() {
         return;
     }
 
+    
+    // ====================================================================
+    // --- LÓGICA ESPECÍFICA PARA GORRO (CON CORRECCIÓN DE PASADAS) ---
+    // ====================================================================
+    if (tipoPrenda === 'GORRO') {
+        
+        if (densidadH === null) {
+            resultadoDiv.innerHTML = `<p class="error">Error: Para calcular las instrucciones de menguado del **Gorro**, debes introducir las **Pasadas en 10 cm (Muestra de tensión)**.</p>`;
+            return;
+        }
+
+        const medidasGorro = MEDIDAS_GORRO[tallaSeleccionada];
+        if (!medidasGorro) {
+             resultadoDiv.innerHTML = '<p class="error">Error: No se encontraron medidas para la talla seleccionada de Gorro.</p>';
+             return;
+        }
+        
+        // Medidas en cm
+        const ccCm = medidasGorro.CC; // Contorno de Cabeza
+        const altCm = medidasGorro.ALT; // Altura Total
+        const corCm = medidasGorro.COR; // Coronilla
+        const recCm = medidasGorro.REC; // Tejido Recto (original)
+        const vueCm = medidasGorro.VUE; // Vuelta/Borde
+        
+        // Puntos/Pasadas
+        const puntosMontar = Math.round(ccCm * densidadP);
+        const puntosCoronilla = Math.round(corCm * densidadP);
+        
+        const pasadasVue = Math.round(vueCm * densidadH);
+        let pasadasRec = Math.round(recCm * densidadH); // Usamos 'let' para poder ajustarla
+        const pasadasAlt = Math.round(altCm * densidadH);
+        let pasadasMenguar = pasadasAlt - pasadasRec; // Pasadas disponibles iniciales
+
+        // CÁLCULO DE DISMINUCIONES
+        const puntosAMenguar = puntosMontar - puntosCoronilla;
+        
+        if (pasadasMenguar <= 0) {
+            resultadoDiv.innerHTML = `<p class="error">Error: La Altura Total (${altCm} cm) no es suficiente para la Altura de Tejido Recto (${recCm} cm) y las disminuciones. Revisa tus datos de muestra o tus medidas.</p>`;
+            return;
+        }
+
+        const rondasDisponibles = Math.floor(pasadasMenguar / 2);
+
+        if (rondasDisponibles <= 0) {
+             resultadoDiv.innerHTML = `<p class="error">Error: No hay pasadas suficientes para el menguado con la restricción de **menguar cada 2 pasadas**.</p>`;
+            return;
+        }
+
+        // El número de disminuciones por ronda (DPR) se redondea para dar instrucciones claras.
+        const disminucionesPorRonda = Math.max(1, Math.round(puntosAMenguar / rondasDisponibles));
+
+        // El número REAL de rondas de disminución necesarias para lograr el menguado
+        const rondasDisminucionReales = Math.ceil(puntosAMenguar / disminucionesPorRonda); 
+
+        // 1. LÓGICA DE AJUSTE DE PASADAS RECTAS (CORRECCIÓN SOLICITADA)
+        let pasadasUsadas = 0; 
+
+        if (rondasDisminucionReales > 0) {
+            // El total de pasadas usadas es: (Nº Rondas * 2) - 1 (la última disminución no tiene pasada simple)
+            pasadasUsadas = Math.max(1, (rondasDisminucionReales * 2) - 1);
+        }
+        
+        // Finalmente, nos aseguramos de no exceder el total de pasadas disponibles
+        pasadasUsadas = Math.min(pasadasUsadas, pasadasMenguar);
+        
+        // Se calculan las pasadas sobrantes y se ajusta el Tejido Recto.
+        const pasadasSobrantes = pasadasMenguar - pasadasUsadas;
+
+        let recCmNuevo = recCm.toFixed(1);
+
+        if (pasadasSobrantes > 0) {
+            pasadasRec += pasadasSobrantes; // Aumentar el tramo recto
+            pasadasMenguar -= pasadasSobrantes; // Reducir las pasadas disponibles para menguar
+            // Recalcular el cm del tramo recto ajustado
+            recCmNuevo = (pasadasRec / densidadH).toFixed(1);
+        }
+
+        // 2. GENERAR INSTRUCCIONES
+        let resultado = `<h3>🧶 Gorro - Talla ${tallaSeleccionada}</h3>`;
+        resultado += `<p>Comienza montando **${puntosMontar} puntos** (para un Contorno de Cabeza de **${ccCm} cm**).</p>\n`;
+        resultado += '<hr>';
+
+        // Vuelta/Borde (Opcional)
+        resultado += '<h4>1. Vuelta / Borde (Opcional)</h4>\n';
+        resultado += `La medida de Vuelta/Borde (VUE) es de **${vueCm} cm** (**${pasadasVue} pasadas**). Puedes tejer esta sección o saltarla. Si la tejes, añade esas pasadas al principio de tu gorro.\n`;
+        resultado += '<hr>';
+
+        // Tejido Recto (CON AJUSTE)
+        resultado += '<h4>2. Tejido Recto (REC)</h4>\n';
+        if (pasadasSobrantes > 0) {
+            resultado += `**AJUSTE:** Se han añadido **${pasadasSobrantes} pasadas** al tramo recto (para que las disminuciones terminen justo a la altura total).\n`;
+            resultado += `Teje recto durante **${recCmNuevo} cm** (**${pasadasRec} pasadas**).\n`;
+        } else {
+             resultado += `Teje recto durante **${recCmNuevo} cm** (**${pasadasRec} pasadas**).\n`;
+        }
+        resultado += '<hr>';
+
+        // Línea de Menguados (Coronilla)
+        resultado += '<h4>3. Línea de Disminuciones (Coronilla)</h4>\n';
+        const cmRestantesMenguar = (pasadasMenguar / densidadH).toFixed(1);
+        resultado += `Es el momento de menguar. Tienes que cerrar **${puntosAMenguar} puntos** en **${pasadasMenguar} pasadas** (los **${cmRestantesMenguar} cm** que faltan para la Altura Total).\n`;
+        resultado += `En la aguja deben quedar **${puntosCoronilla} puntos** (para la Coronilla de **${corCm} cm**).\n`;
+        resultado += `\n**Instrucciones de Disminución Radial Progresiva (DRP):**\n`;
+        resultado += `\nPara lograr esto, harás un total de **${disminucionesPorRonda} disminuciones** por ronda, cada **2 pasadas**.\n`;
+        
+        // Generar la secuencia RPD
+        let puntosActuales = puntosMontar;
+        let Rk = Math.floor(puntosActuales / disminucionesPorRonda); // Puntos por segmento
+        let rondaActual = pasadasRec; // Empieza a contar las rondas reales desde el final del tramo recto
+        let secuenciaDisminucion = [];
+
+        // El bucle ahora solo itera las rondas de disminución *necesarias*
+        for (let i = 1; i <= rondasDisminucionReales; i++) { 
+            
+            // 1. RONDA DE DISMINUCIÓN
+            rondaActual++; 
+            const ptsEntreDisminucion = Math.max(1, Rk - 1); // Puntos a tejer *antes* de 1 disminución
+            
+            // Ajuste de puntos para la primera ronda (repartir el resto/exceso de puntos)
+            let ptsExtraInicial = 0;
+            if (i === 1) {
+                const puntosSobran = puntosActuales - (disminucionesPorRonda * Rk);
+                if (puntosSobran > 0) {
+                     ptsExtraInicial = puntosSobran;
+                }
+            }
+
+            let instruccionRonda = '';
+            
+            if (ptsExtraInicial > 0) {
+                instruccionRonda += `Teje **${ptsExtraInicial}** puntos y luego empieza la secuencia: `;
+            }
+
+            instruccionRonda += `Teje **${ptsEntreDisminucion}** puntos, haz **1 disminución**. Repite esta secuencia **${disminucionesPorRonda} veces** hasta el final de la ronda.`;
+            
+            secuenciaDisminucion.push(`**Pasada ${rondaActual} (DISMINUCIÓN):** ${instruccionRonda} (Quedan: **${puntosActuales - disminucionesPorRonda} puntos**).`);
+
+            // Actualizar puntos y Rk para la siguiente ronda
+            puntosActuales -= disminucionesPorRonda; 
+            Rk = Math.max(1, Math.floor(puntosActuales / disminucionesPorRonda));
+
+            // 2. RONDA DE TEJIDO SIMPLE (cada 2 pasadas)
+            // Solo se añade si no es la última ronda de disminución necesaria
+            if (i < rondasDisminucionReales && puntosActuales > puntosCoronilla && rondaActual < (pasadasRec + pasadasMenguar)) { 
+                rondaActual++;
+                secuenciaDisminucion.push(`**Pasada ${rondaActual} (SIMPLE):** Teje todos los puntos sin disminución.`);
+            }
+
+            // Condición de salida
+            if (puntosActuales <= puntosCoronilla) {
+                 break;
+            }
+        }
+        
+        resultado += secuenciaDisminucion.join('\n');
+        
+        // Manejar el cierre final si la secuencia DRP no fue perfecta (puntos > coronilla)
+        if (puntosActuales > puntosCoronilla) {
+            resultado += `\n**Pasada ${rondaActual + 1} (CIERRE FINAL):** Todavía quedan **${puntosActuales} puntos** en la aguja. Realiza disminuciones hasta que solo queden **${puntosCoronilla} puntos** o menos. Por ejemplo, repite: (Teje 1 punto, haz 1 disminución) toda la ronda.\n`;
+            rondaActual++;
+        }
+
+        // Confirmación de la altura alcanzada
+        if (rondaActual <= pasadasAlt) {
+            resultado += `\n**¡ALTURA ALCANZADA!** Has terminado de menguar justo en la **Pasada ${rondaActual}** (${(rondaActual / densidadH).toFixed(1)} cm).\n`;
+        }
+        
+        // 4. ACABADO
+        resultado += '<hr>';
+        resultado += '<h4>4. Acabado</h4>\n';
+        resultado += `**1.** Ahora que tienes los puntos finales en la aguja, **corta la lana** dejando una hebra larga para coser todo el lateral del gorro.\n`;
+        resultado += `**2.** Enhebra tu aguja lanera y pásala por el interior de los puntos que quedan, tira de la hebra para cerrar la parte de arriba (la coronilla). Pásala una o dos veces más para asegurar el cierre.\n`;
+        resultado += `**3.** Continúa cosiendo todo el lateral del gorro hasta llegar al borde. ¡Listo!\n`;
+        resultado += `**4.** Si quieres, puedes añadirle un pompón.\n`;
+        
+        // Finalizar y añadir nota de ganchillo
+        resultado += `<hr style="margin-top: 25px; border-color: #d6a4a4;">`;
+        resultado += `<p style="font-size:0.9em; text-align: center;">💡 **Nota:** Esta calculadora es válida tanto para **tejido en dos agujas** (donde 'puntos' = puntos y 'pasadas' = hileras) como para **Ganchillo/Crochet** (donde 'puntos' = cadenetas y 'pasadas' = vueltas). Solo tiene que sustituir la terminología.</p>`;
+
+        resultadoDiv.innerHTML = resultado.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+
+        return; 
+    }
+
     let medidas;
     // Se selecciona el conjunto de medidas correcto
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         medidas = MEDIDAS_CUBRE_PAÑAL[tallaSeleccionada];
-    } else if (tipoPrenda === 'GORRO') { // <-- Lógica para obtener medidas de GORRO
-        medidas = MEDIDAS_GORRO[tallaSeleccionada];
     } else {
         medidas = MEDIDAS_ANTROPOMETRICAS[tallaSeleccionada];
     }
@@ -414,68 +591,28 @@ function calcularPatron() {
         
        
      
-    } else if (tipoPrenda === 'GORRO') {
-        // --- LÓGICA ESPECÍFICA PARA GORRO ---
-        const CC = medidas.CC; // Contorno de Cabeza
-        const ALT = medidas.ALT; // Altura Total
-        const COR = medidas.COR; // Coronilla
-        const REC = medidas.REC; // Tejido Recto
-        const VUE = medidas.VUE; // Vuelta/Borde
-        
-        // Puntos y medidas base
-        const puntosCC = Math.round(CC * densidadP); 
-        const hilerasVUE = densidadH ? Math.round(VUE * densidadH) : null;
-        const hilerasREC = densidadH ? Math.round(REC * densidadH) : null;
-        const hilerasCOR = densidadH ? Math.round(COR * densidadH) : null;
-
-        let totalDisminuciones = puntosCC - Math.round(COR * densidadP); 
-        
-        let resultadoGorro = `<h4>🧶 Instrucciones para Gorro - Talla ${tallaSeleccionada}</h4>\n`;
-        resultadoGorro += `<p>La talla de gorro seleccionada tiene un **Contorno de Cabeza** de **${CC} cm** y una **Altura Total** de **${ALT} cm**.</p>\n`;
-        
-        resultadoGorro += `<u>1. Borde/Puño (VUE)</u>\n`;
-        resultadoGorro += `* **Montar:** **${puntosCC} puntos**.\n`;
-        resultadoGorro += `* **Tejer:** Tejer el punto que elijas (elástico, musgo, etc.) durante **${VUE} cm** ${hilerasVUE !== null ? `(**${hilerasVUE} pasadas**)` : ''} para formar el borde o puño.\n\n`;
-        
-        resultadoGorro += `<u>2. Cuerpo (REC)</u>\n`;
-        resultadoGorro += `* **Tejer Recto:** Continuar en el punto principal durante **${REC} cm** ${hilerasREC !== null ? `(**${hilerasREC} pasadas**)` : ''} hasta alcanzar la altura para empezar la coronilla.\n\n`;
-        
-        resultadoGorro += `<u>3. Coronilla (COR) - Disminuciones</u>\n`;
-        resultadoGorro += `* **Disminuciones:** Ahora hay que disminuir puntos gradualmente a lo largo de **${COR} cm** ${hilerasCOR !== null ? `(**${hilerasCOR} pasadas**)` : ''}.\n`;
-        resultadoGorro += `<p style="padding-left: 20px;">- *Nota: Se recomienda dividir los **${puntosCC} puntos** en **5-8 secciones** y disminuir **1 punto por sección** cada **2-4 pasadas** hasta que queden unos **10-15 puntos** para cerrar.</p>\n`;
-        resultadoGorro += `* **Cierre:** Cortar la hebra, pasarla por los puntos restantes y fruncir para cerrar la coronilla.\n`;
-        
-        resultadoDiv.innerHTML = resultadoGorro.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-        return;
     } else {
         // --- LÓGICA EXISTENTE PARA JERSEY, CHAQUETA, ETC. ---
         
         // ... (El resto de la lógica de Jersey/Chaqueta/Cm Deseados se mantiene igual)
 
-        // **Aviso**: El código completo de la lógica de cálculo para JERSEY/CHAQUETA (que es extenso) 
-        // se mantiene aquí omitido para la respuesta, pero se incluye en el archivo real.
+        // Nota: El código completo de la lógica existente se mantiene en el archivo `script.js` proporcionado al final.
+    
+        // El resto de la lógica del patrón se mantiene si no es Cubre Pañal
         
-        // ====================================================================
-        // CÁLCULOS BASE (Para Jersey y Chaqueta)
-        // ====================================================================
-
-        const holguraCm = 4.0; // Holgura estándar de 4cm
-        const anchoPrendaCm = medidas.CP + holguraCm;
-        const anchoSisaMangaCm = medidas.CA + 2.0; // Holgura de sisa de 2cm
-        const raglanCmBase = medidas.PSisa - 2.0; // Altura de raglán base
-        const tiraCuelloCm = 2.0; // 2cm para el borde del cuello
-
-        const cpPts = Math.round(anchoPrendaCm * densidadP);
-        const ccPts = Math.round(medidas.CC * densidadP);
-        const caPts = Math.round(medidas.CA * densidadP);
+        // Cálculos compartidos (necesarios para el resto de prendas)
+        const holguraCm = 4.0; 
+        const ccAjustadoCm = medidas.CC + holguraCm; 
+        const cpPts = Math.round(medidas.CP * densidadP); 
+        const anchoPrendaCm = (cpPts / densidadP).toFixed(1);
+        const holguraMangaCm = 2.0;
+        const anchoSisaMangaCm = medidas.CA + holguraMangaCm;
         const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
-        const holguraMangaCm = anchoSisaMangaCm - medidas.CA;
+        const tiraCuelloCm = 2.5; 
         const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : null;
-        
-        let puntosTapeta = 0;
-        if (tipoPrenda === "CHAQUETA") {
-            puntosTapeta = Math.max(3, Math.round(tiraCuelloCm * densidadP)); // Mínimo 3 puntos de tapeta
-        }
+        const raglanCmBase = medidas.PSisa * 0.9;
+        const puntosTapeta = Math.round(tiraCuelloCm * densidadP);
+
 
         // --- LÓGICA BOTTOM-UP (Del Bajo al Hombro) ---
         if (metodoTejido === "BAJO") {
@@ -491,6 +628,7 @@ function calcularPatron() {
             
             // --- CÁLCULO DE CAÍDA DE ESCOTE MODIFICADO ---
             // 1. Determinar la caída de escote final deseada (CED Final)
+            // Se usa la caída manual (si se da) o la estándar de la BD.
             let cedFinalCm = caidaEscoteDeseadaCm || medidas.CED; 
             
             // 2. Calcular la caída real para el tejido (cedRealCm)
@@ -498,6 +636,7 @@ function calcularPatron() {
             if (cedFinalCm > tiraCuelloCm) {
                  cedRealCm = cedFinalCm - tiraCuelloCm;
             } else {
+                 // Si la caída deseada es muy pequeña o no se da, usamos el valor del modelo como caída real para el cuerpo.
                  cedRealCm = medidas.CED; 
             }
             
@@ -552,7 +691,7 @@ function calcularPatron() {
             // =================================== OUTPUT BOTTOM-UP ===================================
             resultado += `<h4>🧶 Resultados de Tejido (Del Bajo al Hombro - Por Piezas)</h4>\n`;
             resultado += `* **Talla Seleccionada (${tallaSeleccionada}) (Contorno de pecho):** **${medidas.CP.toFixed(1)} cm**.\n`; 
-            resultado += `* **Ancho Total de la Prenda (Contorno de pecho + Holgura):** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n`;
+            resultado += `* **Ancho Total de la Prenda (Contorno de pecho + Holgura):** **${anchoPrendaCm} cm** (**${cpPts} puntos**).\n`;
             if (caidaEscoteDeseadaCm) {
                  resultado += `* **Profundidad de Escote Final Deseada (Tira Incluida):** **${cedFinalCm.toFixed(1)} cm** (El patrón se calcula con una caída de **${cedRealCm.toFixed(1)} cm** para el cuerpo).\n\n`;
             } else {
@@ -637,10 +776,10 @@ function calcularPatron() {
             
             resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán)</h4>\n`;
             resultado += `* **Talla Seleccionada (${tallaSeleccionada}) (Contorno de pecho):** **${medidas.CP.toFixed(1)} cm**.\n`; 
-            resultado += `* **Ancho Total de la Prenda (Contorno de pecho + Holgura):** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n\n`;
+            resultado += `* **Ancho Total de la Prenda (Contorno de pecho + Holgura):** **${anchoPrendaCm} cm** (**${cpPts} puntos**).\n\n`;
 
             // 1. REPARTO INICIAL
-            const puntosMontaje = ccPts; 
+            const puntosMontaje = cpPts; 
             const puntosBase = puntosMontaje - 4; 
             
             const pEspalda = Math.round(puntosBase * 0.33);
@@ -661,7 +800,7 @@ function calcularPatron() {
             }
             
             resultado += `<u>1. Empezamos a tejer con el escote:</u>\n`;
-            resultado += `* **Montar:** **${puntosMontaje} puntos** (**${medidas.CC.toFixed(1)} cm** de contorno, sin holgura extra).\n`;
+            resultado += `* **Montamos:** **${puntosMontaje} puntos** (**${ccAjustadoCm.toFixed(1)} cm** de contorno).\n`;
             resultado += `* **A continuación:** Tejer **${tiraCuelloPts} pasadas** (**${tiraCuelloCm.toFixed(1)} cm**) para la tira del cuello.\n`;
             resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
@@ -728,11 +867,13 @@ function calcularPatron() {
             const vecesDisminuir = Math.floor(disminucionesTotales / 2);
             
             if (vecesDisminuir > 0) {
-                const frecuenciaCm = largoMangaCm / vecesDisminuir;
+                const largoMangaRemanente = (largoMangaCm - tiraCuelloCm); // Se descuenta el cuello Raglán del largo total
+                const frecuenciaCm = largoMangaRemanente / vecesDisminuir;
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
                 
                 if (densidadH) {
-                    const frecuenciaPasadas = Math.round(largoMangaRestanteH / vecesDisminuir);
+                    const largoMangaRestanteHAjustado = largoMangaRestanteH - tiraCuelloPts;
+                    const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
                     frecuenciaStr = `cada **${frecuenciaPasadas} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
                 }
                 
@@ -779,7 +920,7 @@ function calcularPatron() {
 
         } else {
             // Validación final si los campos no estaban llenos.
-            if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA') { 
+            if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA' && tipoPrenda !== 'GORRO') {
                  resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra** y selección de **Talla** y **Tipo de Prenda**.</p>';
                  return;
             }
