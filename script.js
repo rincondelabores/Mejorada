@@ -46,37 +46,21 @@ const MEDIDAS_CUBRE_PAÑAL = {
     '12 meses ': { CC: 48, AL: 13, EP: 10, TR: 2.5, LCD: 3 } 
 };
 
-// ====================================================================
-// 1.2. NUEVAS MEDIDAS PARA GORRO
-// ====================================================================
-// CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
-const MEDIDAS_GORRO = {
-    'Recién Nacido (0 meses)': { CC: 32.0, ALT: 12.0, COR: 4.0, REC: 7.0, VUE: 2.0 },
-    '1 a 3 meses': { CC: 35.0, ALT: 14.0, COR: 4.0, REC: 9.0, VUE: 2.0 },
-    '3 a 6 meses': { CC: 36.0, ALT: 17.0, COR: 5.0, REC: 9.5, VUE: 2.0 },
-    '6 meses a 2 años': { CC: 41.0, ALT: 19.0, COR: 5.0, REC: 10.5, VUE: 2.5 },
-    'Niños': { CC: 48.0, ALT: 21.0, COR: 5.0, REC: 12.0, VUE: 3.0 },
-    'Adolescentes': { CC: 52.0, ALT: 23.0, COR: 6.0, REC: 13.0, VUE: 4.0 },
-    'Adultos': { CC: 54.0, ALT: 25.0, COR: 6.0, REC: 13.5, VUE: 5.0 },
-};
 
-
-// Mapeo para poblar las tallas (ACTUALIZADO CON GORRO)
+// Mapeo para poblar las tallas
 const MAPA_MEDIDAS = {
     'Bebé (Prematuro a 24m)': MEDIDAS_ANTROPOMETRICAS,
     'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
     'Adulto (36 a 50)': MEDIDAS_ANTROPOMETRICAS,
-    'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL,
-    'Gorro': MEDIDAS_GORRO // NUEVA ENTRADA
+    'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL 
 };
 
-// Nueva estructura de ORDEN_TALLAS incluyendo el Cubre Pañal y Gorro (ACTUALIZADO CON GORRO)
+// Nueva estructura de ORDEN_TALLAS incluyendo el Cubre Pañal
 const ORDEN_TALLAS = {
     'Bebé (Prematuro a 24m)': ['00 (Prematuro)', '0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'],
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
     'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
-    'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses '],
-    'Gorro': ['Recién Nacido (0 meses)', '1 a 3 meses', '3 a 6 meses', '6 meses a 2 años', 'Niños', 'Adolescentes', 'Adultos'] // NUEVA ENTRADA
+    'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses ']
 };
 
 
@@ -97,11 +81,9 @@ function poblarTallas() {
 
     let gruposATejer = [];
 
-    // Lógica para filtrar las tallas según el tipo de prenda (ACTUALIZADO CON GORRO)
+    // Lógica para filtrar las tallas según el tipo de prenda
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
-    } else if (tipoPrenda === 'GORRO') { // NUEVA LÓGICA
-        gruposATejer = [['Gorro', ORDEN_TALLAS['Gorro']]];
     } else {
         // Tallas para Jersey o Chaqueta (antropométricas)
         gruposATejer = [
@@ -151,7 +133,7 @@ function manejarVisibilidadCampos() {
         tallaSelect.setAttribute('required', 'required');
         tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-    } else if (tipoPrenda === 'CUBRE_PAÑAL' || tipoPrenda === 'GORRO') { // ACTUALIZADO CON GORRO
+    } else if (tipoPrenda === 'CUBRE_PAÑAL') {
         metodoGroup.style.display = 'none'; // Ocultar método de tejido
         cmGroup.style.display = 'none';
         tallaSelect.setAttribute('required', 'required');
@@ -255,11 +237,11 @@ function calcularPatron() {
 
     // 1. Validaciones (solo para campos OBLIGATORIOS)
     if (isNaN(puntosMuestra) || puntosMuestra <= 0) {
-        resultadoDiv.innerHTML = '<p class="error">Error: Debes introducir los **puntos de la muestra** de tensión (en 10 cm).</p>';
+        resultadoDiv.innerHTML = '<p class="error">Error: Debe introducir los **puntos de la muestra** de tensión (en 10 cm).</p>';
         return;
     }
     if (!tipoPrenda) {
-        resultadoDiv.innerHTML = '<p class="error">Error: Debes seleccionar un **tipo de prenda**.</p>';
+        resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar un **tipo de prenda**.</p>';
         return;
     }
     
@@ -270,21 +252,17 @@ function calcularPatron() {
     // Cálculo simple de CM Deseados
     if (tipoPrenda === 'CM_DESEADOS') {
         if (isNaN(cmDeseados) || cmDeseados <= 0) {
-            resultadoDiv.innerHTML = '<p class="error">Error: Debes introducir la cantidad de **cm deseados**.</p>';
+            resultadoDiv.innerHTML = '<p class="error">Error: Debe introducir la cantidad de **cm deseados**.</p>';
             return;
         }
         const puntosTotales = Math.round(cmDeseados * densidadP);
         resultadoDiv.innerHTML = `<h4>🧶 Cálculo de Ancho</h4><p>Los puntos necesarios para un ancho de **${cmDeseados} cm** son: **${puntosTotales} puntos**.</p>`;
-        
-        // Añadir nota de crochet/ganchillo y salir
-        resultadoDiv.innerHTML += `<hr style="margin-top: 25px; border-color: #d6a4a4;"><p style="font-size:0.9em; text-align: center;">💡 **Nota:** Esta calculadora es válida tanto para **tejido en dos agujas** (donde 'puntos' = puntos y 'pasadas' = hileras) como para **Ganchillo/Crochet** (donde 'puntos' = cadenetas y 'pasadas' = vueltas). Solo tienes que sustituir la terminología.</p>`;
-        
         return;
     }
 
     // El resto de lógica requiere la talla
     if (!tallaSeleccionada) {
-         resultadoDiv.innerHTML = '<p class="error">Error: Debes seleccionar una **talla**.</p>';
+         resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar una **talla**.</p>';
         return;
     }
 
@@ -292,8 +270,6 @@ function calcularPatron() {
     // Se selecciona el conjunto de medidas correcto
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         medidas = MEDIDAS_CUBRE_PAÑAL[tallaSeleccionada];
-    } else if (tipoPrenda === 'GORRO') { // NUEVO: Obtener medidas de Gorro
-        medidas = MEDIDAS_GORRO[tallaSeleccionada];
     } else {
         medidas = MEDIDAS_ANTROPOMETRICAS[tallaSeleccionada];
     }
@@ -306,158 +282,9 @@ function calcularPatron() {
     let resultado = '';
 
     // ====================================================================
-    // --- LÓGICA ESPECÍFICA PARA GORRO --- (NUEVO BLOQUE)
-    // ====================================================================
-    if (tipoPrenda === 'GORRO') {
-        
-        // V: Validar que la densidad de pasadas sea válida para los cálculos de menguado
-        if (densidadH === null) {
-            resultadoDiv.innerHTML = `<p class="error">Error: Para calcular las instrucciones de menguado del **Gorro**, debes introducir las **Pasadas en 10 cm (Muestra de tensión)**.</p>`;
-            return;
-        }
-
-        // Medidas en cm
-        const ccCm = medidas.CC; // Contorno de Cabeza
-        const altCm = medidas.ALT; // Altura Total
-        const corCm = medidas.COR; // Coronilla
-        const recCm = medidas.REC; // Tejido Recto
-        const vueCm = medidas.VUE; // Vuelta/Borde
-        
-        // Puntos/Pasadas
-        const puntosMontar = Math.round(ccCm * densidadP);
-        const puntosCoronilla = Math.round(corCm * densidadP);
-        
-        const pasadasVue = Math.round(vueCm * densidadH);
-        const pasadasRec = Math.round(recCm * densidadH);
-        const pasadasAlt = Math.round(altCm * densidadH);
-
-        // CÁLCULO DE DISMINUCIONES
-        const puntosAMenguar = puntosMontar - puntosCoronilla;
-        
-        const pasadasMenguar = pasadasAlt - pasadasRec; // Total de pasadas disponibles para menguar
-        const rondasDisminucion = Math.floor(pasadasMenguar / 2); // Menguar cada 2 pasadas
-
-        if (rondasDisminucion <= 0 || pasadasMenguar <= 0) {
-            resultadoDiv.innerHTML = `<p class="error">Error: La Altura Total (${altCm} cm) no es suficiente para la Altura de Tejido Recto (${recCm} cm) y las disminuciones. Revisa tus medidas.</p>`;
-            return;
-        }
-
-        // El número de disminuciones por ronda (DPR)
-        const disminucionesPorRonda = Math.max(1, Math.round(puntosAMenguar / rondasDisminucion));
-        
-        // 2. GENERAR INSTRUCCIONES
-        resultado += `<h3>🧶 Gorro - Talla ${tallaSeleccionada}</h3>`;
-        resultado += `<p>Comienza montando **${puntosMontar} puntos** (para un Contorno de Cabeza de **${ccCm} cm**).</p>\n`;
-        resultado += '<hr>';
-
-        // Vuelta/Borde (Opcional)
-        resultado += '<h4>1. Vuelta / Borde (Opcional)</h4>\n';
-        resultado += `La medida de Vuelta/Borde (VUE) es de **${vueCm} cm** (**${pasadasVue} pasadas**). Puedes tejer esta sección o saltarla. Si la tejes, añade esas pasadas al principio de tu gorro.\n`;
-        resultado += '<hr>';
-
-        // Tejido Recto
-        resultado += '<h4>2. Tejido Recto (REC)</h4>\n';
-        resultado += `Después del borde, teje recto durante **${recCm} cm** (**${pasadasRec} pasadas**).\n`;
-        resultado += '<hr>';
-
-        // Línea de Menguados (Coronilla)
-        resultado += '<h4>3. Línea de Disminuciones (Coronilla)</h4>\n';
-        resultado += `Es el momento de menguar. Tienes que cerrar **${puntosAMenguar} puntos** en **${pasadasMenguar} pasadas** (los **${(altCm - recCm).toFixed(1)} cm** que faltan para la Altura Total).\n`;
-        resultado += `En la aguja deben quedar **${puntosCoronilla} puntos** (para la Coronilla de **${corCm} cm**).\n`;
-        resultado += `\n**Instrucciones de Disminución Radial Progresiva (DRP):**\n`;
-        resultado += `\nPara lograr esto, harás un total de **${disminucionesPorRonda} disminuciones** por ronda, cada **2 pasadas**.\n`;
-        
-        // Generar la secuencia RPD
-        let puntosActuales = puntosMontar;
-        let Rk = Math.floor(puntosActuales / disminucionesPorRonda); // Puntos por segmento (puntos tejidos + 1 disminución)
-        let rondaActual = pasadasRec; // Empieza a contar las rondas reales desde el final del tramo recto
-        let secuenciaDisminucion = [];
-
-        for (let i = 1; i <= rondasDisminucion; i++) {
-            
-            // 1. RONDA DE DISMINUCIÓN
-            rondaActual++; 
-            const ptsEntreDisminucion = Math.max(1, Rk - 1); // Puntos a tejer *antes* de 1 disminución
-            
-            // Ajuste de puntos para la primera ronda (repartir el resto/exceso de puntos)
-            let ptsExtraInicial = 0;
-            if (i === 1) {
-                const puntosSobran = puntosActuales - (disminucionesPorRonda * Rk);
-                if (puntosSobran > 0) {
-                     ptsExtraInicial = puntosSobran;
-                }
-            }
-
-            let instruccionRonda = '';
-            
-            if (ptsExtraInicial > 0) {
-                instruccionRonda += `Teje **${ptsExtraInicial}** puntos y luego empieza la secuencia: `;
-            }
-
-            instruccionRonda += `Teje **${ptsEntreDisminucion}** puntos, haz **1 disminución**. Repite esta secuencia **${disminucionesPorRonda} veces** hasta el final de la ronda.`;
-            
-            secuenciaDisminucion.push(`**Pasada ${rondaActual} (DISMINUCIÓN):** ${instruccionRonda} (Quedan: **${puntosActuales - disminucionesPorRonda} puntos**).`);
-
-            // Actualizar puntos y Rk para la siguiente ronda
-            puntosActuales -= disminucionesPorRonda; 
-            Rk = Math.max(1, Math.floor(puntosActuales / disminucionesPorRonda));
-
-            // 2. RONDA DE TEJIDO SIMPLE (cada 2 pasadas)
-            if (rondaActual < pasadasAlt && puntosActuales > puntosCoronilla) {
-                rondaActual++;
-                secuenciaDisminucion.push(`**Pasada ${rondaActual} (SIMPLE):** Teje todos los puntos sin disminución.`);
-            }
-
-            // Condición de salida
-            if (puntosActuales <= puntosCoronilla) {
-                 break;
-            }
-        }
-        
-        resultado += secuenciaDisminucion.join('\n');
-        
-        // Manejar el cierre final si la secuencia DRP no fue perfecta
-        if (puntosActuales > puntosCoronilla) {
-            resultado += `\n**Pasada ${rondaActual + 1} (CIERRE FINAL):** Todavía quedan **${puntosActuales} puntos** en la aguja. Realiza disminuciones hasta que solo queden **${puntosCoronilla} puntos** o menos. Por ejemplo, repite: (Teje 1 punto, haz 1 disminución) toda la ronda.\n`;
-            rondaActual++;
-        }
-
-        // Si quedan pasadas después de terminar el menguado:
-        const pasadasRestantes = pasadasAlt - rondaActual;
-        if (pasadasRestantes > 0) {
-            resultado += `\n**Pasadas ${rondaActual + 1} a ${pasadasAlt} (AJUSTE):** Teje los puntos restantes sin disminución para alcanzar la altura total de **${altCm} cm**.\n`;
-        }
-
-        // 4. ACABADO
-        resultado += '<hr>';
-        resultado += '<h4>4. Acabado</h4>\n';
-        resultado += `**1.** Ahora que tienes los puntos finales en la aguja, **corta la lana** dejando una hebra larga para coser todo el lateral del gorro.\n`;
-        resultado += `**2.** Enhebra tu aguja lanera y pásala por el interior de los puntos que quedan, tira de la hebra para cerrar la parte de arriba (la coronilla). Pásala una o dos veces más para asegurar el cierre.\n`;
-        resultado += `**3.** Continúa cosiendo todo el lateral del gorro hasta llegar al borde. ¡Listo!\n`;
-        resultado += `**4.** Si quieres, puedes añadirle un pompón.\n`;
-        
-        // Finalizar y añadir nota de ganchillo
-        resultado += `<hr style="margin-top: 25px; border-color: #d6a4a4;">`;
-        resultado += `<p style="font-size:0.9em; text-align: center;">💡 **Nota:** Esta calculadora es válida tanto para **tejido en dos agujas** (donde 'puntos' = puntos y 'pasadas' = hileras) como para **Ganchillo/Crochet** (donde 'puntos' = cadenetas y 'pasadas' = vueltas). Solo tienes que sustituir la terminología.</p>`;
-
-        resultadoDiv.innerHTML = resultado.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-
-        return; // Termina la función para no ejecutar la lógica de Jersey/Chaqueta/Cubrepañal
-
-    }
-    // ====================================================================
-    // --- FIN LÓGICA GORRO ---
-    // ====================================================================
-    
-
-    // ====================================================================
     // --- LÓGICA ESPECÍFICA PARA CUBRE PAÑAL ---
     // ====================================================================
     if (tipoPrenda === 'CUBRE_PAÑAL') {
-        // ... (Tu lógica de Cubre Pañal existente se mantiene aquí) ...
-        
-        // --- LÓGICA DE CUBRE PAÑAL OMITIDA POR ESPACIO, SE MANTIENE EN EL ARCHIVO ORIGINAL ---
-        
         const CC = medidas.CC; // Contorno de Cintura
         const AL = medidas.AL; // Altura Lateral
         const EP = medidas.EP; // EntrePierna
@@ -570,11 +397,31 @@ function calcularPatron() {
     } else {
         // --- LÓGICA EXISTENTE PARA JERSEY, CHAQUETA, ETC. ---
         
-        // [CÓDIGO EXISTENTE DE JERSEY/CHAQUETA/CM_DESEADOS] (Se mantiene sin cambios)
+        // [CÓDIGO FALTANTE INSERTADO AQUÍ]
+        // --- CÁLCULOS COMUNES PARA JERSEY, CHAQUETA (RESTABLECIDOS) ---
+        const holguraCm = 6.0; // Holgura estándar (ajustar si se desea)
+        const anchoPrendaCm = medidas.CP + holguraCm;
+        const cpPts = Math.round(anchoPrendaCm * densidadP); // Puntos de Contorno de Pecho (con holgura)
         
-        // ...
+        // Tira de Cuello (Para cálculos de escote y raglán)
+        const tiraCuelloCm = 2.0; // Tira de cuello estándar de 2 cm
+        const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : 8; // Estimación de pasadas si no hay densidadH
         
-        // El resto de la lógica del patrón se mantiene si no es Cubre Pañal
+        // Tapeta (Solo Chaqueta)
+        const puntosTapeta = Math.round(tiraCuelloCm * densidadP);
+        
+        // Holgura de Manga (Usada en cálculos posteriores)
+        const holguraMangaCm = 4.0; 
+        const anchoSisaMangaCm = medidas.CA + holguraMangaCm;
+        const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
+        
+        // Variables para Raglán (Top-Down - 'ESCOTE' método)
+        const raglanCmBase = medidas.PSisa;
+        const ccAjustadoCm = medidas.CC - 0.5; // Ajuste por defecto para cuello
+        const ccPts = Math.round(ccAjustadoCm * densidadP); 
+        // ---------------------------------------------------------------
+
+    // El resto de la lógica del patrón se mantiene si no es Cubre Pañal
     
     // --- LÓGICA BOTTOM-UP (Del Bajo al Hombro) ---
     if (metodoTejido === "BAJO") {
