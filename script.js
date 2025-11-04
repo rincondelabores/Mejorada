@@ -338,12 +338,16 @@ function calcularPatron() {
         
         // =================================== OUTPUT CUBRE PAÑAL ===================================
         resultado += `<h4>🧶 Instrucciones para Cubre Pañal - Talla ${tallaSeleccionada}</h4>\n`;
-        resultado += `<p>Se tejerá en una sola pieza desde la cintura de la espalda hasta la cintura del delantero.</p>\n`;
+        resultado += `<p>Se tejerá en una sola pieza desde la espalda hasta el delantero.</p>\n`;
+
+         resultado += `\n<u>4. Consejos de Terminación</u>\n`;
+        resultado += `* **Cinturilla:** En la cintura sugerimos tejer  **${elásticoCm} cm** ** en punto elástico** o añadir una vuelta de **pasacintas** (*2p juntos al derecho, hebra*, repetir de *a* toda la pasada) cuando este tejiendo en la mitad de esos cm.  El ancho es orientativo, puedes hacerlo mas ancho o estrecho, segun te guste.\n`;
+        resultado += `* **Bordes:** Para un borde rematado al mismo tiempo que se teje la pierna, haga los aumentos y disminuciones a 3 o 4 puntos de la orilla. Otra opción es recoger después los puntos del borde de las piernas y para tejer una tira de terminación en el punto que te guste.\n`;
+
         
-        resultado += `<u>Datos Clave:</u>\n`;
+        resultado += `<u>Manos a la obra!:</u>\n`;
         resultado += `* **Comienza montando:** **${puntosMontar} puntos** (corresponde a ${CC / 2} cm de cintura).\n`;
-        //resultado += `* **Puntos que habrán en la entre pierna:** **${puntosEP} puntos** (corresponde a ${EP} cm).\n`;
-        //resultado += `* **Puntos a alcanzar (Antes del cierre delantero):** **${puntosObjetivoDelantero} puntos**.\n\n`;
+       
 
         resultado += `<u>1. Espalda (Cintura a Entrepierna)</u>\n`;
         
@@ -354,7 +358,7 @@ function calcularPatron() {
         resultado += `* **Ahora has llegado al muslo y hay que empezar a disminuir:** Disminuir **${menguadosPorLado} veces 1 punto a cada lado.**\n`;
         if (densidadH && cmDisminucion) {
              resultado += `<p style="padding-left: 20px;">- Haz: **1 disminución a cada lado cada 2 pasadas**.\n`;
-             resultado += `- Altura de este tramo: **${cmDisminucion} cm** (**${hilerasDisminucion} pasadas**). (Llegará a **${puntosEP} puntos**).</p>\n`;
+             resultado += `- La linea de disminuciones medirá **${cmDisminucion} cm** (**${hilerasDisminucion} pasadas**). (Quedarán en la aguja **${puntosEP} puntos**).</p>\n`;
         } else if (menguadosPorLado > 0) {
              resultado += `<p style="padding-left: 20px;">- Haz: **1 disminución a cada lado cada 2 pasadas** hasta tener **${puntosEP} puntos** en la aguja.</p>\n`;
         }
@@ -368,7 +372,7 @@ function calcularPatron() {
         resultado += `* **Ahora tienes que ** aumentar **${aumentosPorLado} veces 1 punto a cada lado.**\n`;
         if (densidadH && cmAumento) {
              resultado += `<p style="padding-left: 20px;">- Haz: **1 aumento a cada lado cada 2 pasadas**.\n`;
-             resultado += `- Altura de este tramo: **${cmAumento} cm** (**${hilerasAumento} pasadas**). (Llegará a **${puntosObjetivoDelantero} puntos**).</p>\n`;
+             resultado += `- La linea de aumentos medirá **${cmAumento} cm** (**${hilerasAumento} pasadas**). (Llegará a **${puntosObjetivoDelantero} puntos**).</p>\n`;
         } else if (aumentosPorLado > 0) {
              resultado += `<p style="padding-left: 20px;">- Haz: **1 aumento a cada lado cada 2 pasadas** hasta tener **${puntosObjetivoDelantero} puntos** en la aguja.</p>\n`;
         } else {
@@ -376,7 +380,7 @@ function calcularPatron() {
         }
         
         // 5. Línea Cierre Delantero
-        resultado += `* **Acabados los aumentos **, antes de empezar a tejer el ultimo tramo para llegar a la cintura tendrás que aumentar de una vez **${puntosLCD} puntos a cada lado**. (Obtendras **${puntosMontar} puntos, ahora volverás a tener los mismos puntos con los que empezaste a tejer**).\n`;
+        resultado += `* **Acabados los aumentos **, antes de empezar a tejer las ultimas pasadas para llegar a la cintura tendrás que aumentar de una vez **${puntosLCD} puntos a cada lado**. (Tendrás **${puntosMontar} puntos, los mismos puntos con los que empezaste a tejer**).\n`;
         
         // 6. Altura Lateral Delantero
         resultado += `* ahora debes de ** continuar tejiendo recto ** **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
@@ -386,11 +390,8 @@ function calcularPatron() {
         resultado += `* ** Cerrar los **${puntosMontar} puntos** de la cintura delantera.\n`;
         resultado += `* **Coser ** los laterales.\n`;
         
-        // 8. Sugerencias
-        resultado += `\n<u>4. Sugerencias de Terminación</u>\n`;
-        resultado += `* **Cinturilla:** En la cintura sugerimos tejer  **${elásticoCm} cm** en punto elástico o añadir una vuelta de **pasacintas** (*2p juntos al derecho, hebra*, repetir de *a* toda la pasada) a la mitad de esos cm. también la puedes hacer en el ancho que te guste.\n`;
-        resultado += `* **Bordes:** Para un borde rematado, haga los aumentos y disminuciones a 3 o 4 puntos de la orilla. Tambien puedes recoger desues los puntos del borde de las piernas y para hacer una tira de terminación tejida en el punto que elijas.\n`;
-
+       
+     
     } else {
         // --- LÓGICA EXISTENTE PARA JERSEY, CHAQUETA, ETC. ---
         
