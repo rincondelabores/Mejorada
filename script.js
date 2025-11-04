@@ -38,12 +38,12 @@ const MEDIDAS_ANTROPOMETRICAS = {
 // CC: Contorno Cintura / AL: Altura Lateral / EP: EntrePierna / TR: Tramo Recto / LCD: Línea Cierre Delantero
 const MEDIDAS_CUBRE_PAÑAL = {
     // Nota: Se utilizan los datos de CC proporcionados por la usuaria (38, 40, 22, 24, 26, 28), aunque los valores centrales parezcan bajos.
-    '0 meses C/P': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
-    '1-3 meses C/P': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
-    '3-6 meses C/P': { CC: 22, AL: 11, EP: 8, TR: 2, LCD: 2 }, 
-    '6-9 meses C/P': { CC: 24, AL: 12, EP: 8, TR: 2, LCD: 2 }, 
-    '9-12 meses C/P': { CC: 26, AL: 12, EP: 9, TR: 2.5, LCD: 3 }, 
-    '12-15 meses C/P': { CC: 28, AL: 13, EP: 10, TR: 2.5, LCD: 3 } 
+    '0 RN ': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
+    '1 mes ': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
+    '3 meses': { CC: 22, AL: 11, EP: 8, TR: 2, LCD: 2 }, 
+    '6 meses ': { CC: 24, AL: 12, EP: 8, TR: 2, LCD: 2 }, 
+    '9 meses ': { CC: 26, AL: 12, EP: 9, TR: 2.5, LCD: 3 }, 
+    '12 meses ': { CC: 28, AL: 13, EP: 10, TR: 2.5, LCD: 3 } 
 };
 
 
@@ -52,7 +52,7 @@ const MAPA_MEDIDAS = {
     'Bebé (Prematuro a 24m)': MEDIDAS_ANTROPOMETRICAS,
     'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
     'Adulto (36 a 50)': MEDIDAS_ANTROPOMETRICAS,
-    'Cubre Pañal (0 a 15m)': MEDIDAS_CUBRE_PAÑAL 
+    'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL 
 };
 
 // Nueva estructura de ORDEN_TALLAS incluyendo el Cubre Pañal
@@ -60,7 +60,7 @@ const ORDEN_TALLAS = {
     'Bebé (Prematuro a 24m)': ['00 (Prematuro)', '0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'],
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
     'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
-    'Cubre Pañal (0 a 15m)': ['0 meses C/P', '1-3 meses C/P', '3-6 meses C/P', '6-9 meses C/P', '9-12 meses C/P', '12-15 meses C/P']
+    'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes', '3 meses ', '6 meses', '9 meses ', '12 meses ']
 };
 
 
@@ -83,7 +83,7 @@ function poblarTallas() {
 
     // Lógica para filtrar las tallas según el tipo de prenda
     if (tipoPrenda === 'CUBRE_PAÑAL') {
-        gruposATejer = [['Cubre Pañal (0 a 15m)', ORDEN_TALLAS['Cubre Pañal (0 a 15m)']]];
+        gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
     } else {
         // Tallas para Jersey o Chaqueta (antropométricas)
         gruposATejer = [
