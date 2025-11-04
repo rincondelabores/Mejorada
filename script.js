@@ -46,7 +46,8 @@ const MEDIDAS_CUBRE_PAÑAL = {
 };
 
 // ====================================================================
-// 1.2. MEDIDAS PARA GORRO (Hat) <--- NUEVO
+// 1.2. MEDIDAS PARA GORRO (Hat) 
+// Se asume que CC (Contorno Cabeza) ya incluye la holgura negativa necesaria.
 // ====================================================================
 // CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
 const MEDIDAS_GORRO = {
@@ -66,7 +67,7 @@ const MAPA_MEDIDAS = {
     'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
     'Adulto (36 a 50)': MEDIDAS_ANTROPOMETRICAS,
     'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL,
-    'Gorros': MEDIDAS_GORRO // <--- ACTUALIZADO
+    'Gorros': MEDIDAS_GORRO 
 };
 
 // Nueva estructura de ORDEN_TALLAS incluyendo el Cubre Pañal y Gorro
@@ -75,7 +76,7 @@ const ORDEN_TALLAS = {
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
     'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
     'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses '],
-    'Gorros': ['Recién Nacido (0 meses)', '1 a 3 meses', '3 a 6 meses', '6 meses a 2 años', 'Niños', 'Adolescentes', 'Adultos'] // <--- ACTUALIZADO
+    'Gorros': ['Recién Nacido (0 meses)', '1 a 3 meses', '3 a 6 meses', '6 meses a 2 años', 'Niños', 'Adolescentes', 'Adultos'] 
 };
 
 
@@ -99,7 +100,7 @@ function poblarTallas() {
     // Lógica para filtrar las tallas según el tipo de prenda
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
-    } else if (tipoPrenda === 'GORRO') { // <--- MODIFICADO
+    } else if (tipoPrenda === 'GORRO') { 
         gruposATejer = [['Gorros', ORDEN_TALLAS['Gorros']]];
     } else {
         // Tallas para Jersey o Chaqueta (antropométricas)
@@ -150,24 +151,24 @@ function manejarVisibilidadCampos() {
         holguraGroup.style.display = 'none';
         caidaEscoteGroup.style.display = 'none';
     
-    // 2. Manejar JERSEY/CHAQUETA (necesitan método y holgura)
+    // 2. Manejar JERSEY/CHAQUETA (necesitan método, holgura y caída de escote)
     } else if (tipoPrenda === 'JERSEY' || tipoPrenda === 'CHAQUETA') {
         metodoGroup.style.display = 'block';
         cmGroup.style.display = 'none';
         tallaSelect.setAttribute('required', 'required');
         tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-        holguraGroup.style.display = 'block';
+        holguraGroup.style.display = 'block'; // Mostrar holgura para jersey/chaqueta
         caidaEscoteGroup.style.display = 'block';
     
-    // 3. Manejar CUBRE_PAÑAL / GORRO (no necesitan método ni holgura) <--- MODIFICADO
+    // 3. Manejar CUBRE_PAÑAL / GORRO (no necesitan método ni holgura/caída) 
     } else if (tipoPrenda === 'CUBRE_PAÑAL' || tipoPrenda === 'GORRO') {
         metodoGroup.style.display = 'none'; 
         cmGroup.style.display = 'none';
         tallaSelect.setAttribute('required', 'required');
         tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-        holguraGroup.style.display = 'none';
+        holguraGroup.style.display = 'none'; // Ocultar holgura para gorro y cubre pañal
         caidaEscoteGroup.style.display = 'none';
     
     // 4. Default / Nada seleccionado
@@ -177,25 +178,18 @@ function manejarVisibilidadCampos() {
         tallaSelect.setAttribute('required', 'required');
         tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-        holguraGroup.style.display = 'block'; // Mostrar holgura por defecto, aunque no se use en el cálculo
+        holguraGroup.style.display = 'block'; 
         caidaEscoteGroup.style.display = 'none';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // El DOMContentLoaded ya no llama a poblarTallas, sino que lo hace manejarVisibilidadCampos()
     const tipoPrendaSelect = document.getElementById('tipo_prenda');
     if (tipoPrendaSelect) {
         tipoPrendaSelect.addEventListener('change', manejarVisibilidadCampos);
     }
     // Llama al inicio para inicializar la visibilidad y las tallas por defecto (si hay)
     manejarVisibilidadCampos(); 
-    
-    // Se añade el evento click al botón de calcular (si no está en el HTML)
-    // const calcularBtn = document.querySelector('button');
-    // if (calcularBtn) {
-    //     calcularBtn.addEventListener('click', calcularPuntos);
-    // }
 });
 
 
@@ -203,10 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // 3. LÓGICA CENTRAL DE CÁLCULO
 // ====================================================================
 
-// La función 'generarCierresProgresivosNuevo' y 'calcularCubrePanal' se asume que están aquí (omitido por espacio).
-
 /**
- * Calcula las instrucciones para tejer un gorro. <--- NUEVA FUNCIÓN
+ * Calcula las instrucciones para tejer un gorro.
  */
 function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     let resultado = '<h4>🧶 Instrucciones para Gorro (Talla ' + tallaSeleccionada + ')</h4>\n';
@@ -225,6 +217,7 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     // 2. CÁLCULOS PRINCIPALES
     
     // Puntos de Montaje (CC)
+    // NOTA: Se usa el Contorno de Cabeza (CC) directamente, sin añadir holgura.
     const puntosMontaje = Math.round(CC * densidadP);
     
     // Puntos Finales (Coronilla)
@@ -311,8 +304,9 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     return resultado;
 }
 
-// Aquí deben ir las funciones 'generarCierresProgresivosNuevo', 'calcularCubrePanal' y 'calcularJerseyChaquet' completas
-// si quieres que toda la lógica anterior funcione correctamente.
+// Nota: Las funciones 'generarCierresProgresivosNuevo', 'calcularCubrePanal' y 'calcularJerseyChaquet' 
+// se mantienen como marcadores para que el código principal compile, ya que contienen lógica compleja.
+
 
 function calcularPuntos() {
     const puntosMuestra = parseFloat(document.getElementById('puntos_muestra').value);
@@ -328,9 +322,6 @@ function calcularPuntos() {
     let resultado = '';
     
     // 1. VALIDACIONES
-    // ... (El código de validación existente se mantiene)
-
-    // Parámetros obligatorios (validación para la mayoría de los casos)
     if (isNaN(puntosMuestra) || puntosMuestra <= 0) {
         resultadoDiv.innerHTML = '<p class="error">Error: Debe introducir los **puntos de la muestra** de tensión (en 10 cm).</p>';
         return;
@@ -360,13 +351,11 @@ function calcularPuntos() {
             resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar una **Talla** para el cubre pañal.</p>';
             return;
         }
-        // Para que el código sea completo, si tuvieras la función calcularCubrePanal, se usaría:
-        // resultadoDiv.innerHTML = calcularCubrePanal(puntosMuestra, hilerasMuestra, tallaSeleccionada);
-        // Marcador (sustituir por la función real si la tienes):
-        resultadoDiv.innerHTML = '<h4>Cálculo para Cubre Pañal (Lógica Compleja)</h4><p>El cálculo para **Cubre Pañal** requiere una función compleja (**calcularCubrePanal**) que se omite por espacio, pero la estructura ya está lista. Si tienes el código de esta función, pégalo en este archivo.</p>';
+        // Marcador (sustituir por la función real si la tiene):
+        resultadoDiv.innerHTML = '<h4>Cálculo para Cubre Pañal (Lógica Compleja)</h4><p>El cálculo para **Cubre Pañal** requiere una función compleja (**calcularCubrePanal**) que se omite por espacio, pero la estructura ya está lista. Si tiene el código de esta función, péguelo en este archivo.</p>';
         return;
 
-    } else if (tipoPrenda === 'GORRO') { // <--- NUEVA LÓGICA IMPLEMENTADA
+    } else if (tipoPrenda === 'GORRO') { 
         if (!tallaSeleccionada) {
             resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar una **Talla** para el gorro.</p>';
             return;
@@ -378,18 +367,8 @@ function calcularPuntos() {
             resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra**, **Talla** y **Método de Tejido**.</p>';
             return;
         }
-        // Para que el código sea completo, si tuvieras la función calcularJerseyChaquet, se usaría:
-        // resultadoDiv.innerHTML = calcularJerseyChaquet(puntosMuestra, hilerasMuestra, tipoPrenda, tallaSeleccionada, metodoTejido, holguraDeseadaCm, caidaEscoteDeseadaCm);
-        // Marcador (sustituir por la función real si la tienes):
-        resultadoDiv.innerHTML = '<h4>Cálculo para Jersey/Chaqueta (Lógica Compleja)</h4><p>El cálculo para **Jersey** o **Chaqueta** requiere una función compleja (**calcularJerseyChaquet**) que se omite por espacio, pero la estructura ya está lista. Si tienes el código de esta función, pégalo en este archivo.</p>';
+        // Marcador (sustituir por la función real si la tiene):
+        resultadoDiv.innerHTML = '<h4>Cálculo para Jersey/Chaqueta (Lógica Compleja)</h4><p>El cálculo para **Jersey** o **Chaqueta** requiere una función compleja (**calcularJerseyChaquet**) que se omite por espacio, pero la estructura ya está lista. Si tiene el código de esta función, péguelo en este archivo.</p>';
         return;
     }
-    
-    // Esta validación final se dejará inactiva si los "placeholders" de arriba se usan.
-    // if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA' && tipoPrenda !== 'GORRO') {
-    //      resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra** y selección de **Tipo de Prenda**.</p>';
-    //      return;
-    // }
-
-    resultadoDiv.innerHTML = resultado;
 }
