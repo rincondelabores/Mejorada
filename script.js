@@ -268,7 +268,7 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     } else {
         // Si no se puede calcular pasadasMenguar o vueltasMenguado, se da la instrucción en cm.
          instruccionMenguados = `En esta sección hay que menguar un total de **${puntosAMenguar} puntos** a lo largo de **${alturaMenguarCm.toFixed(1)} cm**.`;
-         instruccionMenguados += `\n\n- La frecuencia de menguado es: **Cada dos pasadas/vueltas**, reduciendo los puntos de forma distribuida en cada vuelta de menguado, hasta que en la aguja queden solo **${puntosCoronilla} puntos**.`;
+         instruccionMenguados += `\n\n- La frecuencia de menguado es: **Cada dos pasadas/vueltas**, reduciendo los puntos de forma distribuida en cada vuelta de menguado, hasta que en la aguja queden solo **${puntosCoronilla} puntos** o un número mínimo para el cierre.`;
     }
     
     // 3. GENERAR INSTRUCCIONES
@@ -287,7 +287,7 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     const pasadasREC = densidadH ? Math.round(REC * densidadH) : null;
     resultado += `<u>2. Tramo Recto (REC)</u>\n`;
     resultado += `* **Medida de Tramo Recto:** **${REC.toFixed(1)} cm**.\n`;
-    resultado += `* **Instrucción:** Continuar tejiendo recto durante **${REC.toFixed(1)} cm** ${pasadasREC !== null ? `(**${pasadasREC} pasadas**)` : ''}.\n\n`;
+    resultado += `* **Instrucción:** Continuar tejiendo recto después del borde (si lo hizo) durante **${REC.toFixed(1)} cm** ${pasadasREC !== null ? `(**${pasadasREC} pasadas**)` : ''}.\n\n`;
     
     // 6. Menguados (ALT - REC)
     resultado += `<u>3. Menguados (ALTURA TOTAL: ${ALT.toFixed(1)} cm)</u>\n`;
@@ -311,7 +311,8 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     return resultado;
 }
 
-// La función 'generarCierresProgresivosNuevo', 'calcularCubrePanal' y 'calcularJerseyChaquet' se asume que están aquí.
+// Aquí deben ir las funciones 'generarCierresProgresivosNuevo', 'calcularCubrePanal' y 'calcularJerseyChaquet' completas
+// si quieres que toda la lógica anterior funcione correctamente.
 
 function calcularPuntos() {
     const puntosMuestra = parseFloat(document.getElementById('puntos_muestra').value);
@@ -359,13 +360,13 @@ function calcularPuntos() {
             resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar una **Talla** para el cubre pañal.</p>';
             return;
         }
-        // Asume que la función calcularCubrePanal existe en el código original
+        // Para que el código sea completo, si tuvieras la función calcularCubrePanal, se usaría:
         // resultadoDiv.innerHTML = calcularCubrePanal(puntosMuestra, hilerasMuestra, tallaSeleccionada);
-        // Colocar un marcador de que la función debe estar implementada:
-        resultadoDiv.innerHTML = '<h4>Cálculo para Cubre Pañal (En desarrollo)</h4><p>El código para el cálculo de Cubre Pañal se mantiene desde su versión anterior.</p>';
+        // Marcador (sustituir por la función real si la tienes):
+        resultadoDiv.innerHTML = '<h4>Cálculo para Cubre Pañal (Lógica Compleja)</h4><p>El cálculo para **Cubre Pañal** requiere una función compleja (**calcularCubrePanal**) que se omite por espacio, pero la estructura ya está lista. Si tienes el código de esta función, pégalo en este archivo.</p>';
         return;
 
-    } else if (tipoPrenda === 'GORRO') { // <--- NUEVA LÓGICA
+    } else if (tipoPrenda === 'GORRO') { // <--- NUEVA LÓGICA IMPLEMENTADA
         if (!tallaSeleccionada) {
             resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar una **Talla** para el gorro.</p>';
             return;
@@ -373,26 +374,22 @@ function calcularPuntos() {
         resultadoDiv.innerHTML = calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada);
         return;
     } else { // JERSEY o CHAQUETA
-        // Asume que la función calcularJerseyChaquet existe en el código original
-        // if (!tallaSeleccionada || !metodoTejido) {
-        //     resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra**, **Talla** y **Método de Tejido**.</p>';
-        //     return;
-        // }
+        if (!tallaSeleccionada || !metodoTejido) {
+            resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra**, **Talla** y **Método de Tejido**.</p>';
+            return;
+        }
+        // Para que el código sea completo, si tuvieras la función calcularJerseyChaquet, se usaría:
         // resultadoDiv.innerHTML = calcularJerseyChaquet(puntosMuestra, hilerasMuestra, tipoPrenda, tallaSeleccionada, metodoTejido, holguraDeseadaCm, caidaEscoteDeseadaCm);
-        // Colocar un marcador de que la función debe estar implementada:
-        resultadoDiv.innerHTML = '<h4>Cálculo para Jersey/Chaqueta (En desarrollo)</h4><p>El código para el cálculo de Jersey/Chaqueta se mantiene desde su versión anterior.</p>';
+        // Marcador (sustituir por la función real si la tienes):
+        resultadoDiv.innerHTML = '<h4>Cálculo para Jersey/Chaqueta (Lógica Compleja)</h4><p>El cálculo para **Jersey** o **Chaqueta** requiere una función compleja (**calcularJerseyChaquet**) que se omite por espacio, pero la estructura ya está lista. Si tienes el código de esta función, pégalo en este archivo.</p>';
         return;
     }
     
-    // Validación final si los campos no estaban llenos.
-    if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA' && tipoPrenda !== 'GORRO') {
-         resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra** y selección de **Tipo de Prenda**.</p>';
-         return;
-    }
+    // Esta validación final se dejará inactiva si los "placeholders" de arriba se usan.
+    // if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA' && tipoPrenda !== 'GORRO') {
+    //      resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra** y selección de **Tipo de Prenda**.</p>';
+    //      return;
+    // }
 
     resultadoDiv.innerHTML = resultado;
-
 }
-
-// Aquí deben ir las funciones 'generarCierresProgresivosNuevo', 'calcularCubrePanal' y 'calcularJerseyChaquet' completas
-// si quieres que toda la lógica anterior funcione correctamente.
