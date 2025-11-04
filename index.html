@@ -31,52 +31,39 @@
             <div class="input-group">
                 <label for="tipo_prenda">Tipo de Prenda:</label>
                 <select id="tipo_prenda" required>
-                    <option value="">Selecciona la Prenda...</option>
-                    <option value="JERSEY">Jersey/Suéter</option>
-                    <option value="CHAQUETA">Chaqueta/Cardigan</option>
-                    <option value="CUBRE_PAÑAL">Cubre Pañal</option>
-                    <option value="GORRO">Gorro</option> <option value="CM_DESEADOS">Calcular CM deseados (Sencillo)</option>
+                    <option value="">Selecciona...</option>
+                    <option value="JERSEY">Jersey</option>
+                    <option value="CHAQUETA">Chaqueta</option>
+                    <option value="CUBRE_PAÑAL">Cubre pañal</option>
+                    <option value="CM_DESEADOS">Cm Deseados (ancho libre)</option>
                 </select>
-            </div>
-
-            <div class="input-group" id="talla_group" style="display:none;">
-                <label for="talla_categoria">Categoría de Talla:</label>
-                <select id="talla_categoria"></select>
-            </div>
-            
-            <div class="input-group" id="talla_seleccionada_group" style="display:none;">
-                <label for="talla_seleccionada">Talla seleccionada:</label>
-                <select id="talla_seleccionada"></select>
             </div>
 
             <div class="input-group">
+                <label for="talla_seleccionada">Talla a tejer:</label>
+                <select id="talla_seleccionada" required></select>
+            </div>
+
+
+            <div class="input-group metodo-group" id="metodo-group" style="display:none;">
                 <label for="metodo_tejido">Método de Tejido:</label>
-                <select id="metodo_tejido" required>
-                    <option value="CIRCULAR">Tejido Circular (Sin costuras)</option>
-                    <option value="PLANO">Tejido Plano (Con costuras)</option>
+                <select id="metodo_tejido">
+                    <option value="ESCOTE">Desde el Escote (Top-Down)</option>
+                    <option value="BAJO">Desde el Bajo (Bottom-Up)</option>
                 </select>
             </div>
-            
-            <div class="input-group" id="cm_deseados_group" style="display:none;">
-                <label for="cm_deseados">Centímetros deseados (Largo/Ancho):</label>
+
+            <div class="input-group cm-group" id="cm-group" style="display:none;">
+                <label for="cm_deseados">Ancho Deseado (cm):</label>
                 <input type="number" id="cm_deseados" min="1">
             </div>
 
             <button onclick="calcularPatron()">Calcular Instrucciones</button>
-        </section>
 
-        <section class="results-container">
-            <section class="results">
-                <h2>Instrucciones de Tejido</h2>
-                <div id="resultado" class="output-box">
-                    <p>Introduce los datos de tu muestra y patrón para comenzar.</p>
-                </div>
-            </section>
-        
-            <aside class="contact-info">
-                <p class="script-font">Visítanos o contacta:</p>
-                <div class="social-icons">
-                    <a href="mailto:rincondlabores@gmail.com" title="Correo Electrónico"><i class="fas fa-envelope icon-link"></i></a>
+            <aside class="contact-card">
+                <h2 class="script-font">Rincón de Labores</h2>
+                <div class="contact-info">
+                    <a href="mailto:rincondelabores@gmail.com" title="Correo Electrónico"><i class="fas fa-envelope icon-link"></i></a>
                     <a href="https://wa.me/34659687211" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp icon-link"></i></a>
                     <a href="tel:+34659687211" title="Llamada"><i class="fas fa-phone icon-link"></i></a>
                     <a href="https://www.facebook.com/rinconlabores" target="_blank" title="Facebook"><i class="fab fa-facebook-f icon-link"></i></a>
@@ -96,9 +83,9 @@
         </section>
 
     </main>
-    
+
     <footer>
-        <p>&copy; 2024 Rincón de Labores. Hecho con ❤️ para la comunidad tejedora.</p>
+        <p>"Hecho con cariño por Elena Marín para l@s tejedor@s de todo el mundo" </p>
     </footer>
 
     <script src="script.js"></script>
