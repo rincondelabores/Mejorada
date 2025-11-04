@@ -1,0 +1,186 @@
+/* Paleta de colores neutra con toques de color */
+:root {
+    --color-fondo: #f8f8f8; /* Beige claro, neutro */
+    --color-primario: #d6a4a4; /* Rosa suave (tono cálido) */
+    --color-secundario: #a4c7d6; /* Azul claro (tono frío, para contraste) */
+    --color-texto-oscuro: #333333;
+    --color-borde: #cccccc;
+    --color-sombra: rgba(0, 0, 0, 0.08);
+}
+
+/* Tipografía */
+.script-font {
+    font-family: 'Dancing Script', cursive; /* Tipografía caligráfica/manuscrita */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif; /* Tipografía base clara */
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto-oscuro);
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--color-primario);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+
+header h1 {
+    font-size: 2.5em;
+    font-weight: 700;
+}
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+    gap: 20px;
+}
+
+/* --- Tarjeta de Presentación (ASIDE) --- */
+.contact-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--color-sombra);
+    width: 100%; 
+    margin-top: 25px; 
+    height: fit-content;
+    text-align: center;
+    border-top: 5px solid var(--color-secundario);
+}
+
+.contact-card h2 {
+    color: var(--color-secundario);
+    font-size: 1.8em;
+    margin-bottom: 15px;
+}
+
+.contact-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.icon-link {
+    font-size: 1.5em;
+    color: var(--color-primario);
+    transition: color 0.3s ease;
+}
+
+.icon-link:hover {
+    color: var(--color-secundario);
+}
+
+.address {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* --- Formularios y Resultados (MAIN) --- */
+.calculator-form, .results {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--color-sombra);
+    flex: 1; /* Ocupan el espacio restante en escritorio */
+}
+
+.calculator-form h2, .results h2 {
+    color: var(--color-texto-oscuro);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--color-primario);
+    padding-bottom: 5px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-borde);
+    border-radius: 4px;
+}
+
+button {
+    background-color: var(--color-primario);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--color-secundario);
+}
+
+.output-box {
+    border: 1px dashed var(--color-secundario);
+    padding: 15px;
+    min-height: 150px;
+    background-color: #eef5f8;
+    border-radius: 4px;
+    white-space: pre-wrap; 
+}
+
+.output-box h3, .output-box h4 {
+    color: var(--color-primario);
+}
+
+/* --- FOOTER --- */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 15px 0;
+    font-size: 0.9em;
+    color: #666;
+    border-top: 1px solid var(--color-borde);
+}
+
+/* ======================================================= */
+/* === AJUSTES DE RESPONSIVIDAD PARA DISPOSITIVOS MÓVILES === */
+/* ======================================================= */
+@media screen and (max-width: 768px) {
+    .container {
+        /* Fuerza a que los bloques (formulario y resultados) se apilen verticalmente */
+        flex-direction: column; 
+        margin: 10px auto; 
+        padding: 0 10px; 
+        gap: 15px; 
+    }
+
+    /* CORRECCIÓN: Forzamos el ancho al 100% y eliminamos las propiedades flex para que se expandan completamente al apilarse */
+    .calculator-form, .results {
+        width: 100%; 
+        flex: none; 
+        padding: 20px;
+    }
+
+    /* Reducir el tamaño de la cabecera en móviles */
+    header h1 {
+        font-size: 1.8em;
+    }
+}
