@@ -60,7 +60,7 @@ const ORDEN_TALLAS = {
     'Bebé (Prematuro a 24m)': ['00 (Prematuro)', '0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'],
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
     'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
-    'Cubre Pañal (0 a 12m)': ['0 RN', '1 mes', '3 meses', '6 meses', '9 meses', '12 meses']
+    'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses ']
 };
 
 
