@@ -52,12 +52,12 @@ const MEDIDAS_CUBRE_PAÑAL = {
 // CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
 const MEDIDAS_GORRO = {
     'Recién Nacido (0 meses)': { CC: 32.0, ALT: 12.0, COR: 4.0, REC: 7.0, VUE: 2.0 },
-    '1 a 3 meses': { CC: 35.0, ALT: 14.0, COR: 4.5, REC: 9.0, VUE: 2.0 },
+    '1 a 3 meses': { CC: 35.0, ALT: 14.0, COR: 4.0, REC: 9.0, VUE: 2.0 },
     '3 a 6 meses': { CC: 36.0, ALT: 17.0, COR: 5.0, REC: 9.5, VUE: 2.0 },
-    '6 meses a 2 años': { CC: 41.0, ALT: 19.0, COR: 6.5, REC: 10.5, VUE: 2.5 },
-    'Niños': { CC: 48.0, ALT: 21.0, COR: 7.0, REC: 12.0, VUE: 3.0 },
-    'Adolescentes': { CC: 52.0, ALT: 23.0, COR: 8.0, REC: 13.0, VUE: 4.0 },
-    'Adultos': { CC: 54.0, ALT: 25.0, COR: 9.0, REC: 13.5, VUE: 5.0 },
+    '6 meses a 2 años': { CC: 41.0, ALT: 19.0, COR: 5.0, REC: 10.5, VUE: 2.5 },
+    'Niños': { CC: 48.0, ALT: 21.0, COR: 5.0, REC: 12.0, VUE: 3.0 },
+    'Adolescentes': { CC: 52.0, ALT: 23.0, COR: 6.0, REC: 13.0, VUE: 4.0 },
+    'Adultos': { CC: 54.0, ALT: 25.0, COR: 6.0, REC: 13.5, VUE: 5.0 },
 };
 
 
