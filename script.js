@@ -84,7 +84,17 @@ function poblarTallas() {
     // Lógica para filtrar las tallas según el tipo de prenda
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
-    } else {
+    } 
+    // >> COMIENZO DEL CÓDIGO CORREGIDO PARA GORRO
+    else if (tipoPrenda === 'GORRO') {
+        // Para Gorro solo cargamos Bebé y Niños (son los que tienen CC como Contorno de Cabeza)
+        gruposATejer = [
+            ['Bebé (Prematuro a 24m)', ORDEN_TALLAS['Bebé (Prematuro a 24m)']],
+            ['Niños (3 a 10 años)', ORDEN_TALLAS['Niños (3 a 10 años)']]
+        ];
+    }
+    // >> FIN DEL CÓDIGO CORREGIDO PARA GORRO
+    else {
         // Tallas para Jersey o Chaqueta (antropométricas)
         gruposATejer = [
             ['Bebé (Prematuro a 24m)', ORDEN_TALLAS['Bebé (Prematuro a 24m)']],
@@ -133,7 +143,7 @@ function manejarVisibilidadCampos() {
         tallaSelect.setAttribute('required', 'required');
         tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-    } else if (tipoPrenda === 'CUBRE_PAÑAL') {
+    } else if (tipoPrenda === 'CUBRE_PAÑAL' || tipoPrenda === 'GORRO') { // >> SE AÑADE 'GORRO' AQUÍ
         metodoGroup.style.display = 'none'; // Ocultar método de tejido
         cmGroup.style.display = 'none';
         tallaSelect.setAttribute('required', 'required');
