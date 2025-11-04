@@ -79,7 +79,7 @@ const ORDEN_TALLAS = {
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
     'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
     'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses '],
-    'Gorro (Tallas)': ['RN-0', '1-3 meses', '3-6 meses', '6 meses-2 años', 'Niños', 'Adolescentes', 'Adultos', ]
+    'Gorro (Tallas)': ['RN- 0', '1-3 meses', '3-6 meses', '6 meses-2 años', 'Niños', 'Adolescentes', 'Adultos', ]
 };
 
 
@@ -385,12 +385,12 @@ function calcularPatron() {
         resultado += '<hr>';
 
         // Línea de Menguados (Coronilla)
-        resultado += '<h4>3. Línea de Disminuciones (Coronilla)</h4>\n';
+        resultado += '<h4>3.Llegó el momento de dar forma a la coronilla</h4>\n';
         const cmRestantesMenguar = (pasadasMenguar / densidadH).toFixed(1);
-        resultado += `Es el momento de menguar. Tienes que cerrar **${puntosAMenguar} puntos** en **${pasadasMenguar} pasadas** (los **${cmRestantesMenguar} cm** que faltan para la Altura Total).\n`;
-        resultado += `En la aguja deben quedar **${puntosCoronilla} puntos** (para la Coronilla de **${corCm} cm**).\n`;
-        resultado += `\n**Instrucciones de Disminución Radial Progresiva (DRP):**\n`;
-        resultado += `\nPara lograr esto, harás un total de **${disminucionesPorRonda} disminuciones** por ronda, cada **2 pasadas**.\n`;
+        resultado += `Ahora toca menguar. Tienes que cerrar **${puntosAMenguar} puntos** en **${pasadasMenguar} pasadas** (los **${cmRestantesMenguar} cm** que faltan para acabar el gorro).\n`;
+        //resultado += `En la aguja deben quedar **${puntosCoronilla} puntos** (para la Coronilla de **${corCm} cm**).\n`;
+        resultado += `\n**Disminuirás de la siguiente manera:**\n`;
+       // resultado += `\nPara lograr esto, harás un total de **${disminucionesPorRonda} disminuciones** por ronda, cada **2 pasadas**.\n`;
         
         // Generar la secuencia RPD
         let puntosActuales = puntosMontar;
@@ -420,7 +420,7 @@ function calcularPatron() {
                 instruccionRonda += `Teje **${ptsExtraInicial}** puntos y luego empieza la secuencia: `;
             }
 
-            instruccionRonda += `Teje **${ptsEntreDisminucion}** puntos, haz **1 disminución**. Repite esta secuencia **${disminucionesPorRonda} veces** hasta el final de la ronda.`;
+            instruccionRonda += `Teje **${ptsEntreDisminucion}** puntos, haz **1 disminución**. Haz esto **${disminucionesPorRonda} veces** hasta el final de la pasada.`;
             
             secuenciaDisminucion.push(`**Pasada ${rondaActual} (DISMINUCIÓN):** ${instruccionRonda} (Quedan: **${puntosActuales - disminucionesPorRonda} puntos**).`);
 
@@ -432,7 +432,7 @@ function calcularPatron() {
             // Solo se añade si no es la última ronda de disminución necesaria
             if (i < rondasDisminucionReales && puntosActuales > puntosCoronilla && rondaActual < (pasadasRec + pasadasMenguar)) { 
                 rondaActual++;
-                secuenciaDisminucion.push(`**Pasada ${rondaActual} (SIMPLE):** Teje todos los puntos sin disminución.`);
+                secuenciaDisminucion.push(`**Pasada ${rondaActual} ** Teje todos los puntos sin disminución.`);
             }
 
             // Condición de salida
@@ -451,15 +451,15 @@ function calcularPatron() {
 
         // Confirmación de la altura alcanzada
         if (rondaActual <= pasadasAlt) {
-            resultado += `\n**¡ALTURA ALCANZADA!** Has terminado de menguar justo en la **Pasada ${rondaActual}** (${(rondaActual / densidadH).toFixed(1)} cm).\n`;
+            resultado += `\n**¡ALTURA ALCANZADA!** Has terminado de menguar, ahora tendrás (${(rondaActual / densidadH).toFixed(1)} cm).\n`;
         }
         
         // 4. ACABADO
         resultado += '<hr>';
-        resultado += '<h4>4. Acabado</h4>\n';
+        resultado += '<h4>4. Acabado </h4>\n';
         resultado += `**1.** Ahora que tienes los puntos finales en la aguja, **corta la lana** dejando una hebra larga para coser todo el lateral del gorro.\n`;
         resultado += `**2.** Enhebra tu aguja lanera y pásala por el interior de los puntos que quedan, tira de la hebra para cerrar la parte de arriba (la coronilla). Pásala una o dos veces más para asegurar el cierre.\n`;
-        resultado += `**3.** Continúa cosiendo todo el lateral del gorro hasta llegar al borde. ¡Listo!\n`;
+        resultado += `**3.** Si has tejido con agujas rectas continúa cosiendo todo el lateral del gorro hasta llegar al borde. ¡Listo!\n`;
         resultado += `**4.** Si quieres, puedes añadirle un pompón.\n`;
         
         // Finalizar y añadir nota de ganchillo
