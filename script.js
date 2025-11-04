@@ -46,18 +46,17 @@ const MEDIDAS_CUBRE_PAÑAL = {
 };
 
 // ====================================================================
-// 1.2. MEDIDAS PARA GORRO (Hat) 
-// Se asume que CC (Contorno Cabeza) ya incluye la holgura negativa necesaria.
-// ====================================================================
+// 1.2. MEDIDAS PARA GORRO (Hat) - NUEVA BASE DE DATOS
 // CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
+// ====================================================================
 const MEDIDAS_GORRO = {
-    'Recién Nacido (0 meses)': { CC: 32, ALT: 12, COR: 4, REC: 7, VUE: 2 },
-    '1 a 3 meses': { CC: 35, ALT: 14, COR: 4.5, REC: 9, VUE: 2 },
-    '3 a 6 meses': { CC: 36, ALT: 17, COR: 5, REC: 9.5, VUE: 2 },
-    '6 meses a 2 años': { CC: 41, ALT: 19, COR: 6.5, REC: 10.5, VUE: 2.5 },
-    'Niños': { CC: 48, ALT: 21, COR: 7, REC: 12, VUE: 3 },
-    'Adolescentes': { CC: 52, ALT: 23, COR: 8, REC: 13, VUE: 4 },
-    'Adultos': { CC: 54, ALT: 25, COR: 9, REC: 13.5, VUE: 5 }
+    'Recién Nacido (0 meses)': { CC: 32.0, ALT: 12.0, COR: 4.0, REC: 7.0, VUE: 2.0 },
+    '1 a 3 meses': { CC: 35.0, ALT: 14.0, COR: 4.5, REC: 9.0, VUE: 2.0 },
+    '3 a 6 meses': { CC: 36.0, ALT: 17.0, COR: 5.0, REC: 9.5, VUE: 2.0 },
+    '6 meses a 2 años': { CC: 41.0, ALT: 19.0, COR: 6.5, REC: 10.5, VUE: 2.5 },
+    'Niños': { CC: 48.0, ALT: 21.0, COR: 7.0, REC: 12.0, VUE: 3.0 },
+    'Adolescentes': { CC: 52.0, ALT: 23.0, COR: 8.0, REC: 13.0, VUE: 4.0 },
+    'Adultos': { CC: 54.0, ALT: 25.0, COR: 9.0, REC: 13.5, VUE: 5.0 }
 };
 
 
@@ -171,14 +170,14 @@ function manejarVisibilidadCampos() {
         holguraGroup.style.display = 'none'; // Ocultar holgura para gorro y cubre pañal
         caidaEscoteGroup.style.display = 'none';
     
-    // 4. Default / Nada seleccionado
+    // 4. Default / Nada seleccionado (estado inicial)
     } else {
         metodoGroup.style.display = 'none';
         cmGroup.style.display = 'none';
         tallaSelect.setAttribute('required', 'required');
         tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-        holguraGroup.style.display = 'block'; 
+        holguraGroup.style.display = 'none'; 
         caidaEscoteGroup.style.display = 'none';
     }
 }
@@ -212,12 +211,11 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     const VUE = medidas.VUE; // Vuelta/Borde
 
     const densidadP = puntosMuestra / 10.0;
-    const densidadH = (hilerasMuestra && hilerasMuestra > 0) ? hilerasMuestra / 10.0 : null;
+    const densidadH = hilerasMuestra / 10.0; // Ya se validó que hilerasMuestra sea > 0
 
     // 2. CÁLCULOS PRINCIPALES
     
     // Puntos de Montaje (CC)
-    // NOTA: Se usa el Contorno de Cabeza (CC) directamente, sin añadir holgura.
     const puntosMontaje = Math.round(CC * densidadP);
     
     // Puntos Finales (Coronilla)
@@ -228,40 +226,48 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     
     // Altura y pasadas de menguado
     const alturaMenguarCm = ALT - REC;
-    const pasadasMenguar = densidadH ? Math.round(alturaMenguarCm * densidadH) : null;
+    const pasadasMenguar = Math.round(alturaMenguarCm * densidadH);
     
-    // Número de vueltas de menguado (cada 2 pasadas)
-    let vueltasMenguado = 0;
-    if (densidadH && alturaMenguarCm > 0 && pasadasMenguar > 0) {
-        // Se asegura que haya al menos una vuelta de menguado si hay pasadas de menguado.
-        vueltasMenguado = Math.max(1, Math.floor(pasadasMenguar / 2));
-    }
+    // Número de vueltas de menguado (menguando cada 2 pasadas)
+    // Se asegura que haya al menos una vuelta de menguado si hay pasadas de menguado.
+    const vueltasMenguado = Math.max(1, Math.floor(pasadasMenguar / 2));
     
     let instruccionMenguados = '';
 
-    if (puntosAMenguar <= 0) {
-        instruccionMenguados = 'No es necesario hacer menguados según los cálculos, ya que los puntos de Coronilla y Contorno de Cabeza resultan en el mismo número de puntos. Simplemente cerrar los puntos al llegar a la altura total.';
-    } else if (vueltasMenguado > 0) {
+    if (puntosAMenguar <= 0 || vueltasMenguado <= 0) {
+        instruccionMenguados = 'No es necesario realizar menguados, o los datos son inconsistentes para la talla/muestra. Simplemente cerrar los puntos al llegar a la altura total.';
+    } else {
         // Puntos a menguar por vuelta de menguado (promedio)
         const puntosPorVuelta = Math.max(1, Math.round(puntosAMenguar / vueltasMenguado));
         
-        // CÁLCULO DE DISTRIBUCIÓN EN LA PRIMERA VUELTA (para dar la instrucción de "cada x puntos")
-        const ptsEntreMengua = Math.floor(puntosMontaje / puntosPorVuelta);
+        // CÁLCULO DE DISTRIBUCIÓN UNIFORME EN LA PRIMERA VUELTA
+        const espaciadoMayor = Math.floor(puntosMontaje / puntosPorVuelta);
         const restantes = puntosMontaje % puntosPorVuelta;
+        const ptsEntreMengua = Math.max(1, espaciadoMayor);
+        
+        let secuenciaMengua;
+        if (restantes === 0) {
+             secuenciaMengua = `Teje **${ptsEntreMengua} puntos - 1 menguado** (Repetir **${puntosPorVuelta} veces**).`;
+        } else {
+            const numMenguasGrandes = restantes;
+            const numMenguasPequeñas = puntosPorVuelta - restantes;
+            const ptsEntreMenguaMenosUno = Math.max(1, espaciadoMayor - 1);
+            
+            // Ejemplo: 3 menguados. ptsEntreMengua=6. 18/3=6. 
+            // Si puntosMontaje=19, puntosPorVuelta=3. 19/3 = 6.33. ptsEntreMengua=6. restantes=1.
+            // 1 vez: 7 p. - 1 menguado. 2 veces: 6 p. - 1 menguado.
+            
+            secuenciaMengua = `**${numMenguasGrandes} veces** teje **${ptsEntreMengua} puntos - 1 menguado**, y **${numMenguasPequeñas} veces** teje **${ptsEntreMenguaMenosUno} puntos - 1 menguado** (Sumando **${puntosPorVuelta} menguados** en la pasada).`;
+        }
         
         // Instrucción detallada de menguados
-        instruccionMenguados = `En esta sección hay que menguar un total de **${puntosAMenguar} puntos** a lo largo de **${alturaMenguarCm.toFixed(1)} cm** ${pasadasMenguar !== null ? `(**${pasadasMenguar} pasadas**)` : ''}.`;
-        instruccionMenguados += `\n\n- Se sugiere realizar **${vueltasMenguado} vueltas/pasadas de menguado** (1 vuelta/pasada de menguado y 1 vuelta/pasada recta, es decir, **cada dos pasadas**).`;
-        instruccionMenguados += `\n\n- **Puntos a menguar por vuelta (Aprox.):** **${puntosPorVuelta} puntos** (Para una distribución uniforme).`;
+        instruccionMenguados = `En esta sección hay que menguar un total de **${puntosAMenguar} puntos** a lo largo de **${alturaMenguarCm.toFixed(1)} cm** (**${pasadasMenguar} pasadas**).`;
+        instruccionMenguados += `\n\n- Se sugiere realizar **${vueltasMenguado} vueltas/pasadas de menguado** (es decir, **cada dos pasadas**, una de mengua y una recta).`;
+        instruccionMenguados += `\n\n- **Puntos a menguar por vuelta (Aprox.):** **${puntosPorVuelta} puntos**.`;
         
-        instruccionMenguados += `\n\n- **Inicio de Menguados (1ª Vuelta):** Para menguar **${puntosPorVuelta} puntos** desde **${puntosMontaje} puntos** de manera uniforme, deberá: Tejer **1 menguado** cada **${ptsEntreMengua} puntos** (Repetir ${puntosPorVuelta} veces) ${restantes > 0 ? `y le sobrarán ${restantes} puntos.` : ''}`;
+        instruccionMenguados += `\n\n- **Inicio de Menguados (1ª Vuelta):** Para menguar **${puntosPorVuelta} puntos** desde **${puntosMontaje} puntos** de manera uniforme, deberá: ${secuenciaMengua}`;
         
-        instruccionMenguados += `\n\n- **Menguados Sucesivos:** Continuar menguando **${puntosPorVuelta} puntos** de forma distribuida en la vuelta de menguado (es decir, **cada 2 pasadas**), hasta que en la aguja queden solo **${puntosCoronilla} puntos**.`;
-
-    } else {
-        // Si no se puede calcular pasadasMenguar o vueltasMenguado, se da la instrucción en cm.
-         instruccionMenguados = `En esta sección hay que menguar un total de **${puntosAMenguar} puntos** a lo largo de **${alturaMenguarCm.toFixed(1)} cm**.`;
-         instruccionMenguados += `\n\n- La frecuencia de menguado es: **Cada dos pasadas/vueltas**, reduciendo los puntos de forma distribuida en cada vuelta de menguado, hasta que en la aguja queden solo **${puntosCoronilla} puntos** o un número mínimo para el cierre.`;
+        instruccionMenguados += `\n\n- **Menguados Sucesivos:** Continuar menguando **${puntosPorVuelta} puntos** de forma distribuida en la vuelta de menguado (**cada 2 pasadas**), hasta que en la aguja queden solo **${puntosCoronilla} puntos**.`;
     }
     
     // 3. GENERAR INSTRUCCIONES
@@ -271,22 +277,20 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
     resultado += `* **Puntos a Montar:** Montar **${puntosMontaje} puntos**.\n\n`;
 
     // 4. Vuelta/Borde (VUE)
-    const pasadasVUE = densidadH ? Math.round(VUE * densidadH) : null;
-    resultado += `<u>1. Vuelta/Borde (Opcional)</u>\n`;
-    resultado += `* **Medida de Borde/Vuelta:** **${VUE.toFixed(1)} cm** ${pasadasVUE !== null ? `(**${pasadasVUE} pasadas**)` : ''}.\n`;
-    resultado += `* **Instrucción:** Puede tejer este borde (elástico o punto bobo, por ejemplo) y debe añadir esas pasadas al principio de su gorro.\n\n`;
+    const pasadasVUE = Math.round(VUE * densidadH);
+    resultado += `<u>1. Vuelta/Borde (VUE)</u>\n`;
+    resultado += `* **Medida de Borde/Vuelta:** **${VUE.toFixed(1)} cm** (**${pasadasVUE} pasadas**).\n`;
+    resultado += `* **Instrucción:** Puede tejer este borde (elástico o punto bobo, por ejemplo) y debe **añadir esas ${pasadasVUE} pasadas** al principio de su gorro si decide hacerlo.\n\n`;
 
     // 5. Tejido Recto (REC)
-    const pasadasREC = densidadH ? Math.round(REC * densidadH) : null;
+    const pasadasREC = Math.round(REC * densidadH);
     resultado += `<u>2. Tramo Recto (REC)</u>\n`;
     resultado += `* **Medida de Tramo Recto:** **${REC.toFixed(1)} cm**.\n`;
-    resultado += `* **Instrucción:** Continuar tejiendo recto después del borde (si lo hizo) durante **${REC.toFixed(1)} cm** ${pasadasREC !== null ? `(**${pasadasREC} pasadas**)` : ''}.\n\n`;
+    resultado += `* **Instrucción:** Continuar tejiendo recto después del borde (si lo hizo) durante **${REC.toFixed(1)} cm** (**${pasadasREC} pasadas**).\n\n`;
     
     // 6. Menguados (ALT - REC)
     resultado += `<u>3. Menguados (ALTURA TOTAL: ${ALT.toFixed(1)} cm)</u>\n`;
     resultado += `* **Objetivo de Puntos:** Reducir de **${puntosMontaje} puntos** a **${puntosCoronilla} puntos**.\n`;
-    resultado += `* **Puntos a Menguar (Totales):** **${puntosAMenguar} puntos**.\n`;
-    resultado += `* **Altura de la Disminución:** **${alturaMenguarCm.toFixed(1)} cm** ${pasadasMenguar !== null ? `(**${pasadasMenguar} pasadas**)` : ''}.\n\n`;
     resultado += instruccionMenguados + '\n\n';
 
     // 7. Cierre Final
@@ -306,6 +310,7 @@ function calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada) {
 
 // Nota: Las funciones 'generarCierresProgresivosNuevo', 'calcularCubrePanal' y 'calcularJerseyChaquet' 
 // se mantienen como marcadores para que el código principal compile, ya que contienen lógica compleja.
+// Se recomienda implementar estas funciones para Jersey, Chaqueta y Cubre Pañal para una funcionalidad completa.
 
 
 function calcularPuntos() {
@@ -360,6 +365,12 @@ function calcularPuntos() {
             resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar una **Talla** para el gorro.</p>';
             return;
         }
+        // Validación obligatoria para Gorro: se necesitan las pasadas (hileras) para las instrucciones de menguado.
+        if (densidadH === null || densidadH <= 0) {
+             resultadoDiv.innerHTML = '<p class="error">Error: Para calcular un **Gorro**, debe introducir las **Pasadas en 10 cm** (Muestra de tensión).</p>';
+             return;
+        }
+        
         resultadoDiv.innerHTML = calcularGorro(puntosMuestra, hilerasMuestra, tallaSeleccionada);
         return;
     } else { // JERSEY o CHAQUETA
