@@ -340,13 +340,15 @@ function calcularPatron() {
         resultado += `<h4>🧶 Instrucciones para Cubre Pañal - Talla ${tallaSeleccionada}</h4>\n`;
         resultado += `<p>Se tejerá en una sola pieza desde la espalda hasta el delantero.</p>\n`;
 
-         resultado += `\n<u>4. Consejos de Terminación</u>\n`;
-        resultado += `* **Cinturilla:** En la cintura sugerimos tejer  **${elásticoCm} cm** ** en punto elástico** o añadir una vuelta de **pasacintas** (*2p juntos al derecho, hebra*, repetir de *a* toda la pasada) cuando este tejiendo en la mitad de esos cm.  El ancho es orientativo, puedes hacerlo mas ancho o estrecho, segun te guste.\n`;
-        resultado += `* **Bordes:** Para un borde rematado al mismo tiempo que se teje la pierna, haga los aumentos y disminuciones a 3 o 4 puntos de la orilla. Otra opción es recoger después los puntos del borde de las piernas y para tejer una tira de terminación en el punto que te guste.\n`;
+         resultado += `\n<u>A tener en cuenta antes de empezar a tejer:</u>\n`;
+        resultado += `* **Cinturilla:** En la cintura sugerimos tejer  **${elásticoCm} cm** ** en punto elástico** o añadir una vuelta de **pasacintas** cuando este tejiendo en la mitad de esos cm (Pasacintas:*2p juntos al derecho, hebra*, repetir de *a* toda la pasada).  El ancho es orientativo, puedes hacerlo mas ancho o estrecho, segun te guste.\n`;
+        resultado += `* **Bordes:** Para un borde rematado al mismo tiempo que se teje la pierna, haga los aumentos y disminuciones a 3 o 4 puntos de la orilla. Otra opción es recoger después los puntos del borde de las piernas y para tejer una tira de terminación en el punto que te guste.
+        \n`;
 
         
         resultado += `<u>Manos a la obra!:</u>\n`;
-        resultado += `* **Comienza montando:** **${puntosMontar} puntos** (corresponde a ${CC / 2} cm de cintura).\n`;
+        resultado += `* **Comienza montando:** **${puntosMontar} puntos** (corresponde a ${CC / 2} cm de cintura).
+        \n`;
        
 
         resultado += `<u>1. Espalda (Cintura a Entrepierna)</u>\n`;
