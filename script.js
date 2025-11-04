@@ -40,7 +40,7 @@ const MEDIDAS_CUBRE_PAÑAL = {
     // Nota: Se utilizan los datos de CC proporcionados por la usuaria .
     '0 RN ': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
     '1 mes ': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
-    '3 meses': { CC: 42, AL: 11, EP: 8, TR: 2, LCD: 2 }, 
+    '3 meses ': { CC: 42, AL: 11, EP: 8, TR: 2, LCD: 2 }, 
     '6 meses ': { CC: 44, AL: 12, EP: 8, TR: 2, LCD: 2 }, 
     '9 meses ': { CC: 46, AL: 12, EP: 9, TR: 2.5, LCD: 3 }, 
     '12 meses ': { CC: 48, AL: 13, EP: 10, TR: 2.5, LCD: 3 } 
