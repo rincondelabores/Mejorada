@@ -618,7 +618,7 @@ function calcularPatron() {
         const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
         const tiraCuelloCm = 2.5; 
         const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : null;
-        const raglanCmBase = medidas.PSisa * 1.15; // CORREGIDO: Línea de raglan = sisa + 15% sisa = Sisa * 1.15
+        const raglanCmBase = medidas.PSisa * 0.9;
         const puntosTapeta = Math.round(tiraCuelloCm * densidadP);
 
 
