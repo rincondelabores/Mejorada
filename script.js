@@ -602,10 +602,6 @@ function calcularPatron() {
     } else {
         // --- LÓGICA EXISTENTE PARA JERSEY, CHAQUETA, ETC. ---
         
-        // ... (El resto de la lógica de Jersey/Chaqueta/Cm Deseados se mantiene igual)
-
-        // El resto de la lógica del patrón se mantiene si no es Cubre Pañal
-        
         // Cálculos compartidos (necesarios para el resto de prendas)
         const holguraCm = 4.0; 
         const ccAjustadoCm = medidas.CC + holguraCm; 
@@ -616,10 +612,8 @@ function calcularPatron() {
         const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
         const tiraCuelloCm = 2.5; 
         const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : null;
-        
-        // CORRECCIÓN SOLICITADA: AJUSTE FINAL DEL FACTOR RAGLÁN a 1.25 (PSisa + 25%)
-        const raglanCmBase = medidas.PSisa * 1.25; 
-        
+        // LÍNEA CORREGIDA SEGÚN LA SOLICITUD DEL USUARIO: Línea de raglán = PSisa
+        const raglanCmBase = medidas.PSisa; 
         const puntosTapeta = Math.round(tiraCuelloCm * densidadP);
 
 
