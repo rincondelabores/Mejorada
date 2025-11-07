@@ -603,17 +603,56 @@ function calcularPatron() {
         // --- LÓGICA EXISTENTE PARA JERSEY, CHAQUETA, ETC. ---
         
         // Cálculos compartidos (necesarios para el resto de prendas)
-        const holguraCm = 4.0; 
+        
+        // ====================================================================
+        // --- 1. CÁLCULO DE HOLGURAS SEGÚN LA CATEGORÍA DE TALLA (MODIFICADO) ---
+        // ====================================================================
+        
+        let holguraCm;
+        let holguraMangaCm;
+        
+        // Definición de las categorías de tallas para la lógica de holgura.
+        // Se excluye '00 (Prematuro)' de tallasBebe ya que tiene su propia regla.
+        const tallasBebe = ['0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'];
+        const tallasNinos = ['3 años', '4 años', '6 años', '8 años', '10 años'];
+        const tallasAdulto = ['36', '38', '40', '42', '44', '46', '48', '50'];
+
+        if (tallaSeleccionada === '00 (Prematuro)') {
+            // Regla Prematuro: Cuerpo: 2 cm / Sisa: 1 cm
+            holguraCm = 2.0;
+            holguraMangaCm = 1.0;
+        } else if (tallasBebe.includes(tallaSeleccionada)) {
+            // Regla Bebé (no 00): Cuerpo: 4 cm / Sisa: 2 cm
+            holguraCm = 4.0;
+            holguraMangaCm = 2.0;
+        } else if (tallasNinos.includes(tallaSeleccionada)) {
+            // Regla Niños: Cuerpo: 6 cm / Sisa: 4 cm
+            holguraCm = 6.0;
+            holguraMangaCm = 4.0;
+        } else if (tallasAdulto.includes(tallaSeleccionada)) {
+            // Regla Adulto: Cuerpo: 8 cm / Sisa: 4 cm
+            holguraCm = 8.0;
+            holguraMangaCm = 4.0;
+        } else {
+             // Fallback: Si la talla no coincide con las categorías anteriores
+             holguraCm = 4.0;
+             holguraMangaCm = 2.0;
+        }
+        
+        // CÁLCULO DE PUNTOS Y CM FINALES (usando la holguraCm ajustada)
+        const cpAjustadoCm = medidas.CP + holguraCm;
+        const cpPts = Math.round(cpAjustadoCm * densidadP); 
+        const anchoPrendaCm = (cpPts / densidadP).toFixed(1); 
+        
+        // Cálculos secundarios
         const ccAjustadoCm = medidas.CC + holguraCm; 
-        const cpPts = Math.round(medidas.CP * densidadP); 
-        const anchoPrendaCm = (cpPts / densidadP).toFixed(1);
-        const holguraMangaCm = 2.0;
-        const anchoSisaMangaCm = medidas.CA + holguraMangaCm;
+        const anchoSisaMangaCm = medidas.CA + holguraMangaCm; // Usa la holguraMangaCm ajustada
         const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
         const tiraCuelloCm = 2.5; 
         const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : null;
-        // LÍNEA CORREGIDA SEGÚN LA SOLICITUD DEL USUARIO: Línea de raglán = PSisa
-        const raglanCmBase = medidas.PSisa; 
+        
+        // LÍNEA CORREGIDA A PSISA * 0.9: La línea de raglán es el 90% de Pecho a Sisa.
+        const raglanCmBase = medidas.PSisa * 0.9; 
         const puntosTapeta = Math.round(tiraCuelloCm * densidadP);
 
 
