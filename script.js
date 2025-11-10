@@ -32,7 +32,8 @@ const MEDIDAS_ANTROPOMETRICAS = {
     '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 28.0, AE: 41.6, CED: 14.5, CCa: 55.0 } 
 };
 
-// ====================================================================
+
+  // ====================================================================
 // 1.1. NUEVAS MEDIDAS PARA CUBRE PAÑAL (C/P)
 // ====================================================================
 // CC: Contorno Cintura / AL: Altura Lateral / EP: EntrePierna / TR: Tramo Recto / LCD: Línea Cierre Delantero
@@ -609,6 +610,11 @@ function calcularPatron() {
             const escoteCmDeseado = (medidas.CCa / 1.1);
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
+
+            // Se usa el anchoSisaMangaCm (definido en el bloque general) para el cálculo de los puntos bajo el brazo
+            const puntosAnadirSisaPtsBase = Math.max(4, Math.round(anchoSisaMangaCm * 0.2)); // 20% del ancho de la sisa
+            const puntosAnadirSisaPts = puntosAnadirSisaPtsBase % 2 === 0 ? puntosAnadirSisaPtsBase : puntosAnadirSisaPtsBase + 1; 
+
             
             const hilerasRaglan = densidadH ? Math.round(raglanCmBase * densidadH) : null;
             
@@ -651,10 +657,6 @@ function calcularPatron() {
             const puntosMangaFinal_PreSisa = Math.round(pManga + puntosAumentadosPorPieza); 
             const puntosEspaldaFinal_PreSisa = Math.round(pEspalda + puntosAumentadosPorPieza);
             const puntosDelanteroFinal_PreSisa = Math.round(pDelanteroBase + puntosAumentadosPorPieza);
-
-            // Se usa el ancho de sisa calculado al inicio (CA/2 + holgura)
-            const puntosAnadirSisaPtsBase = Math.max(4, Math.round(puntosSisaManga * 0.2)); 
-            const puntosAnadirSisaPts = puntosAnadirSisaPtsBase % 2 === 0 ? puntosAnadirSisaPtsBase : puntosAnadirSisaPtsBase + 1; 
 
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             resultado += `* **Largo de Línea Raglán:** **${raglanCmBase.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
@@ -702,12 +704,16 @@ function calcularPatron() {
             const vecesDisminuir = Math.floor(disminucionesTotales / 2);
             
             if (vecesDisminuir > 0) {
-                const frecuenciaCm = largoMangaCm / vecesDisminuir;
+                // Ajuste para que el largo de la manga (para disminuciones) no incluya la tira de cuello
+                const largoMangaParaDisminuir = largoMangaCm > tiraCuelloCm ? largoMangaCm - tiraCuelloCm : largoMangaCm;
+                const frecuenciaCm = largoMangaParaDisminuir / vecesDisminuir;
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
                 
-                if (densidadH) {
-                    const frecuenciaPasadas = Math.round(largoMangaRestanteH / vecesDisminuir);
-                    frecuenciaStr = `cada **${frecuenciaPasadas} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
+                if (densidadH && largoMangaRestanteH) {
+                    const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
+                    const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
+                    // Asegurarse de que la frecuencia no sea 0
+                    frecuenciaStr = `cada **${Math.max(1, frecuenciaPasadas)} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
                 }
                 
                 resultado += `<p style="padding-left: 20px;">- Disminuir **1 punto a cada lado** **${vecesDisminuir} veces** **${frecuenciaStr}**.\n`;
