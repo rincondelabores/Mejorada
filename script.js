@@ -448,7 +448,7 @@ function calcularPatron() {
 
 
             // CÁLCULOS VERTICALES CONDICIONALES A DENSIDADH
-            //const largoCuerpoCm = medidas.LT - medidas.PSisa;
+            const largoCuerpoCm = medidas.LT - medidas.PSisa;
             const hilerasBajoSisa = densidadH ? Math.round(largoCuerpoCm * densidadH) : null; 
             const hilerasSisaHombro = densidadH ? Math.round(medidas.PSisa * densidadH) : null;
             const hilerasTotalEspalda = (hilerasBajoSisa !== null && hilerasSisaHombro !== null) ? (hilerasBajoSisa + hilerasSisaHombro) : null;
