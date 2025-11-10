@@ -350,7 +350,11 @@ function calcularPatron() {
         }
         
         resultado += `* **Acabados los aumentos **, antes de empezar a tejer las ultimas pasadas para llegar a la cintura tendrás que aumentar de una vez **${puntosLCD} puntos a cada lado**. (Tendrás **${puntosMontar} puntos, los mismos puntos con los que empezaste a tejer**).\n`;
-        resultado += `* ahora debes de ** continuar tejiendo recto ** **${AL} cm** ${hilerASL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
+        
+        // ================== INICIO DE LA CORRECCIÓN ==================
+        // Se ha corregido hilerASL por hilerasAL
+        resultado += `* ahora debes de ** continuar tejiendo recto ** **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
+        // ================== FIN DE LA CORRECCIÓN ==================
         
         resultado += `\n<u>3. Acabado</u>\n`;
         resultado += `* ** Cerrar los **${puntosMontar} puntos** de la cintura delantera.\n`;
@@ -421,8 +425,6 @@ function calcularPatron() {
         // --- LÓGICA BOTTOM-UP (Del Bajo al Hombro) ---
         if (metodoTejido === "BAJO") {
             
-            // [El bloque de cálculo de holgura de manga y sisa se eliminó de aquí y se movió a la sección general]
-
             // CÁLCULOS VERTICALES CONDICIONALES A DENSIDADH
             const largoCuerpoCm = medidas.LT - medidas.PSisa;
             const hilerasBajoSisa = densidadH ? Math.round(largoCuerpoCm * densidadH) : null; 
