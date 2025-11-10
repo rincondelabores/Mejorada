@@ -407,7 +407,20 @@ function calcularPatron() {
         const cpPts = Math.round(anchoPrendaCm * densidadP); // Puntos de contorno de pecho total
         
         // 2. Cálculos de Tira de Cuello y Raglán
-        const tiraCuelloCm = 2.0; // Ancho de la tira de cuello (ej. 2cm)
+        // ================== INICIO MODIFICACIÓN 1 ==================
+        // MODIFICACIÓN: Tira de cuello/Tapeta dinámica por talla
+        let tiraCuelloCm;
+        if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
+            tiraCuelloCm = 1.5;
+        } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
+            tiraCuelloCm = 2.0;
+        } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
+            tiraCuelloCm = 2.5;
+        } else {
+            tiraCuelloCm = 2.0; // Valor por defecto
+        }
+        // ================== FIN MODIFICACIÓN 1 ==================
+        
         const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : null;
         const raglanCmBase = medidas.PSisa; // Raglan = Altura de Sisa (PSisa)
         
@@ -468,6 +481,7 @@ function calcularPatron() {
             // --- CÁLCULO DE CAÍDA DE ESCOTE MODIFICADO ---
             let cedFinalCm = caidaEscoteDeseadaCm || medidas.CED; 
             let cedRealCm;
+            // (tiraCuelloCm ahora es dinámico gracias a la Modificación 1)
             if (cedFinalCm > tiraCuelloCm) {
                  cedRealCm = cedFinalCm - tiraCuelloCm;
             } else {
@@ -542,6 +556,7 @@ function calcularPatron() {
                 resultado += `* **Montar:** **${puntosTotalDelantero} puntos**.\n`;
             } else { // CHAQUETA
                 resultado += `* **Montar:** **${puntosTotalDelantero} puntos** (por cada Delantero).\n`;
+                // (tiraCuelloCm y puntosTapeta son dinámicos gracias a la Modificación 1)
                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos añadir **${puntosTapeta} puntos** extra para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho.</p>\n`;
             }
             resultado += `* **Tejer hasta la Sisa:** **${largoCuerpoCm.toFixed(1)} cm** ${hilerasBajoSisa !== null ? `(**${hilerasBajoSisa} pasadas**)` : ''} (igual que la espalda).\n`; 
@@ -559,6 +574,7 @@ function calcularPatron() {
                 const secuenciaTotal = generarCierresProgresivosNuevo(totalCierreLateral).secuencia;
                 
                 const puntosCierreInicial = puntosEscoteCentral;
+                // (puntosTapeta es dinámico)
                 const puntosCierreInicialConTapeta = puntosEscoteCentral + puntosTapeta;
                 
                 const avisoTapetaEnCierre = ` (Tenga en cuenta que si añadió la tapeta sugerida de **${puntosTapeta} puntos**, el cierre inicial será de **${puntosCierreInicialConTapeta} puntos** en total).`;
@@ -602,14 +618,23 @@ function calcularPatron() {
         // --- LÓGICA TOP-DOWN (Escote al Bajo - Raglán) ---
         } else if (metodoTejido === "ESCOTE") {
             
-            // ** CÁLCULO DE ESCOTE BASADO EN CCa / 1.1 **
+            // ================== INICIO MODIFICACIÓN 2 ==================
+            // ** CÁLCULO DE ESCOTE BASADO EN CCa **
             if (!medidas.CCa) {
                 resultadoDiv.innerHTML = '<p class="error">Error: La talla seleccionada no tiene una medida de Contorno de Cabeza (CCa) definida en la base de datos para calcular el escote.</p>';
                 return;
             }
-            const escoteCmDeseado = (medidas.CCa / 1.1);
+            
+            // MODIFICACIÓN: Determinar el divisor del escote
+            let divisorEscote = 1.1; // Valor por defecto (Adulto/Niño)
+            if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
+                divisorEscote = 1.3; 
+            }
+            
+            const escoteCmDeseado = (medidas.CCa / divisorEscote); // <- MODIFICADO
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
+            // ================== FIN MODIFICACIÓN 2 ==================
 
             // Se usa el anchoSisaMangaCm (definido en el bloque general) para el cálculo de los puntos bajo el brazo
             const puntosAnadirSisaPtsBase = Math.max(4, Math.round(anchoSisaMangaCm * 0.2)); // 20% del ancho de la sisa
@@ -639,14 +664,18 @@ function calcularPatron() {
                 const pDelanteroParte1 = Math.floor(pDelanteroBase / 2);
                 const pDelanteroParte2 = pDelanteroBase - pDelanteroParte1;
                 repartoStr = `**${pDelanteroParte1} p** (Del. 1), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pEspalda} p** (Espalda), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pDelanteroParte2} p** (Del. 2).`;
+                // (tiraCuelloCm y puntosTapeta son dinámicos gracias a la Modificación 1)
                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho.</p>\n`;
             }
             
             resultado += `<u>1. Empezamos a tejer con el escote:</u>\n`;
             // Output actualizado para reflejar el cálculo de CCa
             resultado += `* **Contorno de Cabeza (CCa):** ${medidas.CCa.toFixed(1)} cm.\n`;
-            resultado += `* **Escote Requerido (CCa / 1.1):** **${escoteCmDeseado.toFixed(1)} cm**.\n`;
+            // ================== INICIO MODIFICACIÓN 2 (Output) ==================
+            resultado += `* **Escote Requerido (CCa / ${divisorEscote}):** **${escoteCmDeseado.toFixed(1)} cm**.\n`;
+            // ================== FIN MODIFICACIÓN 2 (Output) ==================
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (${escoteCmDeseado.toFixed(1)} cm de contorno).\n`;
+            // (tiraCuelloCm y tiraCuelloPts son dinámicos gracias a la Modificación 1)
             resultado += `* **A continuación:** Tejer **${tiraCuelloPts} pasadas** (**${tiraCuelloCm.toFixed(1)} cm**) para la tira del cuello.\n`;
             resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
@@ -705,11 +734,13 @@ function calcularPatron() {
             
             if (vecesDisminuir > 0) {
                 // Ajuste para que el largo de la manga (para disminuciones) no incluya la tira de cuello
+                // (tiraCuelloCm es dinámico)
                 const largoMangaParaDisminuir = largoMangaCm > tiraCuelloCm ? largoMangaCm - tiraCuelloCm : largoMangaCm;
                 const frecuenciaCm = largoMangaParaDisminuir / vecesDisminuir;
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
                 
                 if (densidadH && largoMangaRestanteH) {
+                    // (tiraCuelloPts es dinámico)
                     const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
                     const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
                     // Asegurarse de que la frecuencia no sea 0
