@@ -36,6 +36,7 @@ const MEDIDAS_ANTROPOMETRICAS = {
 // ====================================================================
 // 1.1. NUEVAS MEDIDAS PARA CUBRE PAÑAL (C/P)
 // ====================================================================
+// CC: Contorno Cintura / AL: Altura Lateral / EP: EntrePierna / TR: Tramo Recto / LCD: Línea Cierre Delantero
 const MEDIDAS_CUBRE_PAÑAL = {
     '0 RN ': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
     '1 mes ': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
@@ -48,6 +49,7 @@ const MEDIDAS_CUBRE_PAÑAL = {
 // ====================================================================
 // 1.2. NUEVAS MEDIDAS PARA GORRO (Corregido 'Adolescentes' de 352.0 a 52.0)
 // ====================================================================
+// CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
 const MEDIDAS_GORRO = {
    
      'RN- 0': { CC: 32.0, ALT: 12.0, COR: 4.0, REC: 7.0, VUE: 2.0 }, 
@@ -179,8 +181,6 @@ function generarCierresProgresivosNuevo(totalPuntos, numPasadas) {
     return resultadoFinal.trim();
 }
 
-// ... (Resto de funciones de utilidad)
-
 // ====================================================================
 // 3. LÓGICA CENTRAL DE CÁLCULO
 // ====================================================================
@@ -192,12 +192,18 @@ function calcularPatron() {
     // 1. OBTENER VALORES DE ENTRADA
     const puntosMuestra = parseFloat(document.getElementById('puntos_muestra').value);
     const hilerasMuestra = parseFloat(document.getElementById('hileras_muestra').value);
-    const tallaSeleccionada = document.getElementById('talla').value;
+    
+    // CORRECCIÓN DE ID: 'talla' -> 'talla_seleccionada'
+    const tallaSeleccionada = document.getElementById('talla_seleccionada').value; 
+    
     const tipoPrenda = document.getElementById('tipo_prenda').value;
     const metodoTejido = document.getElementById('metodo_tejido').value;
-    const holguraCM = parseFloat(document.getElementById('holgura_cm').value) || 0;
-    const largoDeseadoCM = parseFloat(document.getElementById('largo_deseado_cm').value) || 0;
-    const largoMangaCM = parseFloat(document.getElementById('largo_manga_cm').value) || 0;
+    
+    // Estos IDs ('holgura_cm', 'largo_deseado_cm', 'largo_manga_cm') no están en el HTML proporcionado. Se usarán 0 como valor por defecto.
+    const holguraCM = parseFloat(document.getElementById('holgura_cm')?.value) || 0;
+    const largoDeseadoCM = parseFloat(document.getElementById('largo_deseado_cm')?.value) || 0;
+    const largoMangaCM = parseFloat(document.getElementById('largo_manga_cm')?.value) || 0;
+    
     const resultadoDiv = document.getElementById('resultado');
 
     // 2. VALIDACIONES BÁSICAS
@@ -265,7 +271,7 @@ function calcularPatron() {
         
         resultado += `<u>3. Coronilla (Menguados)</u>\n`;
         resultado += `* Realizar los menguados para la coronilla durante **${hilerasCoronilla} pasadas** (${corGorro.toFixed(1)} cm).\n`;
-        resultado += `* La secuencia más habitual es: **Menguar ${puntosMontaje / 8} puntos** cada 2 vueltas, hasta que queden 8 puntos (o los suficientes para cerrar la parte superior).\n`;
+        resultado += `* La secuencia más habitual es: **Menguar ${Math.round(puntosMontaje / 8)} puntos** cada 2 vueltas, hasta que queden 8 puntos (o los suficientes para cerrar la parte superior).\n`;
         resultado += `* **Cierre Final:** Cuando la pieza mida ${altGorro.toFixed(1)} cm (o **${hilerasTotal} pasadas**), cortar la hebra y pasarla por los puntos restantes para cerrar la coronilla.\n`;
         
     } else if (tipoPrenda === "CUBRE_PAÑAL") {
@@ -467,7 +473,7 @@ function calcularPatron() {
 
         } else {
             // Validación final si los campos no estaban llenos.
-            if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA' && tipoPrenda !== 'GORRO') {
+            if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA' && tipoPrenda !== 'GORRO' && tipoPrenda !== 'CM_DESEADOS') {
                  resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete todos los campos obligatorios: **Puntos de Muestra** y selección de **Talla** y **Tipo de Prenda**.</p>';
                  return;
             }
@@ -482,15 +488,19 @@ function calcularPatron() {
 }
 
 // ====================================================================
-// 4. INICIALIZACIÓN Y EVENT LISTENERS (Se mantienen igual)
+// 4. INICIALIZACIÓN Y EVENT LISTENERS (Corregidos IDs)
 // ====================================================================
 
 /**
  * Función para poblar el dropdown de tallas con categorías y nombres.
  */
 function poblarTallas() {
-    const tallaSelect = document.getElementById('talla');
+    // CORRECCIÓN DE ID: 'talla' -> 'talla_seleccionada'
+    const tallaSelect = document.getElementById('talla_seleccionada');
     
+    // Si no se encuentra el elemento, se detiene la ejecución
+    if (!tallaSelect) return; 
+
     // Limpiar opciones anteriores
     tallaSelect.innerHTML = '<option value="">Selecciona una talla</option>';
 
@@ -517,15 +527,22 @@ function poblarTallas() {
  */
 function actualizarMetodoTejido() {
     const tipoPrenda = document.getElementById('tipo_prenda').value;
-    const metodoTejidoDiv = document.getElementById('metodo_tejido_div');
+    
+    // CORRECCIÓN DE ID: 'metodo_tejido_div' -> 'metodo-group'
+    const metodoTejidoDiv = document.getElementById('metodo-group');
     const metodoTejidoSelect = document.getElementById('metodo_tejido');
 
+    // Manejar el grupo de CM_DESEADOS si es necesario (el HTML lo tiene)
+    const cmGroup = document.getElementById('cm-group');
+
     // Resetear visibilidad y opciones
-    // Es posible que necesites ajustar la visibilidad del div padre si no se encuentra el ID
     if (metodoTejidoDiv) {
         metodoTejidoDiv.style.display = 'none';
+        metodoTejidoSelect.innerHTML = `<option value="UNICO"></option>`;
     }
-    metodoTejidoSelect.innerHTML = '';
+    if (cmGroup) {
+        cmGroup.style.display = 'none';
+    }
     
     // Si es Jersey o Chaqueta, se muestra la opción Top-Down/Bottom-Up
     if (tipoPrenda === 'JERSEY' || tipoPrenda === 'CHAQUETA') {
@@ -536,9 +553,11 @@ function actualizarMetodoTejido() {
             <option value="ESCOTE">Desde el Escote (Raglán / Top-Down)</option>
             <option value="BAJO">Desde el Bajo (Bottom-Up)</option>
         `;
-    // Si es Gorro o Cubre Pañal, se oculta (ya tienen una lógica predefinida)
-    } else {
-        metodoTejidoSelect.innerHTML = `<option value="UNICO"></option>`;
+    // Si es CM_DESEADOS, se muestra la opción de ancho libre
+    } else if (tipoPrenda === 'CM_DESEADOS') {
+        if (cmGroup) {
+            cmGroup.style.display = 'block';
+        }
     }
 }
 
@@ -548,8 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
     poblarTallas(); 
     
     // Asignación de eventos
-    const calcularBtn = document.getElementById('calcular_btn');
-    if(calcularBtn) calcularBtn.addEventListener('click', calcularPatron);
+    // El botón llama directamente a calcularPatron() desde el HTML (onclick)
     
     const tipoPrendaSelect = document.getElementById('tipo_prenda');
     if(tipoPrendaSelect) tipoPrendaSelect.addEventListener('change', actualizarMetodoTejido);
