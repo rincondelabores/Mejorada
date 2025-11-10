@@ -1,9 +1,9 @@
 // ====================================================================
-// 1. DATOS Y MEDIDAS ANTROPOMÉTRICAS 
+// 1. DATOS Y MEDIDAS ANTROPOMÉTRICAS (SEPARADOS POR CATEGORÍA)
 // ====================================================================
 
-const MEDIDAS_ANTROPOMETRICAS = {
-    // Tallas de Bebé (Añadido CCab)
+// 1.1 MEDIDAS BEBÉ (Prematuro a 24 meses)
+const MEDIDAS_BEBE = {
     '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 12.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 9.0, AE: 14.0, CED: 3.0, CCab: 32.0 },
     '0 meses': { CP: 39.0, CC: 21.0, CA: 13.0, 'C Puño': 12.0, LT: 22.0, LM: 12.0, PSisa: 10.0, AE: 16.0, CED: 3.5, CCab: 32.0 },
     '1-3 meses': { CP: 40.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 23.0, LM: 14.0, PSisa: 11.0, AE: 18.0, CED: 4.0, CCab: 35.0 }, 
@@ -13,15 +13,19 @@ const MEDIDAS_ANTROPOMETRICAS = {
     '12-15 meses': { CP: 56.0, CC: 25.0, CA: 19.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa: 13.5, AE: 26.0, CED: 6.0, CCab: 41.0 }, 
     '15-18 meses': { CP: 60.0, CC: 26.0, CA: 20.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 14.0, AE: 28.0, CED: 6.5, CCab: 41.0 }, 
     '18-24 meses': { CP: 61.0, CC: 26.0, CA: 22.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 15.0, AE: 30.0, CED: 7.0, CCab: 41.0 }, 
+};
 
-    // Tallas de Niños (Añadido CCab)
+// 1.2 MEDIDAS NIÑOS (3 a 10 años)
+const MEDIDAS_NINOS = {
     '3 años': { CP: 62.0, CC: 28.5, CA: 23, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 16.0, AE: 31.0, CED: 7.3, CCab: 48.0 }, 
     '4 años': { CP: 63.0, CC: 30.0, CA: 24.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 17.0, AE: 32.0, CED: 7.5, CCab: 48.0 },
     '6 años': { CP: 66.0, CC: 31.0, CA: 25.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 18.0, AE: 34.0, CED: 8.0, CCab: 48.0 },
     '8 años': { CP: 68.0, CC: 32.0, CA: 26.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 19.0, AE: 36.0, CED: 8.5, CCab: 48.0 },
     '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 20.0, AE: 38.0, CED: 9.0, CCab: 48.0 },
-    
-    // Tallas de Mujer (Adulto) (Añadido CCab)
+};
+
+// 1.3 MEDIDAS ADULTO (36 a 50)
+const MEDIDAS_ADULTO = {
     '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño':19.3, LT: 58.0, LM: 47.0, PSisa: 22.0, AE: 35.0, CED: 11.0, CCab: 54.0 }, 
     '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 22.5, AE: 36.0, CED: 11.5, CCab: 54.0 }, 
     '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 23.0, AE: 36.8, CED: 12.0, CCab: 54.0 }, 
@@ -32,7 +36,7 @@ const MEDIDAS_ANTROPOMETRICAS = {
     '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 28.0, AE: 41.6, CED: 14.5, CCab: 54.0 } 
 };
 
-// 1.1. MEDIDAS PARA CUBRE PAÑAL (CC: Contorno Cintura, AL: Altura Lateral, EP: EntrePierna, TR: Tramo Recto, LCD: Línea Cierre Delantero)
+// 1.4. MEDIDAS PARA CUBRE PAÑAL (C/P)
 const MEDIDAS_CUBRE_PAÑAL = {
     '0 RN ': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
     '1 mes ': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
@@ -42,9 +46,8 @@ const MEDIDAS_CUBRE_PAÑAL = {
     '12 meses ': { CC: 48, AL: 13, EP: 10, TR: 2.5, LCD: 3 } 
 };
 
-// 1.2. MEDIDAS PARA GORRO (CC: Contorno de Cabeza, ALT: Altura Total, COR: Coronilla, REC: Tejido Recto, VUE: Vuelta/Borde)
+// 1.5. MEDIDAS PARA GORRO
 const MEDIDAS_GORRO = {
-   
      'RN- 0': { CC: 32.0, ALT: 12.0, COR: 4.0, REC: 7.0, VUE: 2.0 }, 
      '1-3 meses': { CC: 35.0, ALT: 14.0, COR: 4.0, REC: 9.0, VUE: 2.0 }, 
      '3-6 meses': { CC: 36.0, ALT: 17.0, COR: 5.0, REC: 9.5, VUE: 2.0 }, 
@@ -55,17 +58,17 @@ const MEDIDAS_GORRO = {
 };
 
 
-// Mapeo unificado para referencias
+// Mapeo ÚNICO: Ahora cada categoría apunta a su propio set de datos NO solapado.
 const MAPA_MEDIDAS = {
-    'Bebé (Prematuro a 24m)': MEDIDAS_ANTROPOMETRICAS,
-    'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
-    'Adulto (36 a 50)': MEDIDAS_ANTROPOMETRICAS,
+    'Bebé (Prematuro a 24m)': MEDIDAS_BEBE,
+    'Niños (3 a 10 años)': MEDIDAS_NINOS,
+    'Adulto (36 a 50)': MEDIDAS_ADULTO,
     'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL,
     'Gorro (Tallas)': MEDIDAS_GORRO 
 };
 
 // ====================================================================
-// 2. FUNCIONES DE UTILIDAD
+// 2. FUNCIONES DE UTILIDAD (Se mantiene igual)
 // ====================================================================
 
 /**
@@ -85,7 +88,6 @@ function generarCierresProgresivosNuevo(totalPuntos, numPasadas) {
         return `Menguar 1 punto cada ${pasadasPorCierre} pasadas (total ${totalPuntos} veces).`;
     }
 
-    // 1. Cierres/menguados grandes al inicio (para la curva más pronunciada)
     let puntosGrandes = Math.min(Math.floor(totalPuntos * 0.25), 6); 
     
     let secuenciaInicial = [];
@@ -102,7 +104,6 @@ function generarCierresProgresivosNuevo(totalPuntos, numPasadas) {
         if (puntosRestantes <= 0 || pasadasRestantes <= 0) break;
     }
     
-    // 2. Cierres/menguados progresivos (el resto de la curva)
     if (puntosRestantes > 0 && pasadasRestantes > 0) {
         const pasadasPorPunto = pasadasRestantes / puntosRestantes;
         
@@ -124,14 +125,13 @@ function generarCierresProgresivosNuevo(totalPuntos, numPasadas) {
         const diferenciaFinal = pasadasRestantes - sumaMenguados;
         if (cierres.length > 0) {
             cierres[cierres.length - 1] += diferenciaFinal;
-            if (cierres[cierres.length - 1] < 1) cierres[cierres.length - 1] = 1; // Asegurar un mínimo de 1 pasada
+            if (cierres[cierres.length - 1] < 1) cierres[cierres.length - 1] = 1; 
         }
     } else if (puntosRestantes > 0) {
         secuenciaInicial.push(puntosRestantes);
         puntosRestantes = 0;
     }
 
-    // Formatear el resultado final
     let resultadoFinal = '';
     if (secuenciaInicial.length > 0) {
         resultadoFinal += `- **Curva Inicial:** Cerrar ${secuenciaInicial.map(p => `${p}`).join(', ')} puntos (al inicio de las siguientes vueltas).\n`;
@@ -149,46 +149,40 @@ function generarCierresProgresivosNuevo(totalPuntos, numPasadas) {
 }
 
 // ====================================================================
-// 3. LÓGICA CENTRAL DE CÁLCULO
+// 3. LÓGICA CENTRAL DE CÁLCULO (Se mantiene igual, adaptada a la nueva estructura)
 // ====================================================================
 
 /**
  * Función principal para calcular el patrón de tejido.
  */
 function calcularPatron() {
-    // 1. OBTENER VALORES DE ENTRADA
     const puntosMuestra = parseFloat(document.getElementById('puntos_muestra').value);
     const hilerasMuestra = parseFloat(document.getElementById('hileras_muestra').value);
     const tallaSeleccionada = document.getElementById('talla_seleccionada').value; 
     const tipoPrenda = document.getElementById('tipo_prenda').value;
     const metodoTejido = document.getElementById('metodo_tejido').value;
     
-    // Asumiendo valores de holgura y largo opcional (no presentes en HTML, se usan 0)
     const holguraCM = parseFloat(document.getElementById('holgura_cm')?.value) || 0;
     const largoDeseadoCM = parseFloat(document.getElementById('largo_deseado_cm')?.value) || 0;
     const largoMangaCM = parseFloat(document.getElementById('largo_manga_cm')?.value) || 0;
     
     const resultadoDiv = document.getElementById('resultado');
 
-    // 2. VALIDACIONES BÁSICAS
     if (!puntosMuestra || isNaN(puntosMuestra) || tipoPrenda === "") {
         resultadoDiv.innerHTML = '<p class="error">Error: Por favor, complete los campos obligatorios: **Puntos de Muestra** y selección de **Tipo de Prenda**.</p>';
         return;
     }
     
-    // Validación de Talla (si no es CM_DESEADOS)
     if (tipoPrenda !== "CM_DESEADOS" && tallaSeleccionada === "") {
         resultadoDiv.innerHTML = '<p class="error">Error: Por favor, seleccione una **Talla a tejer**.</p>';
         return;
     }
 
-    // Densidad de Puntos y Hileras (por cm)
     const densidadP = puntosMuestra / 10;
     const densidadH = hilerasMuestra ? hilerasMuestra / 10 : null;
     
     let resultado = '';
 
-    // --- LÓGICA PARA CM DESEADOS (Ancho Libre) ---
     if (tipoPrenda === "CM_DESEADOS") {
         const cmDeseados = parseFloat(document.getElementById('cm_deseados').value);
         if (!cmDeseados || isNaN(cmDeseados) || cmDeseados <= 0) {
@@ -206,7 +200,6 @@ function calcularPatron() {
         resultado += `* ¡Perfecto para bufandas, chales o mantas!`;
         
     } else {
-        // --- LÓGICA PARA PRENDAS CON TALLA (GORRO, CUBRE_PAÑAL, JERSEY, CHAQUETA) ---
         
         let medidas;
         const [categoria, nombreTalla] = tallaSeleccionada.split('|');
@@ -220,7 +213,6 @@ function calcularPatron() {
             return;
         }
         
-        // --- LÓGICA PARA GORRO ---
         if (tipoPrenda === "GORRO") {
             if (!densidadH) {
                  resultadoDiv.innerHTML = '<p class="error">Para calcular un **GORRO**, debe indicar las **Pasadas en 10 cm** (Muestra de Tensión).</p>';
@@ -258,13 +250,12 @@ function calcularPatron() {
             resultado += `* **Cierre Final:** Cuando la pieza mida ${altGorro.toFixed(1)} cm (o **${hilerasTotal} pasadas**), cortar la hebra y pasarla por los puntos restantes para cerrar la coronilla.\n`;
             
         } else if (tipoPrenda === "CUBRE_PAÑAL") {
-            // --- LÓGICA PARA CUBRE PAÑAL ---
             
-            const ccCubre = medidas.CC; // Contorno Cintura
-            const alCubre = medidas.AL; // Altura Lateral
-            const epCubre = medidas.EP; // EntrePierna
-            const trCubre = medidas.TR; // Tramo Recto
-            const lcdCubre = medidas.LCD; // Línea Cierre Delantero
+            const ccCubre = medidas.CC; 
+            const alCubre = medidas.AL; 
+            const epCubre = medidas.EP; 
+            const trCubre = medidas.TR; 
+            const lcdCubre = medidas.LCD; 
 
             const puntosCintura = Math.round(ccCubre * densidadP);
             const anchoCinturaCm = (puntosCintura / densidadP).toFixed(1); 
@@ -275,33 +266,27 @@ function calcularPatron() {
             resultado += `<hr>`;
             resultado += `<h4>🧶 Instrucciones de Tejido:</h4>\n`;
             
-            // CINTURA
             resultado += `<u>1. Cintura (Borde)</u>\n`;
             resultado += `* **Montar:** **${puntosCintura} puntos** (${anchoCinturaCm} cm de ancho).\n`;
             resultado += `* Tejer en elástico 1/1 o 2/2 la altura deseada para la cinturilla.\n\n`;
 
-            // CUERPO (AUMENTOS TRASEROS)
             resultado += `<u>2. Cuerpo (Espalda: Aumentos y Forma)</u>\n`;
             const puntosAumentarCuerpo = Math.round((medidas.CP / 2) * densidadP) - Math.round((ccCubre / 2) * densidadP);
             resultado += `* Tejer la altura lateral **${alCubre.toFixed(1)} cm** con aumentos progresivos para llegar a la mitad del contorno de pecho (total ${puntosAumentarCuerpo} puntos a aumentar, distribuidos en el largo).\n`;
             
-            // ENTRE PIERNA Y TRAMO RECTO
             resultado += `<u>3. Entrepierna</u>\n`;
             resultado += `* **Tramo Recto de Entrepierna (T.R.):** Tejer recto **${trCubre.toFixed(1)} cm** (${puntosTramoRecto} puntos de ancho en ese tramo).\n`;
             resultado += `* **Cierre Progresivo (LCD):** Luego cerrar progresivamente hasta la **Línea de Cierre Delantero (${lcdCubre.toFixed(1)} cm)**.\n`;
         
         } else {
-            // --- LÓGICA GENERAL PARA JERSEY/CHAQUETA ---
             
             let holguraCm = holguraCM; 
             let holguraMangaCm = holguraCM / 2; 
 
-            // CÁLCULO DE PUNTOS Y CM FINALES 
             const cpAjustadoCm = medidas.CP + holguraCm;
             const cpPts = Math.round(cpAjustadoCm * densidadP); 
             const anchoPrendaCm = (cpPts / densidadP).toFixed(1); 
             
-            const ccAjustadoCm = medidas.CC + holguraCm; 
             const anchoSisaMangaCm = medidas.CA + holguraMangaCm; 
             const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
             const tiraCuelloCm = 2.5; 
@@ -319,7 +304,6 @@ function calcularPatron() {
             resultado += `* **Largo Manga (LM):** ${largoMangaCM > 0 ? largoMangaCM.toFixed(1) : medidas.LM.toFixed(1)} cm.\n\n`;
 
 
-            // --- LÓGICA BOTTOM-UP (Del Bajo al Hombro) ---
             if (metodoTejido === "BAJO") {
                 if (!densidadH) {
                      resultadoDiv.innerHTML = '<p class="error">Para el método **BAJO** (Bottom-Up), debe indicar las **Pasadas en 10 cm** (Muestra de Tensión).</p>';
@@ -349,7 +333,6 @@ function calcularPatron() {
                 resultado += `* **Tejer Manga:** La manga medirá **${largoMangaCm.toFixed(1)} cm** de largo total.\n`;
 
 
-            // --- LÓGICA TOP-DOWN (Escote al Bajo - Raglán) ---
             } else if (metodoTejido === "ESCOTE") {
                 if (!densidadH) {
                      resultadoDiv.innerHTML = '<p class="error">Para el método **ESCOTE** (Top-Down/Raglán), debe indicar las **Pasadas en 10 cm** (Muestra de Tensión).</p>';
@@ -361,12 +344,11 @@ function calcularPatron() {
                 resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán)</h4>\n`;
                 resultado += `<p>El ancho total de la prenda será de **${anchoPrendaCm} cm**.</p>\n\n`;
                 
-                // 1. REPARTO INICIAL
                 const ccabMinimoCm = medidas.CCab / 1.2;
                 const contornoEscoteMontajeCm = Math.max(medidas.CC, ccabMinimoCm); 
                 const puntosMontaje = Math.round(contornoEscoteMontajeCm * densidadP); 
                 
-                const puntosBase = puntosMontaje - 4; // Los 4 puntos de los marcadores Raglán
+                const puntosBase = puntosMontaje - 4; 
                 const pEspalda = Math.round(puntosBase * 0.33);
                 const pManga = Math.round((puntosBase * 0.33) / 2); 
                 let pDelanteroBase = puntosBase - pEspalda - (pManga * 2);
@@ -383,21 +365,15 @@ function calcularPatron() {
                      repartoStr = `**Delantero** (**${pDelanteroBase} puntos**), **Manga 1** (**${pManga} puntos**), **Espalda** (**${pEspalda} puntos**), **Manga 2** (**${pManga} puntos**).`;
                 }
 
-                // OUTPUT MONTAJE 
                 resultado += `<u>1. Empezamos a tejer con el escote:</u>\n`;
                 resultado += `* **Montamos:** **${puntosMontaje} puntos** (**${contornoEscoteMontajeCm.toFixed(1)} cm** de contorno).\n`; 
                 resultado += `* **A continuación:** Tejer **${tiraCuelloPts} pasadas** (**${tiraCuelloCm.toFixed(1)} cm**) para la tira del cuello.\n`;
                 resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
-                // 2. AUMENTOS RAGLÁN
-                const largoMangaCm = largoMangaCM > 0 ? largoMangaCM : medidas.LM;
-                const puntosMangaFinal = puntosSisaManga; 
-
                 resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
                 resultado += `* **Largo de Línea Raglán:** **${raglanCmBase.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
                 resultado += `* **Ritmo de Aumentos:** Debe realizar **aumentos** antes y después de cada marcador de Raglán en las vueltas de derecho/ida, hasta alcanzar las **${hilerasRaglan} pasadas**.\n\n`;
 
-                // 3. SEPARACIÓN DE CUERPO Y MANGAS
                 const puntosAnadirSisaPts = Math.round(medidas.AE * densidadP);
                 const largoTotalCm = largoDeseadoCM > 0 ? largoDeseadoCM : medidas.LT;
                 const finalLargoCuerpoCm = largoTotalCm - raglanCmBase - tiraCuelloCm;
@@ -406,7 +382,6 @@ function calcularPatron() {
                 resultado += `<u>3. Separación de Cuerpo y Mangas</u>\n`;
                 resultado += `* **Puntos de Sisa (Bajo Manga):** Añadir **${puntosAnadirSisaPts} puntos** para el bajo de la sisa de cada manga (total ${puntosAnadirSisaPts * 2} puntos añadidos al cuerpo).\n`;
                 
-                // Instrucciones para el Cuerpo
                 let puntosTotalCuerpoFinal;
                 if (tipoPrenda === "JERSEY") {
                     puntosTotalCuerpoFinal = pDelanteroBase + pEspalda + puntosAnadirSisaPts * 2;
@@ -420,9 +395,8 @@ function calcularPatron() {
                 
                 resultado += `* **Largo del Cuerpo (desde Sisa a Bajo):** Continuar recto **${finalLargoCuerpoCm.toFixed(1)} cm** ${largoCuerpoRestanteH !== null ? `(**${largoCuerpoRestanteH} pasadas**)` : ''}.\n\n`;
                 
-                // 4. MANGAS
                 const puntosPuño = Math.round(medidas['C Puño'] * densidadP);
-                const puntosMenguarManga = (puntosMangaFinal * 2) + puntosAnadirSisaPts - puntosPuño; 
+                const puntosMenguarManga = (puntosSisaManga * 2) + puntosAnadirSisaPts - puntosPuño; 
                 const hilerasManga = Math.round(largoMangaCm * densidadH);
                 
                 resultado += `<u>4. Mangas</u>\n`;
@@ -432,7 +406,6 @@ function calcularPatron() {
         }
     }
     
-    // AÑADIR NOTA DE CROCHET/GANCHILLO (MODIFICACIÓN FINAL)
     resultado += `<hr style="margin-top: 25px; border-color: #d6a4a4;">`;
     resultado += `<p style="font-size:0.9em; text-align: center;">💡 **Nota:** Esta calculadora es válida tanto para **tejido en dos agujas** como para **Ganchillo/Crochet**.</p>`;
 
@@ -440,13 +413,12 @@ function calcularPatron() {
 }
 
 // ====================================================================
-// 4. INICIALIZACIÓN Y EVENT LISTENERS (Corregidos IDs y Lógica de Filtrado)
+// 4. INICIALIZACIÓN Y EVENT LISTENERS (Lógica de Filtrado Corregida)
 // ====================================================================
 
 /**
  * Función para poblar el dropdown de tallas con categorías y nombres,
  * filtrando por una lista de categorías proporcionada.
- * @param {string[]} categoriasAMostrar Array de claves del MAPA_MEDIDAS a mostrar.
  */
 function poblarTallas(categoriasAMostrar) {
     const tallaSelect = document.getElementById('talla_seleccionada');
@@ -455,13 +427,11 @@ function poblarTallas(categoriasAMostrar) {
     // Limpiar opciones anteriores
     tallaSelect.innerHTML = '<option value="">Selecciona una talla</option>';
 
-    // Si no hay categorías que mostrar, solo mostramos el placeholder
     if (!categoriasAMostrar || categoriasAMostrar.length === 0) {
         return;
     }
 
     for (const categoria of categoriasAMostrar) {
-        // La comprobación de hasOwnProperty ya está cubierta por el loop for...of
         if (MAPA_MEDIDAS.hasOwnProperty(categoria)) {
             const optgroup = document.createElement('optgroup');
             optgroup.label = categoria;
@@ -487,11 +457,11 @@ function actualizarInterfaz() {
     const tipoPrenda = document.getElementById('tipo_prenda').value;
     const metodoTejidoDiv = document.getElementById('metodo-group');
     const metodoTejidoSelect = document.getElementById('metodo_tejido');
-    // Usamos el padre para ocultar el bloque completo del selector de talla
     const tallaSelectDiv = document.getElementById('talla_seleccionada').parentNode; 
     const cmGroup = document.getElementById('cm-group');
     
-    let categoriasTalla = [];
+    // CORRECCIÓN CLAVE: Usamos 'categoriasTalla' para almacenar el filtro.
+    let categoriasTalla = []; 
     
     // 1. Resetear visibilidad de elementos dinámicos
     if (metodoTejidoDiv) metodoTejidoDiv.style.display = 'none';
@@ -525,14 +495,14 @@ function actualizarInterfaz() {
             
         case 'GORRO':
             // Mostrar Tallas (Gorro). Ocultar Método y CM.
-            categoriasTallas = ['Gorro (Tallas)'];
+            categoriasTalla = ['Gorro (Tallas)']; // <-- CORREGIDO: Usando 'categoriasTalla'
             break;
             
         case 'CM_DESEADOS':
             // Mostrar CM Deseados. Ocultar Tallas y Método.
             if (tallaSelectDiv) tallaSelectDiv.style.display = 'none';
             if (cmGroup) cmGroup.style.display = 'block';
-            categoriasTalla = []; // No cargar ninguna talla
+            categoriasTalla = []; 
             break;
             
         default:
