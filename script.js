@@ -181,7 +181,7 @@ function generarCierresProgresivosNuevo(puntosAFormar) {
     }
 
     // 2. Cierres de 2 puntos (prioridad: cierres mayores primero)
-    while (puntosRestantes >= 2) {
+    if (puntosRestantes >= 2) {
         cierres.push(2);
         puntosRestantes -= 2;
     }
