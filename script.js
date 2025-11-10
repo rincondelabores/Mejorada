@@ -393,13 +393,29 @@ function calcularPatron() {
        
      
     } else {
-        // --- LÓGICA EXISTENTE PARA JERSEY, CHAQUETA, ETC. ---
-        
-        // [CÓDIGO EXISTENTE DE JERSEY/CHAQUETA/CM_DESEADOS] (Se omite aquí por espacio, pero se mantiene en el archivo adjunto)
-        
-        // ... (El resto de la lógica de Jersey/Chaqueta/Cm Deseados se mantiene igual)
+        // --- BLOQUE DE CÁLCULOS INICIALES PARA JERSEY/CHAQUETA (AÑADIDO PARA LA CORRECCIÓN) ---
 
-        // Nota: El código completo de la lógica existente se mantiene en el archivo `script.js` proporcionado al final.
+        // 1. Cálculos de Holgura (Ease)
+        const holguraCm = medidas.CP * 0.08; // 8% de holgura al contorno de pecho
+        const anchoPrendaCm = medidas.CP + holguraCm;
+
+        // 2. Conversión a Puntos
+        const cpPts = Math.round(anchoPrendaCm * densidadP); // Puntos de Contorno de Pecho (con holgura)
+        const ccPts = Math.round(medidas.CC * densidadP); // Puntos de Contorno de Cuello
+
+        // 3. Cálculos de Tira de Cuello y Raglán
+        const tiraCuelloCm = 2.5; // Tira de Cuello Base
+        const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : null;
+        const ccAjustadoCm = medidas.CC + (tiraCuelloCm * 2); // Contorno Cuello con tapeta
+        const raglanCmBase = medidas.PSisa; // Raglan = Altura de Sisa
+
+        // 4. Cálculos de Tapeta (Solo Chaqueta)
+        const puntosTapeta = Math.round(3 * densidadP); // 3 cm de tapeta (Aproximación)
+
+        // 5. Cálculos de Manga
+        const holguraMangaCm = 4; // 4 cm de holgura en manga (Aproximación)
+        const anchoSisaMangaCm = medidas.CA + holguraMangaCm;
+        const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
     
     // El resto de la lógica del patrón se mantiene si no es Cubre Pañal
     
