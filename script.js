@@ -186,7 +186,7 @@ function generarCierresProgresivosNuevo(puntosAFormar) {
     }
 
     // 3. Cierres de 1 punto (el resto)
-    while (puntosRestantes > 0) {
+    while (puntosRestantes >= 1) {
         cierres.push(1);
         puntosRestantes -= 1;
     }
