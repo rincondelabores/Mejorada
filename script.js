@@ -36,7 +36,6 @@ const MEDIDAS_ANTROPOMETRICAS = {
 // ====================================================================
 // 1.1. NUEVAS MEDIDAS PARA CUBRE PAÑAL (C/P)
 // ====================================================================
-// CC: Contorno Cintura / AL: Altura Lateral / EP: EntrePierna / TR: Tramo Recto / LCD: Línea Cierre Delantero
 const MEDIDAS_CUBRE_PAÑAL = {
     '0 RN ': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
     '1 mes ': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
@@ -49,16 +48,15 @@ const MEDIDAS_CUBRE_PAÑAL = {
 // ====================================================================
 // 1.2. NUEVAS MEDIDAS PARA GORRO (Corregido 'Adolescentes' de 352.0 a 52.0)
 // ====================================================================
-// CC: Contorno de Cabeza / ALT: Altura Total / COR: Coronilla / REC: Tejido Recto / VUE: Vuelta/Borde
 const MEDIDAS_GORRO = {
    
-     'RN- 0': { CC: 37.0, ALT: 12.0, COR: 4.0, REC: 7.0, VUE: 2.0 }, 
-     '1-3 meses': { CC: 40.0, ALT: 14.0, COR: 4.0, REC: 9.0, VUE: 2.0 }, 
-     '3-6 meses': { CC: 41.0, ALT: 17.0, COR: 5.0, REC: 9.5, VUE: 2.0 }, 
-     '6 meses-2 años': { CC: 42.0, ALT: 19.0, COR: 5.0, REC: 10.5, VUE: 2.5 }, 
+     'RN- 0': { CC: 32.0, ALT: 12.0, COR: 4.0, REC: 7.0, VUE: 2.0 }, 
+     '1-3 meses': { CC: 35.0, ALT: 14.0, COR: 4.0, REC: 9.0, VUE: 2.0 }, 
+     '3-6 meses': { CC: 36.0, ALT: 17.0, COR: 5.0, REC: 9.5, VUE: 2.0 }, 
+     '6 meses-2 años': { CC: 41.0, ALT: 19.0, COR: 5.0, REC: 10.5, VUE: 2.5 }, 
      'Niños': { CC: 48.0, ALT: 21.0, COR: 5.0, REC: 12.0, VUE: 3.0 }, 
      'Adolescentes': { CC: 52.0, ALT: 23.0, COR: 6.0, REC: 13.0, VUE: 4.0 }, 
-     'Adultos': { CC: 55.0, ALT: 25.0, COR: 6.0, REC: 13.5, VUE: 5.0 }
+     'Adultos': { CC: 54.0, ALT: 25.0, COR: 6.0, REC: 13.5, VUE: 5.0 }
 };
 
 
@@ -523,12 +521,17 @@ function actualizarMetodoTejido() {
     const metodoTejidoSelect = document.getElementById('metodo_tejido');
 
     // Resetear visibilidad y opciones
-    metodoTejidoDiv.style.display = 'none';
+    // Es posible que necesites ajustar la visibilidad del div padre si no se encuentra el ID
+    if (metodoTejidoDiv) {
+        metodoTejidoDiv.style.display = 'none';
+    }
     metodoTejidoSelect.innerHTML = '';
     
     // Si es Jersey o Chaqueta, se muestra la opción Top-Down/Bottom-Up
     if (tipoPrenda === 'JERSEY' || tipoPrenda === 'CHAQUETA') {
-        metodoTejidoDiv.style.display = 'block';
+        if (metodoTejidoDiv) {
+            metodoTejidoDiv.style.display = 'block';
+        }
         metodoTejidoSelect.innerHTML = `
             <option value="ESCOTE">Desde el Escote (Raglán / Top-Down)</option>
             <option value="BAJO">Desde el Bajo (Bottom-Up)</option>
@@ -541,10 +544,16 @@ function actualizarMetodoTejido() {
 
 // Inicialización de los Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    poblarTallas();
-    document.getElementById('calcular_btn').addEventListener('click', calcularPatron);
-    document.getElementById('tipo_prenda').addEventListener('change', actualizarMetodoTejido);
+    // ESTA LÍNEA ES CLAVE: Llama a la función que rellena el selector de tallas
+    poblarTallas(); 
     
-    // Iniciar con la actualización
+    // Asignación de eventos
+    const calcularBtn = document.getElementById('calcular_btn');
+    if(calcularBtn) calcularBtn.addEventListener('click', calcularPatron);
+    
+    const tipoPrendaSelect = document.getElementById('tipo_prenda');
+    if(tipoPrendaSelect) tipoPrendaSelect.addEventListener('change', actualizarMetodoTejido);
+    
+    // Iniciar con la actualización del método de tejido (para ocultarlo si no se necesita)
     actualizarMetodoTejido();
 });
