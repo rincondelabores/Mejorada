@@ -607,9 +607,9 @@ function calcularPatron() {
             // const hilerasRaglan = densidadH ? Math.round(raglanCmBase * densidadH) : null; // Esta línea ya no se usa para calcular
             
             resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán)</h4>\n`;
-            resultado += `* **Talla Seleccionada (${tallaSeleccionada}) (Contorno de pecho):** **${medidas.CP.toFixed(1)} cm**.\n`; 
-            resultado += `* **Ancho Total de la Prenda (Contorno de pecho + Holgura):** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n\n`;
-            resultado += `* **Puntos de Sisa (Objetivo):** La manga debe tener **${puntosSisaManga} puntos** en la sisa (incluyendo los puntos bajo el brazo).\n\n`;
+            resultado += `* **Talla Seleccionada** (${tallaSeleccionada}) (Contorno de pecho): **${medidas.CP.toFixed(1)} cm**.\n`; 
+            resultado += `* **Ancho Total de la Prenda** (Contorno de pecho + Holgura): **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n\n`;
+            resultado += `* ** La manga debe tener **${puntosSisaManga} puntos** en la sisa (incluyendo los puntos bajo el brazo).\n\n`;
 
             // 1. REPARTO INICIAL
             const puntosBase = puntosMontaje - 4; // Restar 4 puntos para los marcadores de raglán
@@ -639,9 +639,9 @@ function calcularPatron() {
                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho (puntos impares para ojal).</p>\n`;
             }
             
-            resultado += `<u>1. Empezamos a tejer con el escote (Fórmula Personalizada):</u>\n`;
-            resultado += `* **Fórmula de Escote (cm):** (CCa + CC) / 2 - 1\n`;
-            resultado += `* **Escote Requerido:** (${medidas.CCa.toFixed(1)} + ${medidas.CC.toFixed(1)}) / 2 - 1 = **${escoteCmDeseado.toFixed(1)} cm**.\n`;
+            resultado += `<u>1. Empezamos a tejer por el escote (Fórmula Personalizada):</u>\n`;
+           // resultado += `* **Fórmula de Escote (cm):** (CCa + CC) / 2 - 1\n`;
+            resultado += `* **Medida del Escote:** **${escoteCmDeseado.toFixed(1)} cm**.\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (${escoteCmDeseado.toFixed(1)} cm de contorno).\n`;
             // tiraCuelloPts y tiraCuelloCm son dinámicos
             resultado += `* **A continuación:** Tejer **${tiraCuelloPts} pasadas** (**${tiraCuelloCm.toFixed(1)} cm**) para la tira del cuello.\n`;
@@ -682,9 +682,9 @@ function calcularPatron() {
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
             // --- Texto de salida modificado ---
-            resultado += `* **Rondas de Aumento (Calculadas por Puntos Objetivo):** Se deben tejer **${numAumentosRondas}** rondas de aumentos para alcanzar los puntos de sisa necesarios.\n`;
-            resultado += `* **Altura de Sisa Vertical (Resultante):** **${raglanCmBaseCalculado.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
-            resultado += `* **Longitud Geométrica Real del Raglán (Referencia):** **${L_raglan.toFixed(2)} cm** (Basado en ${componenteVertical.toFixed(2)} cm de Vertical y ${componenteHorizontal.toFixed(2)} cm de Horizontal).\n`;
+            resultado += `* **Aumentos del Raglán: ** Se deben tejer **${numAumentosRondas}** pasadas de aumentos para alcanzar los puntos necesarios.\n`;
+            resultado += `* **Altura de Raglán:** **${raglanCmBaseCalculado.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
+          //  resultado += `* **Longitud Geométrica Real del Raglán (Referencia):** **${L_raglan.toFixed(2)} cm** (Basado en ${componenteVertical.toFixed(2)} cm de Vertical y ${componenteHorizontal.toFixed(2)} cm de Horizontal).\n`;
             
             let instruccionRaglanStr = `Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**, repitiendo un total de **${numAumentosRondas} veces**.\n`;
             instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Esto añade **${puntosAumentadosPorPieza} puntos** a cada una de las 4 piezas (Manga/Delantero/Espalda).</p>`;
@@ -714,8 +714,8 @@ function calcularPatron() {
             
             // --- 3.1. MANGAS ---
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
-            resultado += `* ** Dejar el Cuerpo en espera. Poner los **${puntosMangaFinal_PreSisa} puntos** de la manga a una aguja de trabajo.\n`;
-            resultado += `* **Puntos Bajo Manga:** Recoger o montar los **${puntosAnadirSisaPts} puntos** bajo la sisa. Tendrá un total de **${puntosMangaConSisa} puntos**.\n`;
+            resultado += `* ** Dejar el Cuerpo en espera. Poner los **${puntosMangaFinal_PreSisa} puntos ** de la manga a una aguja de trabajo.\n`;
+            resultado += `* **Puntos Bajo Manga:** Recoger o montar los **${puntosAnadirSisaPts} puntos ** bajo la sisa. Tendrá un total de **${puntosMangaConSisa} puntos**.\n`;
 
             if (puntosAnadirSisaPts % 2 === 0 && puntosAnadirSisaPts > 0) {
                 const mitadPuntosSisa = puntosAnadirSisaPts / 2;
@@ -764,9 +764,9 @@ function calcularPatron() {
                 
                 if (puntosAnadirSisaPts % 2 === 0 && puntosAnadirSisaPts > 0) {
                      const mitadPuntosSisa = puntosAnadirSisaPts / 2;
-                     resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tejido Separado (Plano):** Si prefiere tejer el Delantero y la Espalda por separado, recuerde añadir los **${puntosAnadirSisaPts} puntos** bajo manga divididos en dos: **${mitadPuntosSisa} puntos** al inicio y final de la Espalda y **${mitadPuntosSisa} puntos** al inicio y final del Delantero.</p>\n`;
+                     resultado += `<p style="font-size:1.1em; padding-left: 20px;">* **Tejido Separado (Plano):** Si prefiere tejer el Delantero y la Espalda por separado, recuerde añadir los **${puntosAnadirSisaPts} puntos** bajo manga divididos en dos: **${mitadPuntosSisa} puntos** al inicio y final de la Espalda y **${mitadPuntosSisa} puntos** al inicio y final del Delantero.</p>\n`;
                 } else {
-                     resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tejido Separado (Plano):** Si prefiere tejer el Delantero y la Espalda por separado, recuerde añadir los **${puntosAnadirSisaPts} puntos** bajo manga como puntos de montaje/aumento al inicio y final de la Espalda y al inicio y final del Delantero.</p>\n`;
+                     resultado += `<p style="font-size:1.1em; padding-left: 20px;">* **Tejido Separado (Plano):** Si prefiere tejer el Delantero y la Espalda por separado, recuerde añadir los **${puntosAnadirSisaPts} puntos** bajo manga como puntos de montaje/aumento al inicio y final de la Espalda y al inicio y final del Delantero.</p>\n`;
                 }
             
             } else { // CHAQUETA
