@@ -22,7 +22,7 @@ const MEDIDAS_ANTROPOMETRICAS = {
     '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 20.0, AE: 38.0, CED: 9.0, CCa: 52.0 },
     
     // Tallas de Mujer (Adulto) (Se añade CCa)
-    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño':19.3, LT: 58.0, LM: 47.0, PSisa: 22.0, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
+    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 22.0, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
     '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 22.5, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
     '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 23.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
     '42': { CP: 100.0, CC: 38.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 24.0, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
@@ -47,7 +47,7 @@ const MEDIDAS_CUBRE_PAÑAL = {
 };
 
 
-// Mapeo para poblar las tallas
+// Mapeo para poblar las tallas (NOTA: Esta estructura no se usará en poblarTallas, pero se mantiene como referencia)
 const MAPA_MEDIDAS = {
     'Bebé (Prematuro a 24m)': MEDIDAS_ANTROPOMETRICAS,
     'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
@@ -55,7 +55,7 @@ const MAPA_MEDIDAS = {
     'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL 
 };
 
-// Nueva estructura de ORDEN_TALLAS incluyendo el Cubre Pañal
+// Estructura de ORDEN_TALLAS
 const ORDEN_TALLAS = {
     'Bebé (Prematuro a 24m)': ['00 (Prematuro)', '0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'],
     'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
@@ -83,6 +83,7 @@ function poblarTallas() {
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
     } else {
+        // JERSEY o CHAQUETA
         gruposATejer = [
             ['Bebé (Prematuro a 24m)', ORDEN_TALLAS['Bebé (Prematuro a 24m)']],
             ['Niños (3 a 10 años)', ORDEN_TALLAS['Niños (3 a 10 años)']],
@@ -95,7 +96,16 @@ function poblarTallas() {
         optgroup.label = label;
         
         tallas.forEach(tallaKey => {
-            const medidasSource = MAPA_MEDIDAS[label];
+            
+            // LÓGICA CORREGIDA: Acceso directo a la fuente de datos
+            let medidasSource;
+            if (label === 'Cubre Pañal (0 a 12m)') {
+                medidasSource = MEDIDAS_CUBRE_PAÑAL;
+            } else {
+                // Todas las demás categorías (Bebé, Niño, Adulto)
+                medidasSource = MEDIDAS_ANTROPOMETRICAS;
+            }
+            
             if (medidasSource && tallaKey in medidasSource) { 
                 const option = document.createElement('option');
                 option.value = tallaKey;
@@ -784,6 +794,4 @@ function calcularPatron() {
     resultado += `<p style="font-size:0.9em; text-align: center;">💡 **Nota:** Esta calculadora es válida tanto para **tejido en dos agujas** (donde 'puntos' = puntos y 'pasadas' = hileras) como para **Ganchillo/Crochet** (donde 'puntos' = cadenetas y 'pasadas' = vueltas). Solo tiene que sustituir la terminología.</p>`;
 
     resultadoDiv.innerHTML = resultado.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-}
-
 }
