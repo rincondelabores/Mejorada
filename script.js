@@ -578,13 +578,14 @@ function calcularPatron() {
         // --- LÓGICA TOP-DOWN (Escote al Bajo - Raglán) ---
         } else if (metodoTejido === "ESCOTE") {
             
-            // ** CÁLCULO DE ESCOTE PERSONALIZADO: (CCa + CC) / 2 - 2 **
+            // ** CÁLCULO DE ESCOTE PERSONALIZADO: (CCa + CC) / 2 - 1 (Fórmula de Elena) **
             if (!medidas.CCa || !medidas.CC) {
                 resultadoDiv.innerHTML = '<p class="error">Error: La talla seleccionada no tiene las medidas de Contorno de Cabeza (CCa) y/o Contorno de Cuello (CC) definidas para calcular el escote con la fórmula personalizada.</p>';
                 return;
             }
             
-            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2;
+            // Se utiliza la fórmula de escote personalizada guardada: (CCa + CC) / 2 - 1
+            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 1;
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
             
@@ -652,31 +653,31 @@ function calcularPatron() {
             resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
             // 2. AUMENTOS RAGLÁN
-            // ================== INICIO DE LA CORRECCIÓN 2 (Lógica Raglán) ==================
-            // La lógica se basa ahora en alcanzar 'puntosSisaManga' (el objetivo), no en 'raglanCmBase' (la longitud)
-
-            // 1. Calculamos cuántos puntos debe tener la manga ANTES de añadir los p. de la sisa
-            // (puntosSisaManga es el objetivo total, pManga es el inicio)
-            const puntosMangaFinal_PreSisa_Target = puntosSisaManga - puntosAnadirSisaPts;
+            // ================== INICIO DE LA CORRECCIÓN 2 (Lógica Raglán para consistencia BAJO/ESCOTE) ==================
+            // 1. El objetivo de puntos de la manga DESPUÉS de los aumentos de Raglán y ANTES de recoger los puntos de la sisa (puntosAnadirSisaPts).
+            // Debe ser igual al ancho de la pieza de manga en el método BAJO (puntosSisaManga).
+            const puntosMangaFinal_PreSisa_Target = puntosSisaManga; 
             
             // 2. Calculamos cuántos puntos totales necesitamos aumentar en la manga
             const totalAumentosManga = puntosMangaFinal_PreSisa_Target - pManga;
             
             // 3. Calculamos cuántas rondas de aumentos son (se aumentan 2 p por manga cada ronda)
-            const numAumentosRondas = (totalAumentosManga > 0) ? Math.round(totalAumentosManga / 2) : 0;
+            // Usamos Math.ceil para asegurar que se alcanza o supera el objetivo de puntos (puntosMangaFinal_PreSisa_Target)
+            const numAumentosRondas = (totalAumentosManga > 0) ? Math.ceil(totalAumentosManga / 2) : 0;
             
             // 4. Calculamos el total de puntos aumentados por pieza (2 por ronda)
             const puntosAumentadosPorPieza = numAumentosRondas * 2;
             
             // 5. Calculamos los puntos finales REALES de cada pieza (basado en rondas)
-            const puntosMangaFinal_PreSisa = Math.round(pManga + puntosAumentadosPorPieza);
-            const puntosEspaldaFinal_PreSisa = Math.round(pEspalda + puntosAumentadosPorPieza);
-            const puntosDelanteroFinal_PreSisa = Math.round(pDelanteroBase + puntosAumentadosPorPieza);
+            // Los puntos finales se basan en las rondas calculadas
+            const puntosMangaFinal_PreSisa = pManga + puntosAumentadosPorPieza;
+            const puntosEspaldaFinal_PreSisa = pEspalda + puntosAumentadosPorPieza;
+            const puntosDelanteroFinal_PreSisa = pDelanteroBase + puntosAumentadosPorPieza;
 
             // 6. Recalculamos la longitud del Raglán basada en las rondas de aumentos
             const hilerasRaglan = numAumentosRondas * 2;
             const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : (medidas.PSisa); // Usar PSisa como fallback si no hay densidadH
-            // ================== FIN DE LA CORRECCIÓN 2 (Lógica Raglán) ==================
+            // ================== FIN DE LA CORRECCIÓN 2 (Lógica Raglán para consistencia BAJO/ESCOTE) ==================
             
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
