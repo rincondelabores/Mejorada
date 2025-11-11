@@ -409,7 +409,13 @@ function calcularPatron() {
 
         // 6. Ancho de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
         // (Contorno de Axila Total + Holgura Total) / 2
-        const anchoSisaMangaCm = (medidas.CA + holguraAxilaCm) / 2;
+        
+        // ================== INICIO DE LA CORRECCIÓN ==================
+        // La fórmula original (medidas.CA + holguraAxilaCm) / 2 era incorrecta
+        // porque medidas.CA parece ser la ANCHURA (mitad contorno) y no el contorno total.
+        // La fórmula correcta es: (Anchura Plana + Mitad de Holgura)
+        const anchoSisaMangaCm = medidas.CA + (holguraAxilaCm / 2);
+        // ================== FIN DE LA CORRECCIÓN ==================
         
         // 7. Puntos de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
         const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
@@ -541,7 +547,7 @@ function calcularPatron() {
             // 3. MANGAS
             resultado += `<u>3. Mangas</u>\n`;
             const puntosPuño = Math.round(medidas['C Puño'] * densidadP);
-            // puntosSisaManga está calculado arriba en la sección general
+            // puntosSisaManga está calculado arriba en la sección general (Y AHORA ES CORRECTO)
             const largoMangaSisaPuñoCm = medidas.LM; 
             const largoMangaH = densidadH ? Math.round(largoMangaSisaPuñoCm * densidadH) : null;
             
@@ -553,10 +559,11 @@ function calcularPatron() {
             
             if (aumentosPorLado > 0) {
                 const frecuenciaCm = largoMangaSisaPuñoCm / aumentosPorLado;
-                const cmSisaFinal = anchoSisaMangaCm.toFixed(1); // Ya está calculado
+                // anchoSisaMangaCm (el objetivo) ahora es correcto gracias a la corrección.
+                const cmSisaFinal = anchoSisaMangaCm.toFixed(1); 
 
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
-                if (densidadH) {
+                if (densidadH && largoMangaH > 0 && aumentosPorLado > 0) {
                     const frecuenciaAumentos = Math.round(largoMangaH / aumentosPorLado);
                     frecuenciaStr = `cada **${frecuenciaAumentos} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
                 }
@@ -564,7 +571,7 @@ function calcularPatron() {
                 // MODIFICADO: El output usa holguraAxilaCm
                 resultado += `* **Aumentos:** Aumentar **1 punto a cada lado** **${aumentosPorLado} veces** con una frecuencia de **${frecuenciaStr}**. Esto lleva la manga a **${puntosSisaManga} puntos** (**${cmSisaFinal} cm** de ancho en la sisa, que incluye **${(holguraAxilaCm / 2).toFixed(1)} cm** de holgura).\n\n`;
             } else {
-                resultado += `* **Aumentos:** No se requieren aumentos o el cálculo es inconsistente. Tejer recto.\n\n`;
+                resultado += `* **Aumentos:** No se requieren aumentos. Tejer recto.\n\n`;
             }
 
 
@@ -586,7 +593,7 @@ function calcularPatron() {
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
 
-            // (anchoSisaMangaCm ahora está disponible gracias al reordenamiento)
+            // (anchoSisaMangaCm ahora es correcto gracias a la corrección global)
             const puntosAnadirSisaPtsBase = Math.max(4, Math.round(anchoSisaMangaCm * 0.2)); // 20% del ancho de la sisa
             const puntosAnadirSisaPts = puntosAnadirSisaPtsBase % 2 === 0 ? puntosAnadirSisaPtsBase : puntosAnadirSisaPtsBase + 1; 
 
@@ -643,7 +650,7 @@ function calcularPatron() {
                  instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Esto añade **${puntosAumentadosPorPieza} puntos** a cada una de las 4 piezas (Manga/Delantero/Espalda).</p>`;
             }
             resultado += `* **Indicaciones para los Aumentos:** ${instruccionRaglanStr}\n`;
-            // SOLUCIONADO: puntosAnadirSisaPts ya no será NaN
+            // SOLUCIONADO: puntosAnadirSisaPts ahora es un valor más lógico gracias a la corrección.
             resultado += `* **Puntos a Añadir en la Sisa:** Al separar las mangas, añadir **${puntosAnadirSisaPts} puntos** (montados o recogidos) bajo cada sisa. \n\n`;
             
             
@@ -689,8 +696,10 @@ function calcularPatron() {
                 if (densidadH && largoMangaRestanteH) {
                     // tiraCuelloPts es dinámico
                     const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
-                    const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
-                    frecuenciaStr = `cada **${Math.max(1, frecuenciaPasadas)} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
+                    if (vecesDisminuir > 0) {
+                        const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
+                        frecuenciaStr = `cada **${Math.max(1, frecuenciaPasadas)} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
+                    }
                 }
                 
                 resultado += `<p style="padding-left: 20px;">- Disminuir **1 punto a cada lado** **${vecesDisminuir} veces** **${frecuenciaStr}**.\n`;
