@@ -4,32 +4,35 @@
 
 const MEDIDAS_ANTROPOMETRICAS = {
     // Tallas de Bebé (Se añade CCa - Contorno de Cabeza)
+    // PSisa corregida con valores del PDF (promedio del rango).
     '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 12.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 9.0, AE: 14.0, CED: 3.0, CCa: 32.0 },
-    '0 meses': { CP: 39.0, CC: 21.0, CA: 13.0, 'C Puño': 12.0, LT: 22.0, LM: 12.0, PSisa: 10.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
-    '1-3 meses': { CP: 40.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 23.0, LM: 14.0, PSisa: 11.0, AE: 18.0, CED: 4.0, CCa: 35.0 },
-    '3-6 meses': { CP: 44.0, CC: 23.0, CA: 16.0, 'C Puño': 12.5, LT: 24.0, LM: 16.0, PSisa: 12.0, AE: 20.0, CED: 4.5, CCa: 37.0 },
-    '6-9 meses': { CP: 48.0, CC: 27.0, CA: 17.0, 'C Puño': 12.5, LT: 26.0, LM: 18.0, PSisa: 12.5, AE: 22.0, CED: 5.0, CCa: 40.0 },
-    '9-12 meses': { CP: 52.0, CC: 25.0, CA: 18.0, 'C Puño': 12.5, LT: 28.0, LM: 20.0, PSisa: 13.0, AE: 24.0, CED: 5.5, CCa: 42.0 },
-    '12-15 meses': { CP: 56.0, CC: 25.0, CA: 19.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa: 13.5, AE: 26.0, CED: 6.0, CCa: 43.0 },
-    '15-18 meses': { CP: 60.0, CC: 26.0, CA: 20.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 14.0, AE: 28.0, CED: 6.5, CCa: 44.0 },
-    '18-24 meses': { CP: 61.0, CC: 26.0, CA: 22.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 15.0, AE: 30.0, CED: 7.0, CCa: 45.0 },
+    '0 meses': { CP: 39.0, CC: 21.0, CA: 13.0, 'C Puño': 12.0, LT: 22.0, LM: 12.0, PSisa: 7.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
+    '1-3 meses': { CP: 40.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 23.0, LM: 14.0, PSisa: 7.75, AE: 18.0, CED: 4.0, CCa: 35.0 },
+    '3-6 meses': { CP: 44.0, CC: 23.0, CA: 16.0, 'C Puño': 12.5, LT: 24.0, LM: 16.0, PSisa: 8.75, AE: 20.0, CED: 4.5, CCa: 37.0 },
+    '6-9 meses': { CP: 48.0, CC: 27.0, CA: 17.0, 'C Puño': 12.5, LT: 26.0, LM: 18.0, PSisa: 9.75, AE: 22.0, CED: 5.0, CCa: 40.0 },
+    '9-12 meses': { CP: 52.0, CC: 25.0, CA: 18.0, 'C Puño': 12.5, LT: 28.0, LM: 20.0, PSisa: 10.5, AE: 24.0, CED: 5.5, CCa: 42.0 },
+    '12-15 meses': { CP: 56.0, CC: 25.0, CA: 19.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa: 11.5, AE: 26.0, CED: 6.0, CCa: 43.0 },
+    '15-18 meses': { CP: 60.0, CC: 26.0, CA: 20.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 11.5, AE: 28.0, CED: 6.5, CCa: 44.0 },
+    '18-24 meses': { CP: 61.0, CC: 26.0, CA: 22.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 12.5, AE: 30.0, CED: 7.0, CCa: 45.0 },
 
     // Tallas de Niños (Se añade CCa)
-    '3 años': { CP: 62.0, CC: 28.5, CA: 23, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 16.0, AE: 31.0, CED: 7.3, CCa: 46.0 }, 
-    '4 años': { CP: 63.0, CC: 30.0, CA: 24.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 17.0, AE: 32.0, CED: 7.5, CCa: 48.0 },
-    '6 años': { CP: 66.0, CC: 31.0, CA: 25.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 18.0, AE: 34.0, CED: 8.0, CCa: 59.0 },
-    '8 años': { CP: 68.0, CC: 32.0, CA: 26.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 19.0, AE: 36.0, CED: 8.5, CCa: 50.0 },
-    '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 20.0, AE: 38.0, CED: 9.0, CCa: 52.0 },
+    // PSisa corregida con valores del PDF (promedio del rango).
+    '3 años': { CP: 62.0, CC: 28.5, CA: 23, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 13.0, AE: 31.0, CED: 7.3, CCa: 46.0 }, 
+    '4 años': { CP: 63.0, CC: 30.0, CA: 24.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 13.75, AE: 32.0, CED: 7.5, CCa: 48.0 },
+    '6 años': { CP: 66.0, CC: 31.0, CA: 25.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 15.25, AE: 34.0, CED: 8.0, CCa: 59.0 },
+    '8 años': { CP: 68.0, CC: 32.0, CA: 26.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 16.75, AE: 36.0, CED: 8.5, CCa: 50.0 },
+    '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 18.25, AE: 38.0, CED: 9.0, CCa: 52.0 },
     
     // Tallas de Mujer (Adulto) (Se añade CCa)
-    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño':19.3, LT: 58.0, LM: 47.0, PSisa: 22.0, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
-    '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 22.5, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
-    '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 23.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
-    '42': { CP: 100.0, CC: 38.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 24.0, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
-    '44': { CP: 104.0, CC: 40.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 25.0, AE: 38.6, CED: 13.0, CCa: 55.0 }, 
-    '46': { CP: 108.0, CC: 39.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 26.0, AE: 39.6, CED: 13.5, CCa: 55.0 }, 
-    '48': { CP: 112.0, CC: 40.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 27.0, AE: 40.6, CED: 14.0, CCa: 55.0 }, 
-    '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 28.0, AE: 41.6, CED: 14.5, CCa: 55.0 } 
+    // PSisa corregida con valores del PDF (promedio del rango).
+    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño':19.3, LT: 58.0, LM: 47.0, PSisa: 18.75, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
+    '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.25, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
+    '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
+    '42': { CP: 100.0, CC: 38.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 20.75, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
+    '44': { CP: 104.0, CC: 40.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 21.5, AE: 38.6, CED: 13.0, CCa: 55.0 }, 
+    '46': { CP: 108.0, CC: 39.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 22.0, AE: 39.6, CED: 13.5, CCa: 55.0 }, 
+    '48': { CP: 112.0, CC: 40.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 22.75, AE: 40.6, CED: 14.0, CCa: 55.0 }, 
+    '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 23.5, AE: 41.6, CED: 14.5, CCa: 55.0 } 
 };
 
 
@@ -232,7 +235,6 @@ function calcularPatron() {
         return;
     }
     
-    // LÓGICA CLAVE: Densidad de hileras es NULL si no se proporciona.
     const densidadP = puntosMuestra / 10.0;
     const densidadH = (hilerasMuestra && hilerasMuestra > 0) ? hilerasMuestra / 10.0 : null; 
     
@@ -279,7 +281,6 @@ function calcularPatron() {
         
         const puntosMontar = Math.round((CC / 2) * densidadP);
         const puntosEP = Math.round(EP * densidadP);
-        // La condición ?: null asegura que hilerasAL es null si densidadH es null.
         const hilerasAL = densidadH ? Math.round(AL * densidadH) : null;
         const hilerasTR = densidadH ? Math.round(TR * densidadH) : null;
 
@@ -327,7 +328,6 @@ function calcularPatron() {
         resultado += `* **Comienza montando:** **${puntosMontar} puntos** (corresponde a ${CC / 2} cm de cintura).\n`;
        
         resultado += `<u>1. Espalda (Cintura a Entrepierna)</u>\n`;
-        // USO DE hilerasAL: Solo se muestra si NO es null.
         resultado += `* ** Tejer recto **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
         
         resultado += `* **Ahora has llegado al muslo y hay que empezar a disminuir:** Disminuir **${menguadosPorLado} veces 1 punto a cada lado.**\n`;
@@ -428,7 +428,6 @@ function calcularPatron() {
             
             // CÁLCULOS VERTICALES CONDICIONALES A DENSIDADH
             const largoCuerpoCm = medidas.LT - medidas.PSisa;
-            // Uso de densidadH: Solo se calcula si se tiene la densidad.
             const hilerasBajoSisa = densidadH ? Math.round(largoCuerpoCm * densidadH) : null; 
             const hilerasSisaHombro = densidadH ? Math.round(medidas.PSisa * densidadH) : null;
             const hilerasTotalEspalda = (hilerasBajoSisa !== null && hilerasSisaHombro !== null) ? (hilerasBajoSisa + hilerasSisaHombro) : null;
@@ -521,13 +520,11 @@ function calcularPatron() {
           
             // INSTRUCCIONES DE ESCOTE
             resultado += `<u>Indicacciones para el Escote (Delantero)</u>\n`;
-            // USO DE hilerasInicioEscote: Solo se muestra si NO es null.
             resultado += `* **1. Tejer el Escote ** a los **${escoteCmDesdeSisa.toFixed(1)} cm** desde el inicio de la sisa. ${hilerasInicioEscote !== null ? `(En la pasada **${hilerasInicioEscote}**).` : ''}\n`;
             
             if (tipoPrenda === "JERSEY") {
                  resultado += `* **2. Cierre Central (Recto):** Cerrar los **${puntosEscoteCentral} puntos** centrales. Esto divide el tejido en dos lados.\n`;
                  resultado += `* **3. Curva de Escote (Ambos lados):** Continuar tejiendo y cerrar en el borde del escote de la siguiente manera: **${cierresEscote.join(', ')}** (un total de **${puntosAFormarEscotePts} puntos** a cerrar por lado).\n`;
-                 // USO DE hilerasRestantesStr: Solo se muestra si NO es vacío (lo cual depende de densidadH).
                  resultado += `* **4.  Hombro:** Continuar recto los **${cmRectoOutput} cm** ${hilerasRestantesStr} restantes. Cerrar los **${puntosHombro} puntos** restantes por hombro al llegar a la altura total de sisa (**${medidas.PSisa.toFixed(1)} cm** ${hilerasSisaHombro !== null ? `(**${hilerasSisaHombro} pasadas**)` : ''}).\n\n`; 
             } else { // CHAQUETA
                 const totalCierreLateral = puntosEscoteCentral + puntosAFormarEscotePts;
@@ -553,7 +550,6 @@ function calcularPatron() {
             const aumentosPorLado = Math.floor(totalAumentos / 2);
             
             resultado += `* **Montar:** **${puntosPuño} p.** (Puño de **${medidas['C Puño'].toFixed(1)} cm**).\n`;
-            // USO DE largoMangaH: Solo se muestra si NO es null.
             resultado += `* **Tejer:** **${largoMangaSisaPuñoCm.toFixed(1)} cm** (Largo de Sisa a Puño). ${largoMangaH !== null ? `(**${largoMangaH} pasadas**)` : ''}\n`;
             
             if (aumentosPorLado > 0) {
@@ -561,7 +557,6 @@ function calcularPatron() {
                 const cmSisaFinal = anchoSisaMangaCm.toFixed(1); 
 
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
-                // USO DE densidadH: Solo se muestra la frecuencia en pasadas si se tiene la densidad.
                 if (densidadH && largoMangaH > 0 && aumentosPorLado > 0) {
                     const frecuenciaAumentos = Math.round(largoMangaH / aumentosPorLado);
                     frecuenciaStr = `cada **${frecuenciaAumentos} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
@@ -636,7 +631,7 @@ function calcularPatron() {
             resultado += `* **Contorno de Cabeza (CCa):** ${medidas.CCa.toFixed(1)} cm.\n`;
             resultado += `* **Escote Requerido (CCa / ${divisorEscote}):** **${escoteCmDeseado.toFixed(1)} cm**.\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (${escoteCmDeseado.toFixed(1)} cm de contorno).\n`;
-            // USO DE tiraCuelloPts: Solo se muestra si NO es null.
+            // tiraCuelloPts y tiraCuelloCm son dinámicos
             resultado += `* **A continuación:** Tejer **${tiraCuelloPts} pasadas** (**${tiraCuelloCm.toFixed(1)} cm**) para la tira del cuello.\n`;
             resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
@@ -664,15 +659,13 @@ function calcularPatron() {
 
             // 6. Recalculamos la longitud del Raglán basada en las rondas de aumentos
             const hilerasRaglan = numAumentosRondas * 2;
-            // Uso de densidadH: Si es null, usa medidas.PSisa (cm) como medida base.
-            const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : (medidas.PSisa); 
+            const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : (medidas.PSisa); // Usar PSisa como fallback si no hay densidadH
             // ================== FIN DE LA CORRECCIÓN 2 (Lógica Raglán) ==================
             
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
             // --- Texto de salida modificado ---
             resultado += `* **Rondas de Aumento:** Se deben tejer **${numAumentosRondas}** rondas de aumentos para alcanzar los puntos de sisa necesarios.\n`;
-            // USO DE hilerasRaglan: Solo se muestra si NO es null.
             resultado += `* **Largo de Línea Raglán (Calculado):** **${raglanCmBaseCalculado.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
             
             let instruccionRaglanStr = `Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**, repitiendo un total de **${numAumentosRondas} veces**.\n`;
@@ -684,12 +677,10 @@ function calcularPatron() {
             
             // 3. INSTRUCCIONES DE MANGA Y CUERPO
             const largoMangaCm = medidas.LM; 
-            // USO DE densidadH: Solo se calcula si se tiene la densidad.
             const largoMangaRestanteH = densidadH ? Math.round(largoMangaCm * densidadH) : null;
             const finalLargoMangaCm = largoMangaCm > 0 ? largoMangaCm.toFixed(1) : (0.0).toFixed(1);
             
             const largoCuerpoCm = medidas.LT - medidas.PSisa; 
-            // USO DE densidadH: Solo se calcula si se tiene la densidad.
             const largoCuerpoRestanteH = densidadH ? Math.round(largoCuerpoCm * densidadH) : null;
             const finalLargoCuerpoCm = largoCuerpoCm > 0 ? largoCuerpoCm.toFixed(1) : (0.0).toFixed(1);
             
@@ -724,7 +715,6 @@ function calcularPatron() {
                 const frecuenciaCm = largoMangaParaDisminuir / vecesDisminuir;
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
                 
-                // USO DE densidadH: Solo se muestra la frecuencia en pasadas si se tiene la densidad.
                 if (densidadH && largoMangaRestanteH) {
                     // tiraCuelloPts es dinámico
                     const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
@@ -740,7 +730,6 @@ function calcularPatron() {
                 resultado += `<p style="padding-left: 20px;">- No se requieren disminuciones. Tejer recto hasta el puño.</p>\n`;
             }
             
-            // USO DE largoMangaRestanteH: Solo se muestra si NO es null.
             resultado += `* **Largo Total de Manga (desde Sisa a Puño):** **${finalLargoMangaCm} cm** ${largoMangaRestanteH !== null ? `(**${largoMangaRestanteH} pasadas**)` : ''}.\n`;
 
 
@@ -773,7 +762,6 @@ function calcularPatron() {
                 resultado += `- **Puntos Totales:** Continúe tejiendo con un total de **${puntosTotalCuerpoFinal} puntos**.\n`;
             }
 
-            // USO DE largoCuerpoRestanteH: Solo se muestra si NO es null.
             resultado += `* **Largo del Cuerpo (desde Sisa a Bajo):** Continuar recto **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(**${largoCuerpoRestanteH} pasadas**)` : ''}.\n`;
 
         } else {
