@@ -584,21 +584,16 @@ function calcularPatron() {
                 return;
             }
             
-            // Se utiliza la fórmula de escote personalizada guardada: (CCa + CC) / 2 - 1
             const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 1;
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
             
-            // ** FÓRMULA GEOMÉTRICA L_RAGLÁN **
-            // L_raglan = sqrt( (PS/2)^2 + ((CP - CN)/8)^2 )
+            // ** FÓRMULA GEOMÉTRICA L_RAGLÁN (Descriptiva, no prescriptiva) **
             const PS = medidas.PSisa;
             const CP = medidas.CP;
-            // Usamos CCa (Contorno de Cabeza) para CC (Contorno de Cuello) como en el ejemplo
-            const CC_raglan = medidas.CCa; 
-            
+            const CN_raglan = medidas.CCa; 
             const componenteVertical = PS / 2; 
-            const componenteHorizontal = (CP - CC_raglan) / 8; 
-
+            const componenteHorizontal = (CP - CN_raglan) / 8; 
             const L_raglan = Math.sqrt(Math.pow(componenteVertical, 2) + Math.pow(componenteHorizontal, 2));
             // ** FIN FÓRMULA GEOMÉTRICA **
 
@@ -653,38 +648,43 @@ function calcularPatron() {
             resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
             // 2. AUMENTOS RAGLÁN
-            // ================== INICIO DE LA CORRECCIÓN 2 (Lógica Raglán para consistencia BAJO/ESCOTE) ==================
-            // 1. El objetivo de puntos de la manga DESPUÉS de los aumentos de Raglán y ANTES de recoger los puntos de la sisa (puntosAnadirSisaPts).
-            // Debe ser igual al ancho de la pieza de manga en el método BAJO (puntosSisaManga).
-            const puntosMangaFinal_PreSisa_Target = puntosSisaManga; 
+            // ================== INICIO DE LA CORRECCIÓN (Lógica Raglán basada en Puntos Objetivo) ==================
             
-            // 2. Calculamos cuántos puntos totales necesitamos aumentar en la manga
-            const totalAumentosManga = puntosMangaFinal_PreSisa_Target - pManga;
+            // 1. Puntos Objetivo Totales (Cuerpo + Ambas Mangas)
+            const puntosObjetivoCuerpo = cpPts;
+            const puntosObjetivoMangas = puntosSisaManga * 2; // (puntosSisaManga es el ancho/media circunferencia)
+            const puntosObjetivoTotal = puntosObjetivoCuerpo + puntosObjetivoMangas;
+
+            // 2. Puntos Iniciales (Sin los 4 marcadores)
+            const puntosIniciales = puntosBase; // pEspalda + pManga + pManga + pDelanteroBase
+
+            // 3. Puntos Totales a Aumentar
+            const puntosAumentarTotales = puntosObjetivoTotal - puntosIniciales;
+
+            // 4. Rondas de Aumento (Se aumentan 8 puntos por ronda)
+            // Usamos Math.ceil para asegurar que alcanzamos (o superamos ligeramente) el objetivo de puntos.
+            const numAumentosRondas = (puntosAumentarTotales > 0) ? Math.ceil(puntosAumentarTotales / 8) : 0;
             
-            // 3. Calculamos cuántas rondas de aumentos son (se aumentan 2 p por manga cada ronda)
-            // Usamos Math.ceil para asegurar que se alcanza o supera el objetivo de puntos (puntosMangaFinal_PreSisa_Target)
-            const numAumentosRondas = (totalAumentosManga > 0) ? Math.ceil(totalAumentosManga / 2) : 0;
-            
-            // 4. Calculamos el total de puntos aumentados por pieza (2 por ronda)
+            // 5. Puntos aumentados por pieza (son 2 por ronda)
             const puntosAumentadosPorPieza = numAumentosRondas * 2;
             
-            // 5. Calculamos los puntos finales REALES de cada pieza (basado en rondas)
-            // Los puntos finales se basan en las rondas calculadas
+            // 6. Puntos finales REALES de cada pieza
             const puntosMangaFinal_PreSisa = pManga + puntosAumentadosPorPieza;
             const puntosEspaldaFinal_PreSisa = pEspalda + puntosAumentadosPorPieza;
             const puntosDelanteroFinal_PreSisa = pDelanteroBase + puntosAumentadosPorPieza;
 
-            // 6. Recalculamos la longitud del Raglán basada en las rondas de aumentos
+            // 7. Altura de Raglán RESULTANTE (en cm)
             const hilerasRaglan = numAumentosRondas * 2;
             const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : (medidas.PSisa); // Usar PSisa como fallback si no hay densidadH
-            // ================== FIN DE LA CORRECCIÓN 2 (Lógica Raglán para consistencia BAJO/ESCOTE) ==================
+            
+            // ================== FIN DE LA CORRECCIÓN ==================
             
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
             // --- Texto de salida modificado ---
-            resultado += `* **Rondas de Aumento:** Se deben tejer **${numAumentosRondas}** rondas de aumentos para alcanzar los puntos de sisa necesarios.\n`;
-            resultado += `* **Largo de Línea Raglán (Calculado por Rondas):** **${raglanCmBaseCalculado.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
-            resultado += `* **Longitud Geométrica Real del Raglán (Según su fórmula):** **${L_raglan.toFixed(2)} cm** (Basado en ${componenteVertical.toFixed(2)} cm de Vertical y ${componenteHorizontal.toFixed(2)} cm de Horizontal).\n`;
+            resultado += `* **Rondas de Aumento (Calculadas por Puntos Objetivo):** Se deben tejer **${numAumentosRondas}** rondas de aumentos para alcanzar los puntos de sisa necesarios.\n`;
+            resultado += `* **Altura de Sisa Vertical (Resultante):** **${raglanCmBaseCalculado.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
+            resultado += `* **Longitud Geométrica Real del Raglán (Referencia):** **${L_raglan.toFixed(2)} cm** (Basado en ${componenteVertical.toFixed(2)} cm de Vertical y ${componenteHorizontal.toFixed(2)} cm de Horizontal).\n`;
             
             let instruccionRaglanStr = `Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**, repitiendo un total de **${numAumentosRondas} veces**.\n`;
             instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Esto añade **${puntosAumentadosPorPieza} puntos** a cada una de las 4 piezas (Manga/Delantero/Espalda).</p>`;
