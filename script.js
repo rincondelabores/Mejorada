@@ -232,6 +232,7 @@ function calcularPatron() {
         return;
     }
     
+    // LÓGICA CLAVE: Densidad de hileras es NULL si no se proporciona.
     const densidadP = puntosMuestra / 10.0;
     const densidadH = (hilerasMuestra && hilerasMuestra > 0) ? hilerasMuestra / 10.0 : null; 
     
@@ -278,6 +279,7 @@ function calcularPatron() {
         
         const puntosMontar = Math.round((CC / 2) * densidadP);
         const puntosEP = Math.round(EP * densidadP);
+        // La condición ?: null asegura que hilerasAL es null si densidadH es null.
         const hilerasAL = densidadH ? Math.round(AL * densidadH) : null;
         const hilerasTR = densidadH ? Math.round(TR * densidadH) : null;
 
@@ -325,6 +327,7 @@ function calcularPatron() {
         resultado += `* **Comienza montando:** **${puntosMontar} puntos** (corresponde a ${CC / 2} cm de cintura).\n`;
        
         resultado += `<u>1. Espalda (Cintura a Entrepierna)</u>\n`;
+        // USO DE hilerasAL: Solo se muestra si NO es null.
         resultado += `* ** Tejer recto **${AL} cm** ${hilerasAL !== null ? `(**${hilerasAL} pasadas**)` : ''}.\n`;
         
         resultado += `* **Ahora has llegado al muslo y hay que empezar a disminuir:** Disminuir **${menguadosPorLado} veces 1 punto a cada lado.**\n`;
@@ -425,6 +428,7 @@ function calcularPatron() {
             
             // CÁLCULOS VERTICALES CONDICIONALES A DENSIDADH
             const largoCuerpoCm = medidas.LT - medidas.PSisa;
+            // Uso de densidadH: Solo se calcula si se tiene la densidad.
             const hilerasBajoSisa = densidadH ? Math.round(largoCuerpoCm * densidadH) : null; 
             const hilerasSisaHombro = densidadH ? Math.round(medidas.PSisa * densidadH) : null;
             const hilerasTotalEspalda = (hilerasBajoSisa !== null && hilerasSisaHombro !== null) ? (hilerasBajoSisa + hilerasSisaHombro) : null;
@@ -517,11 +521,13 @@ function calcularPatron() {
           
             // INSTRUCCIONES DE ESCOTE
             resultado += `<u>Indicacciones para el Escote (Delantero)</u>\n`;
+            // USO DE hilerasInicioEscote: Solo se muestra si NO es null.
             resultado += `* **1. Tejer el Escote ** a los **${escoteCmDesdeSisa.toFixed(1)} cm** desde el inicio de la sisa. ${hilerasInicioEscote !== null ? `(En la pasada **${hilerasInicioEscote}**).` : ''}\n`;
             
             if (tipoPrenda === "JERSEY") {
                  resultado += `* **2. Cierre Central (Recto):** Cerrar los **${puntosEscoteCentral} puntos** centrales. Esto divide el tejido en dos lados.\n`;
                  resultado += `* **3. Curva de Escote (Ambos lados):** Continuar tejiendo y cerrar en el borde del escote de la siguiente manera: **${cierresEscote.join(', ')}** (un total de **${puntosAFormarEscotePts} puntos** a cerrar por lado).\n`;
+                 // USO DE hilerasRestantesStr: Solo se muestra si NO es vacío (lo cual depende de densidadH).
                  resultado += `* **4.  Hombro:** Continuar recto los **${cmRectoOutput} cm** ${hilerasRestantesStr} restantes. Cerrar los **${puntosHombro} puntos** restantes por hombro al llegar a la altura total de sisa (**${medidas.PSisa.toFixed(1)} cm** ${hilerasSisaHombro !== null ? `(**${hilerasSisaHombro} pasadas**)` : ''}).\n\n`; 
             } else { // CHAQUETA
                 const totalCierreLateral = puntosEscoteCentral + puntosAFormarEscotePts;
@@ -547,6 +553,7 @@ function calcularPatron() {
             const aumentosPorLado = Math.floor(totalAumentos / 2);
             
             resultado += `* **Montar:** **${puntosPuño} p.** (Puño de **${medidas['C Puño'].toFixed(1)} cm**).\n`;
+            // USO DE largoMangaH: Solo se muestra si NO es null.
             resultado += `* **Tejer:** **${largoMangaSisaPuñoCm.toFixed(1)} cm** (Largo de Sisa a Puño). ${largoMangaH !== null ? `(**${largoMangaH} pasadas**)` : ''}\n`;
             
             if (aumentosPorLado > 0) {
@@ -554,6 +561,7 @@ function calcularPatron() {
                 const cmSisaFinal = anchoSisaMangaCm.toFixed(1); 
 
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
+                // USO DE densidadH: Solo se muestra la frecuencia en pasadas si se tiene la densidad.
                 if (densidadH && largoMangaH > 0 && aumentosPorLado > 0) {
                     const frecuenciaAumentos = Math.round(largoMangaH / aumentosPorLado);
                     frecuenciaStr = `cada **${frecuenciaAumentos} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
@@ -628,7 +636,7 @@ function calcularPatron() {
             resultado += `* **Contorno de Cabeza (CCa):** ${medidas.CCa.toFixed(1)} cm.\n`;
             resultado += `* **Escote Requerido (CCa / ${divisorEscote}):** **${escoteCmDeseado.toFixed(1)} cm**.\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (${escoteCmDeseado.toFixed(1)} cm de contorno).\n`;
-            // tiraCuelloPts y tiraCuelloCm son dinámicos
+            // USO DE tiraCuelloPts: Solo se muestra si NO es null.
             resultado += `* **A continuación:** Tejer **${tiraCuelloPts} pasadas** (**${tiraCuelloCm.toFixed(1)} cm**) para la tira del cuello.\n`;
             resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
@@ -656,13 +664,15 @@ function calcularPatron() {
 
             // 6. Recalculamos la longitud del Raglán basada en las rondas de aumentos
             const hilerasRaglan = numAumentosRondas * 2;
-            const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : (medidas.PSisa); // Usar PSisa como fallback si no hay densidadH
+            // Uso de densidadH: Si es null, usa medidas.PSisa (cm) como medida base.
+            const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : (medidas.PSisa); 
             // ================== FIN DE LA CORRECCIÓN 2 (Lógica Raglán) ==================
             
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
             // --- Texto de salida modificado ---
             resultado += `* **Rondas de Aumento:** Se deben tejer **${numAumentosRondas}** rondas de aumentos para alcanzar los puntos de sisa necesarios.\n`;
+            // USO DE hilerasRaglan: Solo se muestra si NO es null.
             resultado += `* **Largo de Línea Raglán (Calculado):** **${raglanCmBaseCalculado.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
             
             let instruccionRaglanStr = `Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**, repitiendo un total de **${numAumentosRondas} veces**.\n`;
@@ -674,10 +684,12 @@ function calcularPatron() {
             
             // 3. INSTRUCCIONES DE MANGA Y CUERPO
             const largoMangaCm = medidas.LM; 
+            // USO DE densidadH: Solo se calcula si se tiene la densidad.
             const largoMangaRestanteH = densidadH ? Math.round(largoMangaCm * densidadH) : null;
             const finalLargoMangaCm = largoMangaCm > 0 ? largoMangaCm.toFixed(1) : (0.0).toFixed(1);
             
             const largoCuerpoCm = medidas.LT - medidas.PSisa; 
+            // USO DE densidadH: Solo se calcula si se tiene la densidad.
             const largoCuerpoRestanteH = densidadH ? Math.round(largoCuerpoCm * densidadH) : null;
             const finalLargoCuerpoCm = largoCuerpoCm > 0 ? largoCuerpoCm.toFixed(1) : (0.0).toFixed(1);
             
@@ -712,6 +724,7 @@ function calcularPatron() {
                 const frecuenciaCm = largoMangaParaDisminuir / vecesDisminuir;
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
                 
+                // USO DE densidadH: Solo se muestra la frecuencia en pasadas si se tiene la densidad.
                 if (densidadH && largoMangaRestanteH) {
                     // tiraCuelloPts es dinámico
                     const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
@@ -727,6 +740,7 @@ function calcularPatron() {
                 resultado += `<p style="padding-left: 20px;">- No se requieren disminuciones. Tejer recto hasta el puño.</p>\n`;
             }
             
+            // USO DE largoMangaRestanteH: Solo se muestra si NO es null.
             resultado += `* **Largo Total de Manga (desde Sisa a Puño):** **${finalLargoMangaCm} cm** ${largoMangaRestanteH !== null ? `(**${largoMangaRestanteH} pasadas**)` : ''}.\n`;
 
 
@@ -759,6 +773,7 @@ function calcularPatron() {
                 resultado += `- **Puntos Totales:** Continúe tejiendo con un total de **${puntosTotalCuerpoFinal} puntos**.\n`;
             }
 
+            // USO DE largoCuerpoRestanteH: Solo se muestra si NO es null.
             resultado += `* **Largo del Cuerpo (desde Sisa a Bajo):** Continuar recto **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(**${largoCuerpoRestanteH} pasadas**)` : ''}.\n`;
 
         } else {
