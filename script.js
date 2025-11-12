@@ -1,3 +1,226 @@
+// ====================================================================
+// 1. DATOS Y MEDIDAS ANTROPOMÉTRICAS 
+// ====================================================================
+
+const MEDIDAS_ANTROPOMETRICAS = {
+    // Tallas de Bebé (Se añade CCa - Contorno de Cabeza)
+    '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 12.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 9.0, AE: 14.0, CED: 3.0, CCa: 32.0 },
+    '0 meses': { CP: 39.0, CC: 21.0, CA: 13.0, 'C Puño': 12.0, LT: 22.0, LM: 12.0, PSisa: 7.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
+    '1-3 meses': { CP: 40.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 23.0, LM: 14.0, PSisa: 7.75, AE: 18.0, CED: 4.0, CCa: 35.0 },
+    '3-6 meses': { CP: 44.0, CC: 23.0, CA: 16.0, 'C Puño': 12.5, LT: 24.0, LM: 16.0, PSisa: 8.75, AE: 20.0, CED: 4.5, CCa: 37.0 },
+    '6-9 meses': { CP: 48.0, CC: 27.0, CA: 17.0, 'C Puño': 12.5, LT: 26.0, LM: 18.0, PSisa: 9.75, AE: 22.0, CED: 5.0, CCa: 40.0 },
+    '9-12 meses': { CP: 52.0, CC: 25.0, CA: 18.0, 'C Puño': 12.5, LT: 28.0, LM: 20.0, PSisa: 10.75, AE: 24.0, CED: 5.5, CCa: 42.0 },
+    '12-15 meses': { CP: 56.0, CC: 25.0, CA: 19.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa: 11.75, AE: 26.0, CED: 6.0, CCa: 43.0 },
+    '15-18 meses': { CP: 60.0, CC: 26.0, CA: 20.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 11.75, AE: 28.0, CED: 6.5, CCa: 44.0 },
+    '18-24 meses': { CP: 61.0, CC: 26.0, CA: 22.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 12.75, AE: 30.0, CED: 7.0, CCa: 45.0 },
+
+    // Tallas de Niños (Se añade CCa)
+    '3 años': { CP: 62.0, CC: 28.5, CA: 23, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 13.75, AE: 31.0, CED: 7.3, CCa: 46.0 }, 
+    '4 años': { CP: 63.0, CC: 30.0, CA: 24.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 14.75, AE: 32.0, CED: 7.5, CCa: 48.0 },
+    '6 años': { CP: 66.0, CC: 31.0, CA: 25.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 15.75, AE: 34.0, CED: 8.0, CCa: 59.0 },
+    '8 años': { CP: 68.0, CC: 32.0, CA: 26.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 16.75, AE: 36.0, CED: 8.5, CCa: 50.0 },
+    '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 17.75, AE: 38.0, CED: 9.0, CCa: 52.0 },
+    
+    // Tallas de Mujer (Adulto) (Se añade CCa)
+    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.75, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
+    '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.0, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
+    '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
+    '42': { CP: 100.0, CC: 38.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.0, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
+    '44': { CP: 104.0, CC: 40.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 22.0, AE: 38.6, CED: 13.0, CCa: 55.0 }, 
+    '46': { CP: 108.0, CC: 39.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 23.0, AE: 39.6, CED: 13.5, CCa: 55.0 }, 
+    '48': { CP: 112.0, CC: 40.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 24.0, AE: 40.6, CED: 14.0, CCa: 55.0 }, 
+    '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 25.0, AE: 41.6, CED: 14.5, CCa: 55.0 } 
+};
+
+
+// ====================================================================
+// 1.1. MEDIDAS PARA CUBRE PAÑAL (C/P)
+// ====================================================================
+// CC: Contorno Cintura / AL: Altura Lateral / EP: EntrePierna / TR: Tramo Recto / LCD: Línea Cierre Delantero
+const MEDIDAS_CUBRE_PAÑAL = {
+    '0 RN ': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
+    '1 mes ': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
+    '3 meses ': { CC: 42, AL: 11, EP: 8, TR: 2, LCD: 2 }, 
+    '6 meses ': { CC: 44, AL: 12, EP: 8, TR: 2, LCD: 2 }, 
+    '9 meses ': { CC: 46, AL: 12, EP: 9, TR: 2.5, LCD: 3 }, 
+    '12 meses ': { CC: 48, AL: 13, EP: 10, TR: 2.5, LCD: 3 } 
+};
+
+
+// Mapeo para poblar las tallas (NOTA: Esta estructura no se usará en poblarTallas, pero se mantiene como referencia)
+const MAPA_MEDIDAS = {
+    'Bebé (Prematuro a 24m)': MEDIDAS_ANTROPOMETRICAS,
+    'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
+    'Adulto (36 a 50)': MEDIDAS_ANTROPOMETRICAS,
+    'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL 
+};
+
+// Estructura de ORDEN_TALLAS
+const ORDEN_TALLAS = {
+    'Bebé (Prematuro a 24m)': ['00 (Prematuro)', '0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'],
+    'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
+    'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
+    'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses ']
+};
+
+
+// ====================================================================
+// 2. FUNCIONES DE UTILIDAD Y LÓGICA DE INTERFAZ
+// ====================================================================
+
+function poblarTallas() {
+    const select = document.getElementById('talla_seleccionada');
+    const tipoPrenda = document.getElementById('tipo_prenda').value;
+
+    select.innerHTML = '<option value="">Selecciona una Talla...</option>';
+    
+    // CORRECCIÓN APLICADA: Se eliminó '|| !tipoPrenda' para que cargue las tallas por defecto si el selector está vacío al inicio.
+    if (tipoPrenda === 'CM_DESEADOS') {
+        return;
+    }
+
+    let gruposATejer = [];
+
+    // Si tipoPrenda es "" (vacío), entrará al 'else' y cargará las tallas de Jersey/Chaqueta.
+    if (tipoPrenda === 'CUBRE_PAÑAL') {
+        gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
+    } else {
+        // JERSEY o CHAQUETA, o valor vacío
+        gruposATejer = [
+            ['Bebé (Prematuro a 24m)', ORDEN_TALLAS['Bebé (Prematuro a 24m)']],
+            ['Niños (3 a 10 años)', ORDEN_TALLAS['Niños (3 a 10 años)']],
+            ['Adulto (36 a 50)', ORDEN_TALLAS['Adulto (36 a 50)']]
+        ];
+    }
+
+    gruposATejer.forEach(([label, tallas]) => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = label;
+        
+        tallas.forEach(tallaKey => {
+            
+            // LÓGICA CORREGIDA: Acceso directo a la fuente de datos
+            let medidasSource;
+            if (label === 'Cubre Pañal (0 a 12m)') {
+                medidasSource = MEDIDAS_CUBRE_PAÑAL;
+            } else {
+                // Todas las demás categorías (Bebé, Niño, Adulto)
+                medidasSource = MEDIDAS_ANTROPOMETRICAS;
+            }
+            
+            if (medidasSource && tallaKey in medidasSource) { 
+                const option = document.createElement('option');
+                option.value = tallaKey;
+                option.textContent = `Talla ${tallaKey}`;
+                optgroup.appendChild(option);
+            }
+        });
+        
+        select.appendChild(optgroup);
+    });
+}
+
+function manejarVisibilidadCampos() {
+    const tipoPrenda = document.getElementById('tipo_prenda').value;
+    const metodoGroup = document.getElementById('metodo-group');
+    const cmGroup = document.getElementById('cm-group');
+    const tallaSelect = document.getElementById('talla_seleccionada');
+    
+    poblarTallas();
+
+    if (tipoPrenda === 'CM_DESEADOS') {
+        metodoGroup.style.display = 'none';
+        cmGroup.style.display = 'block';
+        tallaSelect.removeAttribute('required');
+        tallaSelect.style.display = 'none';
+        document.querySelector('label[for="talla_seleccionada"]').style.display = 'none';
+    } else if (tipoPrenda === 'JERSEY' || tipoPrenda === 'CHAQUETA') {
+        metodoGroup.style.display = 'block';
+        cmGroup.style.display = 'none';
+        tallaSelect.setAttribute('required', 'required');
+        tallaSelect.style.display = 'block';
+        document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
+    } else if (tipoPrenda === 'CUBRE_PAÑAL') {
+        metodoGroup.style.display = 'none';
+        cmGroup.style.display = 'none';
+        tallaSelect.setAttribute('required', 'required');
+        tallaSelect.style.display = 'block';
+        document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
+    } else {
+        metodoGroup.style.display = 'none';
+        cmGroup.style.display = 'none';
+        tallaSelect.setAttribute('required', 'required');
+        tallaSelect.style.display = 'block';
+        document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const tipoPrendaSelect = document.getElementById('tipo_prenda');
+    if (tipoPrendaSelect) {
+        tipoPrendaSelect.addEventListener('change', manejarVisibilidadCampos);
+    }
+    manejarVisibilidadCampos(); 
+});
+
+
+// ====================================================================
+// 3. LÓGICA CENTRAL DE CÁLCULO
+// ====================================================================
+
+/**
+ * Genera una secuencia de cierres progresivos (3p x 1, luego 2p, luego 1p)
+ * para lograr el borde curvo del escote.
+ */
+function generarCierresProgresivosNuevo(puntosAFormar) {
+    let puntosRestantes = puntosAFormar;
+    const cierres = [];
+
+    // 1. Cierre de 3 puntos, 1 vez (si es posible)
+    if (puntosRestantes >= 3) {
+        cierres.push(3);
+        puntosRestantes -= 3;
+    }
+
+    // 2. Cierres de 2 puntos (prioridad: cierres mayores primero)
+    if (puntosRestantes >= 2) {
+        cierres.push(2);
+        puntosRestantes -= 2;
+    }
+
+    // 3. Cierres de 1 punto (el resto)
+    while (puntosRestantes > 1) {
+        cierres.push(1);
+        puntosRestantes -= 1;
+    }
+
+    // Agrupar cierres idénticos consecutivos y formatear para la salida
+    const cierresAgrupados = [];
+    if (cierres.length > 0) {
+        let actual = cierres[0];
+        let contador = 1;
+        for (let i = 1; i < cierres.length; i++) {
+            if (cierres[i] === actual) {
+                contador++;
+            } else {
+                cierresAgrupados.push(`${actual}p, ${contador} ${contador > 1 ? 'veces' : 'vez'}`); 
+                actual = cierres[i];
+                contador = 1;
+            }
+        }
+        cierresAgrupados.push(`${actual}p, ${contador} ${contador > 1 ? 'veces' : 'vez'}`);
+    }
+       
+    return { 
+        secuencia: cierresAgrupados, 
+        totalDisminuciones: cierres.length 
+    };
+}
+
+
+/**
+ * Función principal para calcular el patrón de tejido.
+ */
 function calcularPatron() {
     const puntosMuestra = parseFloat(document.getElementById('puntos_muestra').value);
     const hilerasMuestra = parseFloat(document.getElementById('hileras_muestra').value);
@@ -59,8 +282,6 @@ function calcularPatron() {
     // --- LÓGICA ESPECÍFICA PARA CUBRE PAÑAL ---
     // ====================================================================
     if (tipoPrenda === 'CUBRE_PAÑAL') {
-        // ... (Lógica de CUBRE PAÑAL - Sin cambios relevantes)
-        
         const CC = medidas.CC; // Contorno de Cintura
         const AL = medidas.AL; // Altura Lateral
         const EP = medidas.EP; // EntrePierna
@@ -147,7 +368,7 @@ function calcularPatron() {
         resultado += `\n<u>3. Acabado</u>\n`;
         resultado += `* ** Cerrar los **${puntosMontar} puntos** de la cintura delantera.\n`;
         resultado += `* **Coser ** los laterales.\n`;
-
+        
     } else {
         // --- LÓGICA JERSEY / CHAQUETA ---
         
@@ -183,27 +404,23 @@ function calcularPatron() {
         }
         const puntosTapeta = calculatedTapetaPts;
 
-        // ====================================================================
-        // 5. CÁLCULO DE HOLGURA DE SISA (Para Puntos Bajo Manga) - CORRECCIÓN
-        // ====================================================================
-        let holguraSisaCm; 
+        // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/3/4 cm)
+        let holguraAxilaCm; 
         if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
-            holguraSisaCm = 3.0; // Holgura bajo sisa: 3 cm
+            holguraAxilaCm = 2.0; // 3 cm
         } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
-            holguraSisaCm = 5.0; // Holgura bajo sisa: 5 cm
+            holguraAxilaCm = 3.0; // 5 cm
         } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
-            holguraSisaCm = 8.0; // Holgura bajo sisa: 8 cm
+            holguraAxilaCm = 4.0; // 8 cm
         } else {
-            holguraSisaCm = 8.0; // Default
+            holguraAxilaCm = 4.0; // Default
         }
 
-        // holguraAxilaCm se usa en la lógica BAJO, su valor debe ser holguraSisaCm
-        const holguraAxilaCm = holguraSisaCm; 
-
-        // 6. Ancho de Sisa (El ancho de la manga en la sisa es Contorno de Axila + la mitad del ancho de la sisa montada)
+        // 6. Ancho de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
         const anchoSisaMangaCm = medidas.CA + (holguraAxilaCm / 2);
         
-        // 7. Puntos de Sisa (NÚMERO OBJETIVO DE PUNTOS EN LA MANGA AL SEPARAR)
+        // 7. Puntos de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
+        // ESTE ES EL NÚMERO OBJETIVO CLAVE
         const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
 
         // 8. Variables declaradas
@@ -216,9 +433,7 @@ function calcularPatron() {
     
         // --- LÓGICA BOTTOM-UP (Del Bajo al Hombro) ---
         if (metodoTejido === "BAJO") {
-            // ... (Lógica de BAJO - Sin cambios relevantes)
-            // ... (The rest of the BAJO block remains the same)
-
+            
             // CÁLCULOS VERTICALES CONDICIONALES A DENSIDADH
             const largoCuerpoCm = medidas.LT - medidas.PSisa;
             const hilerasBajoSisa = densidadH ? Math.round(largoCuerpoCm * densidadH) : null; 
@@ -374,13 +589,6 @@ function calcularPatron() {
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
             
-            // ====================================================================
-            // CÁLCULO DE PUNTOS BAJO MANGA (puntosAnadirSisaPts) - CORRECCIÓN
-            // ====================================================================
-            // La holgura bajo manga se define en holguraSisaCm (3/5/8 cm)
-            const puntosAnadirSisaPts = Math.round(holguraSisaCm * densidadP);
-
-
             // Puntos Objetivo (Igual que en BAJO)
             const puntosObjetivoCuerpo = cpPts;
             const puntosObjetivoManga = puntosSisaManga;
@@ -407,6 +615,16 @@ function calcularPatron() {
                  pEspalda += 1;
             }
             // ================== FIN DE LA CORRECCIÓN (Reparto Proporcional) ==================
+
+
+            // (anchoSisaMangaCm es el objetivo de la manga)
+            // puntosSisaManga es el NÚMERO DE PUNTOS objetivo de la manga
+            // const puntosAnadirSisaPtsBase = Math.max(4, Math.round(anchoSisaMangaCm * 0.2)); // 20% del ancho de la sisa
+            // const puntosAnadirSisaPts = puntosAnadirSisaPtsBase % 2 === 0 ? puntosAnadirSisaPtsBase : puntosAnadirSisaPtsBase + 1; 
+            
+            // ELIMINADO: puntosAnadirSisaPts ya no se usa.
+            const puntosAnadirSisaPts = 0;
+
 
             resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán)</h4>\n`;
             resultado += `* **Talla Seleccionada** (${tallaSeleccionada}) (Contorno de pecho): **${medidas.CP.toFixed(1)} cm**.\n`; 
@@ -441,9 +659,8 @@ function calcularPatron() {
             // 1. Puntos Iniciales (Sin los 4 marcadores)
             const puntosIniciales = puntosBase; // pEspalda + pManga + pManga + pDelanteroBase
             
-            // 2. Puntos Totales a Aumentar (Restando los puntos que se añaden bajo manga) - CORRECCIÓN
-            const puntosTotalNecesariosRaglan = puntosObjetivoTotal - (puntosAnadirSisaPts * 2);
-            const puntosAumentarTotales = puntosTotalNecesariosRaglan - puntosIniciales;
+            // 2. Puntos Totales a Aumentar
+            const puntosAumentarTotales = puntosObjetivoTotal - puntosIniciales;
 
             // 3. Rondas de Aumento (Se aumentan 8 puntos por ronda)
             const numAumentosRondas = (puntosAumentarTotales > 0) ? Math.ceil(puntosAumentarTotales / 8) : 0;
@@ -465,7 +682,7 @@ function calcularPatron() {
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
             // --- Texto de salida modificado ---
-            resultado += `* **Puntos Objetivo:** El objetivo es tejer hasta tener **${puntosTotalNecesariosRaglan} puntos** en la aguja (antes de separar mangas).\n`;
+            resultado += `* **Puntos Objetivo:** El objetivo es tejer hasta tener **${puntosObjetivoTotal} puntos** en la aguja (antes de separar mangas).\n`;
             resultado += `* **Rondas de Aumento:** Se deben tejer **${numAumentosRondas}** rondas de aumentos.\n`;
             
             if (raglanCmBaseCalculado !== null) {
@@ -477,7 +694,7 @@ function calcularPatron() {
             instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Esto añade **${puntosAumentadosPorPieza} puntos** a cada una de las 4 piezas (Manga/Delantero/Espalda).</p>`;
             
             resultado += `* **Indicaciones para los Aumentos:** ${instruccionRaglanStr}\n`;
-            resultado += `* **Puntos a Añadir en la Sisa:** Al separar las mangas, añadir **${puntosAnadirSisaPts} puntos** (montados o recogidos) bajo cada sisa. \n\n`; // <-- LÍNEA CORREGIDA
+            // resultado += `* **Puntos a Añadir en la Sisa:** Al separar las mangas, añadir **${puntosAnadirSisaPts} puntos** (montados o recogidos) bajo cada sisa. \n\n`;
             
             
             // 3. INSTRUCCIONES DE MANGA Y CUERPO
@@ -490,7 +707,7 @@ function calcularPatron() {
             const largoCuerpoRestanteH = densidadH ? Math.round(largoCuerpoCm * densidadH) : null;
             const finalLargoCuerpoCm = largoCuerpoCm > 0 ? largoCuerpoCm.toFixed(1) : (0.0).toFixed(1);
             
-            // Puntos con Sisa (CORREGIDO)
+            // (puntosAnadirSisaPts es 0 en esta lógica)
             const puntosMangaConSisa = puntosMangaFinal_PreSisa + puntosAnadirSisaPts;
             const puntosPuño = Math.round(medidas['C Puño'] * densidadP);
 
@@ -503,7 +720,7 @@ function calcularPatron() {
             // --- 3.1. MANGAS ---
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
             resultado += `* ** Dejar el Cuerpo en espera. Poner los **${puntosMangaFinal_PreSisa} puntos ** de la manga a una aguja de trabajo.\n`;
-            resultado += `* **Puntos Bajo Manga:** Recoger o montar los **${puntosAnadirSisaPts} puntos ** bajo la sisa. Tendrá un total de **${puntosMangaConSisa} puntos**.\n`; // <-- LÍNEA CORREGIDA
+            // resultado += `* **Puntos Bajo Manga:** Recoger o montar los **${puntosAnadirSisaPts} puntos ** bajo la sisa. Tendrá un total de **${puntosMangaConSisa} puntos**.\n`;
 
             resultado += `* **Disminuciones de Manga:**\n`;
             
@@ -542,7 +759,7 @@ function calcularPatron() {
                 const puntosPiezaEspalda = puntosCuerpoEspaldaFinal;
 
                 resultado += `* **Tejido en Redondo (Jersey):** Para tejer el Cuerpo en circular y evitar costuras laterales, junte las piezas restantes en la aguja en el siguiente orden:\n`;
-                resultado += `<p style="padding-left: 20px;">-  **Delantero** (**${puntosPiezaDelantera} puntos**), **${puntosAnadirSisaPts} puntos** (bajo manga 1), **Espalda** (**${puntosPiezaEspalda} puntos**), **${puntosAnadirSisaPts} puntos** (bajo manga 2).\n`; // <-- LÍNEA CORREGIDA
+                resultado += `<p style="padding-left: 20px;">-  **Delantero** (**${puntosPiezaDelantera} puntos**), **Espalda** (**${puntosPiezaEspalda} puntos**).\n`;
                 resultado += `- **Puntos Totales:** Continúe tejiendo con un total de **${puntosTotalCuerpoFinal} puntos**.\n`;
                 
             } else { // CHAQUETA
@@ -552,7 +769,7 @@ function calcularPatron() {
                 const puntosPiezaEspalda = puntosCuerpoEspaldaFinal;
                 
                 resultado += `* **Tejido en Plano (Chaqueta):** Para tejer el Cuerpo en una sola pieza (evitando costuras laterales), junte las piezas restantes en la aguja en el siguiente orden:\n`;
-                resultado += `<p style="padding-left: 20px;">-  **Delantero 1** (**${pDelantero1} puntos**), **${puntosAnadirSisaPts} puntos** (bajo manga 1), **Espalda** (**${puntosPiezaEspalda} puntos**), **${puntosAnadirSisaPts} puntos** (bajo manga 2), **Delantero 2** (**${pDelantero2} puntos**).\n`; // <-- LÍNEA CORREGIDA
+                resultado += `<p style="padding-left: 20px;">-  **Delantero 1** (**${pDelantero1} puntos**), **Espalda** (**${puntosPiezaEspalda} puntos**), **Delantero 2** (**${pDelantero2} puntos**).\n`;
                 resultado += `- **Puntos Totales:** Continúe tejiendo con un total de **${puntosTotalCuerpoFinal} puntos**.\n`;
             }
 
