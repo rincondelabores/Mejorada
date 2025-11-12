@@ -407,9 +407,9 @@ function calcularPatron() {
         if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
             holguraAxilaCm = 2.0; // 2 cm
         } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 4.0; // 4 cm
+            holguraAxilaCm = 3.0; // 4 cm
         } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 6.0; // 6 cm
+            holguraAxilaCm = 4.0; // 6 cm
         } else {
             holguraAxilaCm = 4.0; // Default
         }
