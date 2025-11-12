@@ -327,7 +327,7 @@ function calcularPatron() {
         resultado += `<p>Se tejerá en una sola pieza desde la espalda hasta el delantero.</p>\n`;
 
          resultado += `\n<u>4. Consejos de Terminación</u>\n`;
-        resultado += `* **Cinturilla:** En la cintura sugerimos tejer  **${elásticoCm} cm** ** en punto elástico** o añadir una vuelta de **pasacintas** (*2p juntos al derecho, hebra*, repetir de *a* toda la pasada) cuando este tejiendo en la mitad de esos cm.  El ancho es orientativo, puedes hacerlo mas ancho o estrecho, segun te guste.\n`;
+        resultado += `* **Cinturilla:** En la cintura sugerimos tejer  **${elásticoCm} cm** ** en punto elástico** o añadir una vuelta de **pasacintas** (*2p juntos al derecho, hebra*, repetir de *a* toda la pasada) cuando este tejeando en la mitad de esos cm.  El ancho es orientativo, puedes hacerlo mas ancho o estrecho, segun te guste.\n`;
         resultado += `* **Bordes:** Para un borde rematado al mismo tiempo que se teje la pierna, haga los aumentos y disminuciones a 3 o 4 puntos de la orilla. Otra opción es recoger después los puntos del borde de las piernas y para tejer una tira de terminación en el punto que te guste.\n`;
 
         
@@ -402,20 +402,19 @@ function calcularPatron() {
         }
         const puntosTapeta = calculatedTapetaPts;
 
-        // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/4/6 cm)
+        // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/3/4 cm)
         let holguraAxilaCm; 
         if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
             holguraAxilaCm = 2.0; // 2 cm
         } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 3.0; // 4 cm
+            holguraAxilaCm = 3.0; // 3 cm
         } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 4.0; // 6 cm
+            holguraAxilaCm = 4.0; // 4 cm
         } else {
             holguraAxilaCm = 4.0; // Default
         }
 
         // 6. Ancho de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
-        // Corrección de la lógica anterior: (medidas.CA + holguraAxilaCm / 2)
         const anchoSisaMangaCm = medidas.CA + (holguraAxilaCm / 2);
         
         // 7. Puntos de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
@@ -578,26 +577,16 @@ function calcularPatron() {
         // --- LÓGICA TOP-DOWN (Escote al Bajo - Raglán) ---
         } else if (metodoTejido === "ESCOTE") {
             
-            // ** CÁLCULO DE ESCOTE PERSONALIZADO: (CCa + CC) / 2 - 1 (Fórmula de Elena) **
+            // ** CÁLCULO DE ESCOTE PERSONALIZADO: (CCa + CC) / 2 - 2 (Fórmula de Elena) **
             if (!medidas.CCa || !medidas.CC) {
                 resultadoDiv.innerHTML = '<p class="error">Error: La talla seleccionada no tiene las medidas de Contorno de Cabeza (CCa) y/o Contorno de Cuello (CC) definidas para calcular el escote con la fórmula personalizada.</p>';
                 return;
             }
             
-            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 1;
+            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2;
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
             
-            // ** FÓRMULA GEOMÉTRICA L_RAGLÁN (Descriptiva, no prescriptiva) **
-            const PS = medidas.PSisa;
-            const CP = medidas.CP;
-            const CN_raglan = medidas.CCa; 
-            const componenteVertical = PS / 2; 
-            const componenteHorizontal = (CP - CN_raglan) / 8; 
-            const L_raglan = Math.sqrt(Math.pow(componenteVertical, 2) + Math.pow(componenteHorizontal, 2));
-            // ** FIN FÓRMULA GEOMÉTRICA **
-
-
             // (anchoSisaMangaCm es el objetivo de la manga)
             // puntosSisaManga es el NÚMERO DE PUNTOS objetivo de la manga
             const puntosAnadirSisaPtsBase = Math.max(4, Math.round(anchoSisaMangaCm * 0.2)); // 20% del ancho de la sisa
@@ -648,43 +637,81 @@ function calcularPatron() {
             resultado += `* **Repartir los puntos de la siguiente manera: (4 puntos marcados para el Raglán):** ${repartoStr}\n\n`;
 
             // 2. AUMENTOS RAGLÁN
-            // ================== INICIO DE LA CORRECCIÓN (Lógica Raglán basada en Puntos Objetivo) ==================
+            // ================== INICIO DE LA LÓGICA HÍBRIDA (Altura Fija vs Puntos Objetivo) ==================
             
-            // 1. Puntos Objetivo Totales (Cuerpo + Ambas Mangas)
-            const puntosObjetivoCuerpo = cpPts;
-            const puntosObjetivoMangas = puntosSisaManga * 2; // (puntosSisaManga es el ancho/media circunferencia)
-            const puntosObjetivoTotal = puntosObjetivoCuerpo + puntosObjetivoMangas;
+            let numAumentosRondas, puntosAumentadosPorPieza, puntosMangaFinal_PreSisa, puntosEspaldaFinal_PreSisa, puntosDelanteroFinal_PreSisa, hilerasRaglan, raglanCmBaseCalculado;
+            let metodoCalculoRaglan = ""; // Para debug
 
-            // 2. Puntos Iniciales (Sin los 4 marcadores)
-            const puntosIniciales = puntosBase; // pEspalda + pManga + pManga + pDelanteroBase
+            if (densidadH) {
+                // MÉTODO 1: HILERAS INTRODUCIDAS (Basado en Altura Fija PSisa)
+                // Se prioriza la altura de la sisa de las tablas.
+                metodoCalculoRaglan = "(Calculado por Altura de Sisa Fija)";
+                
+                // 1. Altura de Sisa (fija en cm)
+                const raglanCm = medidas.PSisa;
+                
+                // 2. Hileras Totales disponibles para el Raglán
+                hilerasRaglan = Math.round(raglanCm * densidadH);
+                
+                // 3. Rondas de Aumento (Se aumenta cada 2 pasadas)
+                numAumentosRondas = Math.floor(hilerasRaglan / 2);
 
-            // 3. Puntos Totales a Aumentar
-            const puntosAumentarTotales = puntosObjetivoTotal - puntosIniciales;
+                // 4. Puntos aumentados por pieza (2 por ronda)
+                puntosAumentadosPorPieza = numAumentosRondas * 2;
 
-            // 4. Rondas de Aumento (Se aumentan 8 puntos por ronda)
-            // Usamos Math.ceil para asegurar que alcanzamos (o superamos ligeramente) el objetivo de puntos.
-            const numAumentosRondas = (puntosAumentarTotales > 0) ? Math.ceil(puntosAumentarTotales / 8) : 0;
+                // 5. Puntos finales (Resultado de los aumentos)
+                puntosMangaFinal_PreSisa = pManga + puntosAumentadosPorPieza;
+                puntosEspaldaFinal_PreSisa = pEspalda + puntosAumentadosPorPieza;
+                puntosDelanteroFinal_PreSisa = pDelanteroBase + puntosAumentadosPorPieza;
+                
+                raglanCmBaseCalculado = raglanCm; // La altura es la medida fija
+
+            } else {
+                // MÉTODO 2: HILERAS NO INTRODUCIDAS (Basado en Puntos Objetivo)
+                // (Lo que pediste: "aumentar hasta tener x puntos")
+                metodoCalculoRaglan = "(Calculado por Puntos Objetivo)";
+
+                // 1. Puntos Objetivo Totales (Cuerpo + Ambas Mangas)
+                const puntosObjetivoCuerpo = cpPts;
+                const puntosObjetivoMangas = puntosSisaManga * 2; 
+                const puntosObjetivoTotal = puntosObjetivoCuerpo + puntosObjetivoMangas;
+
+                // 2. Puntos Iniciales (Sin los 4 marcadores)
+                const puntosIniciales = puntosBase; // pEspalda + pManga + pManga + pDelanteroBase
+
+                // 3. Puntos Totales a Aumentar
+                const puntosAumentarTotales = puntosObjetivoTotal - puntosIniciales;
+
+                // 4. Rondas de Aumento (Se aumentan 8 puntos por ronda)
+                numAumentosRondas = (puntosAumentarTotales > 0) ? Math.ceil(puntosAumentarTotales / 8) : 0;
+                
+                // 5. Puntos aumentados por pieza (son 2 por ronda)
+                puntosAumentadosPorPieza = numAumentosRondas * 2;
+                
+                // 6. Puntos finales (Deben coincidir con el objetivo)
+                puntosMangaFinal_PreSisa = pManga + puntosAumentadosPorPieza;
+                puntosEspaldaFinal_PreSisa = pEspalda + puntosAumentadosPorPieza;
+                puntosDelanteroFinal_PreSisa = pDelanteroBase + puntosAumentadosPorPieza;
+
+                // 7. Altura de Raglán (No se puede calcular sin hileras)
+                hilerasRaglan = null; 
+                raglanCmBaseCalculado = null;
+            }
             
-            // 5. Puntos aumentados por pieza (son 2 por ronda)
-            const puntosAumentadosPorPieza = numAumentosRondas * 2;
-            
-            // 6. Puntos finales REALES de cada pieza
-            const puntosMangaFinal_PreSisa = pManga + puntosAumentadosPorPieza;
-            const puntosEspaldaFinal_PreSisa = pEspalda + puntosAumentadosPorPieza;
-            const puntosDelanteroFinal_PreSisa = pDelanteroBase + puntosAumentadosPorPieza;
-
-            // 7. Altura de Raglán RESULTANTE (en cm)
-            const hilerasRaglan = numAumentosRondas * 2;
-            const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : (medidas.PSisa); // Usar PSisa como fallback si no hay densidadH
-            
-            // ================== FIN DE LA CORRECCIÓN ==================
+            // ================== FIN DE LA LÓGICA HÍBRIDA ==================
             
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
             // --- Texto de salida modificado ---
-            resultado += `* **Aumentos del Raglán: ** Se deben tejer **${numAumentosRondas}** pasadas de aumentos para alcanzar los puntos necesarios.\n`;
-            resultado += `* **Altura de Raglán:** **${raglanCmBaseCalculado.toFixed(1)} cm** ${hilerasRaglan !== null ? `(**${hilerasRaglan} pasadas**)` : ''}.\n`;
-          //  resultado += `* **Longitud Geométrica Real del Raglán (Referencia):** **${L_raglan.toFixed(2)} cm** (Basado en ${componenteVertical.toFixed(2)} cm de Vertical y ${componenteHorizontal.toFixed(2)} cm de Horizontal).\n`;
+            
+            if (raglanCmBaseCalculado !== null) {
+                // Caso 1: Sí tenemos densidadH
+                resultado += `* **Altura de Sisa ${metodoCalculoRaglan}:** **${raglanCmBaseCalculado.toFixed(1)} cm**.\n`;
+                resultado += `* **Rondas de Aumento:** Se deben tejer **${numAumentosRondas}** rondas de aumentos (Total **${hilerasRaglan} pasadas**).\n`;
+            } else {
+                // Caso 2: No tenemos densidadH
+                resultado += `* **Rondas de Aumento ${metodoCalculoRaglan}:** Se deben tejer **${numAumentosRondas}** rondas de aumentos para alcanzar los puntos objetivo.\n`;
+            }
             
             let instruccionRaglanStr = `Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**, repitiendo un total de **${numAumentosRondas} veces**.\n`;
             instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Esto añade **${puntosAumentadosPorPieza} puntos** a cada una de las 4 piezas (Manga/Delantero/Espalda).</p>`;
@@ -742,10 +769,10 @@ function calcularPatron() {
                     }
                 }
                 
-                resultado += `<p style="padding-left: 20px;">- Disminuir **1 punto a cada lado** **${vecesDisminuir} veces** **${frecuenciaStr}**.\n`;
+                resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Disminuir **1 punto a cada lado** **${vecesDisminuir} veces** **${frecuenciaStr}**.\n`;
                 resultado += `- Esto dejará **${puntosPuño} puntos** en el puño (**${medidas['C Puño'].toFixed(1)} cm**).</p>\n`;
             } else {
-                resultado += `<p style="padding-left: 20px;">- No se requieren disminuciones. Tejer recto hasta el puño.</p>\n`;
+                resultado += `<p style="font-size:0.9em; padding-left: 20px;">- No se requieren disminuciones. Tejer recto hasta el puño.</p>\n`;
             }
             
             resultado += `* **Largo Total de Manga (desde Sisa a Puño):** **${finalLargoMangaCm} cm** ${largoMangaRestanteH !== null ? `(**${largoMangaRestanteH} pasadas**)` : ''}.\n`;
