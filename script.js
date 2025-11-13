@@ -5,7 +5,7 @@
 const MEDIDAS_ANTROPOMETRICAS = {
     // Tallas de Bebé (Se añade CCa - Contorno de Cabeza)
     '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 12.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 9.0, AE: 14.0, CED: 3.0, CCa: 32.0 },
-    '0 meses': { CP: 39.0, CC: 21.0, CA: 13.0, 'C Puño': 12.0, LT: 22.0, LM: 12.0, PSisa: 7.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
+    '0 meses': { CP: 38.0, CC: 21.0, CA: 13.0, 'C Puño': 12.0, LT: 22.0, LM: 12.0, PSisa: 7.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
     '1-3 meses': { CP: 40.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 23.0, LM: 14.0, PSisa: 7.75, AE: 18.0, CED: 4.0, CCa: 35.0 },
     '3-6 meses': { CP: 44.0, CC: 23.0, CA: 16.0, 'C Puño': 12.5, LT: 24.0, LM: 16.0, PSisa: 8.75, AE: 20.0, CED: 4.5, CCa: 37.0 },
     '6-9 meses': { CP: 48.0, CC: 27.0, CA: 17.0, 'C Puño': 12.5, LT: 26.0, LM: 18.0, PSisa: 9.75, AE: 22.0, CED: 5.0, CCa: 40.0 },
@@ -22,14 +22,14 @@ const MEDIDAS_ANTROPOMETRICAS = {
     '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 17.75, AE: 38.0, CED: 9.0, CCa: 52.0 },
     
     // Tallas de Mujer (Adulto) (Se añade CCa)
-    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.75, AE: 35.0, CED: 11.0, CCa: 55.0 }, 
-    '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.0, AE: 36.0, CED: 11.5, CCa: 55.5 }, 
-    '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 55.0 }, 
-    '42': { CP: 100.0, CC: 38.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.0, AE: 37.6, CED: 12.5, CCa: 56.5 }, 
-    '44': { CP: 104.0, CC: 40.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 22.0, AE: 38.6, CED: 13.0, CCa: 56.0 }, 
-    '46': { CP: 108.0, CC: 39.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 23.0, AE: 39.6, CED: 13.5, CCa: 56.0 }, 
-    '48': { CP: 112.0, CC: 40.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 24.0, AE: 40.6, CED: 14.0, CCa: 57.0 }, 
-    '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 25.0, AE: 41.6, CED: 14.5, CCa: 57.0 } 
+    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.75, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
+    '38': { CP: 86.0, CC: 35.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.0, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
+    '40': { CP: 92.0, CC: 35.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
+    '42': { CP: 100.0, CC: 36.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.0, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
+    '44': { CP: 104.0, CC: 36.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 22.0, AE: 38.6, CED: 13.0, CCa: 55.0 }, 
+    '46': { CP: 108.0, CC: 37.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 23.0, AE: 39.6, CED: 13.5, CCa: 56.0 }, 
+    '48': { CP: 112.0, CC: 37.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 24.0, AE: 40.6, CED: 14.0, CCa: 56.0 }, 
+    '50': { CP: 116.0, CC: 38.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 25.0, AE: 41.6, CED: 14.5, CCa: 57.0 } 
 };
 
 
@@ -407,7 +407,7 @@ function calcularPatron() {
         // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/4/6 cm)
         let holguraAxilaCm; 
         if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 2.0; // 2 cm
+            holguraAxilaCm = 2.0; // 2cm
         } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
             holguraAxilaCm = 4.0; // 4 cm
         } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
@@ -598,7 +598,7 @@ function calcularPatron() {
                 return;
             }
             
-            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 1;
+            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2;
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
             
@@ -648,21 +648,31 @@ function calcularPatron() {
             let pEspalda = puntosEspaldaPreSisaTarget - (numAumentosRondas * 2); // ej: 102 - (34*2) = 34
             let pDelanteroBase = puntosDelanteroPreSisaTarget - (numAumentosRondas * 2); // ej: 102 - (34*2) = 34
             
-            // 5. AJUSTE DE REDONDEO
-            // Comprobar cuántos puntos hemos repartido
-            let puntosRepartidos = (pManga * 2) + pEspalda + pDelanteroBase; // ej: 11*2 + 34 + 34 = 90
-            let puntosSobrantes = puntosBase - puntosRepartidos; // ej: 91 - 90 = 1
             
-            // Repartir los puntos sobrantes (o faltantes)
-            // Se añaden a la espalda (pieza más grande)
-            pEspalda += puntosSobrantes; 
+            // 5. AJUSTE DE NÚMEROS MÍNIMOS (ANTES de calcular sobrantes)
+            // =================================================================================
+            // INICIO DE CORRECCIÓN (Orden de operaciones)
+            // =================================================================================
             
             // Asegurar que ninguna pieza sea negativa (para tallas muy pequeñas)
             if (pManga < 1) { pManga = 1; }
             if (pEspalda < 1) { pEspalda = 1; }
             if (pDelanteroBase < 1) { pDelanteroBase = 1; }
+
+            // 6. AJUSTE DE REDONDEO (Sobrantes)
+            // Comprobar cuántos puntos hemos repartido (AHORA, con los mínimos asegurados)
+            let puntosRepartidos = (pManga * 2) + pEspalda + pDelanteroBase;
+            let puntosSobrantes = puntosBase - puntosRepartidos;
             
-            // 6. CÁLCULO DE PUNTOS FINALES (Para la salida)
+            // Repartir los puntos sobrantes (o faltantes)
+            // Se añaden a la espalda (pieza más grande y central)
+            pEspalda += puntosSobrantes; 
+            
+            // =================================================================================
+            // FIN DE CORRECCIÓN
+            // =================================================================================
+
+            // 7. CÁLCULO DE PUNTOS FINALES (Para la salida)
             
             // Puntos finales REALES de cada pieza (antes de añadir los puntos bajo manga)
             const puntosMangaFinal_PreSisa = pManga + (numAumentosRondas * 2);
@@ -674,12 +684,12 @@ function calcularPatron() {
             const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : null;
             
             // =================================================================================
-            // FIN DE CORRECCIÓN
+            // FIN DE LÓGICA DE CÁLCULO
             // =================================================================================
 
 
             // =================================================================================
-            // INICIO DE MODIFICACIONES DE TEXTO (SOLO PARA "ESCOTE")
+            // INICIO DE SECCIÓN DE TEXTO (OUTPUT)
             // =================================================================================
 
             resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán)</h4>\n`;
@@ -696,7 +706,7 @@ function calcularPatron() {
                 repartoStr = `**${pEspalda} p** (Espalda), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pDelanteroBase} p** (Delantero), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador).`;
             } else { // CHAQUETA
                 // Reparto de delanteros (impar/par)
-                const pDelanteroParte1 = Math.round(pDelanteroBase / 2);
+                const pDelanteroParte1 = Math.floor(pDelanteroBase / 2);
                 const pDelanteroParte2 = pDelanteroBase - pDelanteroParte1;
 
                 repartoStr = `**${pDelanteroParte1} p** (Del. 1), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pEspalda} p** (Espalda), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pDelanteroParte2} p** (Del. 2).`;
