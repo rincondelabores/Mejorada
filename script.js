@@ -447,10 +447,16 @@ function calcularPatron() {
             const hilerasSisaHombro = densidadH ? Math.round(medidas.PSisa * densidadH) : null;
             const hilerasTotalEspalda = (hilerasBajoSisa !== null && hilerasSisaHombro !== null) ? (hilerasBajoSisa + hilerasSisaHombro) : null;
             
-            let puntosMedioPecho = Math.round(cpPts / 2);
-            let puntosEspalda = puntosMedioPecho;
+            // PUNTOS OBJETIVO BOTTOM-UP
+            const puntosEspalda = Math.round(cpPts / 2);
             let puntosTotalDelantero; 
             
+            if (tipoPrenda === "CHAQUETA") {
+                puntosTotalDelantero = Math.round(cpPts / 4); // Puntos por cada delantero
+            } else { // JERSEY
+                puntosTotalDelantero = Math.round(cpPts / 2); // Puntos para el delantero único
+            }
+
             // --- CÁLCULO DE CAÍDA DE ESCOTE MODIFICADO ---
             let cedFinalCm = caidaEscoteDeseadaCm || medidas.CED; 
             let cedRealCm;
@@ -463,18 +469,16 @@ function calcularPatron() {
             const escoteCmDesdeSisa = medidas.PSisa - cedRealCm;
             const hilerasInicioEscote = densidadH ? Math.round(escoteCmDesdeSisa * densidadH) : null;
             
-            if (tipoPrenda === "CHAQUETA") {
-                puntosTotalDelantero = Math.round(puntosMedioPecho / 2);
-            } else { // JERSEY
-                puntosTotalDelantero = puntosMedioPecho;
-            }
-
             // --- LÓGICA DE ESCOTE (30.56% Hombro, 38.88% Escote Central, 30.56% Hombro) ---
-            const puntosHombroBase = Math.round(puntosTotalDelantero * 0.3056); 
-            let puntosEscoteTotal = puntosTotalDelantero - (puntosHombroBase * 2);
+            
+            // Puntos de referencia para el escote (Espalda para Jersey, Delantero para Chaqueta)
+            const puntosReferenciaEscote = (tipoPrenda === "CHAQUETA") ? puntosTotalDelantero : puntosEspalda;
+
+            const puntosHombroBase = Math.round(puntosReferenciaEscote * 0.3056); 
+            let puntosEscoteTotal = puntosReferenciaEscote - (puntosHombroBase * 2);
             if (puntosEscoteTotal < 3) {
                 puntosEscoteTotal = 3; 
-                puntosHombroBase = Math.floor((puntosTotalDelantero - puntosEscoteTotal) / 2);
+                puntosHombroBase = Math.floor((puntosReferenciaEscote - puntosEscoteTotal) / 2);
             }
             
             let puntosEscoteCentral = Math.round(puntosEscoteTotal * 0.40); 
@@ -567,14 +571,16 @@ function calcularPatron() {
             resultado += `* **Montar:** **${puntosPuño} p.** (Puño de **${medidas['C Puño'].toFixed(1)} cm**).\n`;
             resultado += `* **Tejer:** **${largoMangaSisaPuñoCm.toFixed(1)} cm** (Largo de Sisa a Puño). ${largoMangaH !== null ? `(**${largoMangaH} pasadas**)` : ''}\n`;
             
-            if (aumentosPorLado > 0) {
+            if (aumentosPorLado > 0 && largoMangaSisaPuñoCm > 0) {
                 const frecuenciaCm = largoMangaSisaPuñoCm / aumentosPorLado;
                 const cmSisaFinal = anchoSisaMangaCm.toFixed(1); 
 
                 let frecuenciaStr = `cada **${frecuenciaCm.toFixed(1)} cm**`;
                 if (densidadH && largoMangaH > 0 && aumentosPorLado > 0) {
                     const frecuenciaAumentos = Math.round(largoMangaH / aumentosPorLado);
-                    frecuenciaStr = `cada **${frecuenciaAumentos} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
+                     if (frecuenciaAumentos > 0) {
+                        frecuenciaStr = `cada **${frecuenciaAumentos} pasadas** (aprox. **${frecuenciaCm.toFixed(1)} cm**)`
+                     }
                 }
                 
                 resultado += `* **Aumentos:** Aumentar **1 punto a cada lado** **${aumentosPorLado} veces** con una frecuencia de **${frecuenciaStr}**. Esto lleva la manga a **${puntosSisaManga} puntos** (**${cmSisaFinal} cm** de ancho en la sisa, que incluye **${holguraAxilaCm.toFixed(1)} cm** de holgura).\n\n`;
@@ -596,67 +602,81 @@ function calcularPatron() {
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
             
-            // Puntos Objetivo (Igual que en BAJO)
-            const puntosObjetivoCuerpo = cpPts;
-            const puntosObjetivoManga = puntosSisaManga; // Ya incluye la holgura
-            const puntosObjetivoTotal = puntosObjetivoCuerpo + (puntosObjetivoManga * 2);
             
-            // Puntos Iniciales (Base para reparto)
+            // =================================================================================
+            // INICIO DE CORRECCIÓN (Lógica de Raglán Inversa)
+            // =================================================================================
+            
+            // 1. DEFINIR OBJETIVOS (Targets)
+            
+            // Puntos Objetivo (Igual que en BAJO)
+            // cpPts = Contorno total de la prenda (ej: 240)
+            // puntosSisaManga = Puntos totales de la manga en la sisa (ej: 97)
+            // puntosAnadirSisaPts = Puntos de holgura bajo el brazo (ej: 18)
+            
+            const puntosObjetivoEspalda = Math.round(cpPts / 2); // ej: 120
+            const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda; // ej: 120 (para compensar redondeos)
+            
+            // 2. DEFINIR OBJETIVOS PRE-SISA (Lo que hay que tejer ANTES de añadir holgura)
+            
+            // El target de la manga ANTES de añadir la holgura
+            const puntosMangaPreSisaTarget = puntosSisaManga - puntosAnadirSisaPts; // ej: 97 - 18 = 79
+            
+            // El target de la espalda ANTES de añadir la holgura
+            const puntosEspaldaPreSisaTarget = puntosObjetivoEspalda - puntosAnadirSisaPts; // ej: 120 - 18 = 102
+            
+            // El target del delantero ANTES de añadir la holgura
+            const puntosDelanteroPreSisaTarget = puntosObjetivoDelanteroTotal - puntosAnadirSisaPts; // ej: 120 - 18 = 102
+
+            
+            // 3. CÁLCULO DE RONDAS (R) Y REPARTO INICIAL (pManga, pEspalda, pDelanteroBase)
+            
             const puntosBase = puntosMontaje - 4; // Restar 4 puntos para los marcadores de raglán
             
-            // Puntos necesarios en la manga *ANTES* de añadir los puntos bajo manga.
-            const puntosMangaPreSisaObjetivo = puntosObjetivoManga - puntosAnadirSisaPts; 
+            // Total de puntos pre-sisa que hay que tejer
+            const totalPuntosPreSisa = (puntosMangaPreSisaTarget * 2) + puntosEspaldaPreSisaTarget + puntosDelanteroPreSisaTarget; // ej: 79*2 + 102 + 102 = 362
             
-            // =================================================================================
-            // INICIO DE CORRECCIÓN (Línea 543)
-            // =================================================================================
-            // Calcular el objetivo del cuerpo ANTES de añadir la sisa, para que los puntos coincidan con Bottom-Up
-            const puntosObjetivoCuerpo_PreSisa = puntosObjetivoCuerpo - (puntosAnadirSisaPts * 2);
+            // Total de puntos que hay que AUMENTAR
+            const totalPuntosAAumentar = totalPuntosPreSisa - puntosBase; // ej: 362 - 91 = 271
             
-            // 1. Calcular proporciones basadas en los puntos objetivo (Corregido)
-            const totalProporcional = puntosObjetivoCuerpo_PreSisa + (puntosMangaPreSisaObjetivo * 2);
-            // =================================================================================
-            // FIN DE CORRECCIÓN
-            // =================================================================================
+            // Como se aumentan 8 puntos por ronda:
+            const numAumentosRondas = (totalPuntosAAumentar > 0) ? Math.ceil(totalPuntosAAumentar / 8) : 0; // ej: 271 / 8 = 33.875 -> 34 rondas
             
-            // 2. Repartir Puntos Base (puntosMontaje - 4)
-            const pManga = Math.round(puntosBase * (puntosMangaPreSisaObjetivo / totalProporcional));
-            const pCuerpoTotal = puntosBase - (pManga * 2);
+            // 4. CALCULAR REPARTO INICIAL (Hacia atrás)
             
-            let pEspalda = Math.round(pCuerpoTotal / 2);
-            let pDelanteroBase = pCuerpoTotal - pEspalda;
+            let pManga = puntosMangaPreSisaTarget - (numAumentosRondas * 2); // ej: 79 - (34*2) = 11
+            let pEspalda = puntosEspaldaPreSisaTarget - (numAumentosRondas * 2); // ej: 102 - (34*2) = 34
+            let pDelanteroBase = puntosDelanteroPreSisaTarget - (numAumentosRondas * 2); // ej: 102 - (34*2) = 34
             
-            // Ajuste de simetría para Chaqueta (Si es Jersey no importa, se suma)
-            if (tipoPrenda === "CHAQUETA" && pDelanteroBase % 2 !== 0) {
-                 pDelanteroBase -= 1;
-                 pEspalda += 1;
-            }
+            // 5. AJUSTE DE REDONDEO
+            // Comprobar cuántos puntos hemos repartido
+            let puntosRepartidos = (pManga * 2) + pEspalda + pDelanteroBase; // ej: 11*2 + 34 + 34 = 90
+            let puntosSobrantes = puntosBase - puntosRepartidos; // ej: 91 - 90 = 1
+            
+            // Repartir los puntos sobrantes (o faltantes)
+            // Se añaden a la espalda (pieza más grande)
+            pEspalda += puntosSobrantes; 
+            
+            // Asegurar que ninguna pieza sea negativa (para tallas muy pequeñas)
+            if (pManga < 1) { pManga = 1; }
+            if (pEspalda < 1) { pEspalda = 1; }
+            if (pDelanteroBase < 1) { pDelanteroBase = 1; }
+            
+            // 6. CÁLCULO DE PUNTOS FINALES (Para la salida)
+            
+            // Puntos finales REALES de cada pieza (antes de añadir los puntos bajo manga)
+            const puntosMangaFinal_PreSisa = pManga + (numAumentosRondas * 2);
+            const puntosEspaldaFinal_PreSisa = pEspalda + (numAumentosRondas * 2);
+            const puntosDelanteroFinal_PreSisa = pDelanteroBase + (numAumentosRondas * 2);
 
-            // 2. AUMENTOS RAGLÁN
-            // ================== INICIO DE LA LÓGICA (Basada en Puntos Objetivo y Holgura) ==================
-            
-            // 1. Puntos Iniciales (Sin los 4 marcadores)
-            const puntosIniciales = puntosBase; 
-            
-            // 2. Puntos Totales a Aumentar (Corregido)
-            const puntosAumentarTotales = totalProporcional - puntosIniciales;
-
-            // 3. Rondas de Aumento (Se aumentan 8 puntos por ronda)
-            const numAumentosRondas = (puntosAumentarTotales > 0) ? Math.ceil(puntosAumentarTotales / 8) : 0;
-            
-            // 4. Puntos aumentados por pieza (son 2 por ronda)
-            const puntosAumentadosPorPieza = numAumentosRondas * 2;
-            
-            // 5. Puntos finales REALES de cada pieza (antes de añadir los puntos bajo manga)
-            const puntosMangaFinal_PreSisa = pManga + puntosAumentadosPorPieza;
-            const puntosEspaldaFinal_PreSisa = pEspalda + puntosAumentadosPorPieza;
-            const puntosDelanteroFinal_PreSisa = pDelanteroBase + puntosAumentadosPorPieza;
-
-            // 6. Altura de Raglán RESULTANTE (en cm)
+            // Altura de Raglán RESULTANTE (en cm)
             const hilerasRaglan = numAumentosRondas * 2;
             const raglanCmBaseCalculado = densidadH ? (hilerasRaglan / densidadH) : null;
             
-            // ================== FIN DE LA LÓGICA ==================
+            // =================================================================================
+            // FIN DE CORRECCIÓN
+            // =================================================================================
+
 
             // =================================================================================
             // INICIO DE MODIFICACIONES DE TEXTO (SOLO PARA "ESCOTE")
@@ -667,17 +687,17 @@ function calcularPatron() {
             resultado += `* **Ancho Total de la Prenda** (Contorno de pecho + Holgura): **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n`;
             
             // MODIFICACIÓN 1: Añadir CM a la manga
-            resultado += `* ** La manga debe tener **${puntosObjetivoManga} puntos** en la sisa (incluyendo holgura), que son unos **${anchoSisaMangaCm.toFixed(1)} cm**.\n\n`;
+            resultado += `* ** La manga debe tener **${puntosSisaManga} puntos** en la sisa (incluyendo holgura), que son unos **${anchoSisaMangaCm.toFixed(1)} cm**.\n\n`;
 
             // 1. REPARTO INICIAL
             
             let repartoStr;
             if (tipoPrenda === "JERSEY") {
-                const pDelanteroFinal = pDelanteroBase;
-                repartoStr = `**${pEspalda} p** (Espalda), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pDelanteroFinal} p** (Delantero), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador).`;
+                repartoStr = `**${pEspalda} p** (Espalda), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pDelanteroBase} p** (Delantero), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador).`;
             } else { // CHAQUETA
-                const pDelanteroParte1 = pDelanteroBase / 2;
-                const pDelanteroParte2 = pDelanteroBase / 2;
+                // Reparto de delanteros (impar/par)
+                const pDelanteroParte1 = Math.round(pDelanteroBase / 2);
+                const pDelanteroParte2 = pDelanteroBase - pDelanteroParte1;
 
                 repartoStr = `**${pDelanteroParte1} p** (Del. 1), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pEspalda} p** (Espalda), **1 p** (Marcador), **${pManga} p** (Manga), **1 p** (Marcador), **${pDelanteroParte2} p** (Del. 2).`;
                 // puntosTapeta y tiraCuelloCm son dinámicos
@@ -699,30 +719,27 @@ function calcularPatron() {
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
             
             // MODIFICACIÓN 4: Simplificar "Puntos Objetivo"
-            // (Variable puntosObjetivoPrevios renombrada a 'totalProporcional' que ya existe y es correcta ahora)
-            resultado += `* **Puntos Objetivo:** Necesitas tejer hasta tener **${totalProporcional} puntos**; son los necesarios para las mangas y el cuerpo (antes de añadir la holgura de la sisa).\n`;
+            resultado += `* **Puntos Objetivo (Pre-Sisa):** El objetivo es que las piezas (antes de añadir la holgura de axila) lleguen a:\n`;
+            resultado += `<p style="font-size:0.9em; padding-left: 20px;">- **Manga:** ${puntosMangaFinal_PreSisa} puntos.\n`;
+            resultado += `- **Espalda:** ${puntosEspaldaFinal_PreSisa} puntos.\n`;
+            resultado += `- **Delantero (Total):** ${puntosDelanteroFinal_PreSisa} puntos.</p>\n`;
 
-            // MODIFICACIÓN 5: Reestructurar explicación de aumentos (Raglán)
-            let instruccionRaglanStr = `Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**, repitiendo un total de **${numAumentosRondas} veces**.\n`;
+
+            // MODIFICACIÓN 5: Reestructurar explicación de aumentos (RAGLÁN COMPUESTO)
             
+            let instruccionRaglanStr = `* **Indicaciones para los Aumentos:** Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**, repitiendo un total de **${numAumentosRondas} veces**.\n`;
+
             if (raglanCmBaseCalculado !== null) {
-                // MODIFICACIÓN 5.1: Texto de altura corregido
-                instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Al finalizar, la **altura vertical del canesú** (desde el cuello hasta la axila) será de **${raglanCmBaseCalculado.toFixed(1)} cm** (que son **${hilerasRaglan} pasadas** en total).</p>\n`;
+                instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Al finalizar, la **Altura de la Sisa** (desde el hombro hasta la axila) será de **${raglanCmBaseCalculado.toFixed(1)} cm** (que son **${hilerasRaglan} pasadas** en total).</p>\n`;
             } else {
                  instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- (Se deben tejer **${hilerasRaglan} pasadas** en total para completar los aumentos).</p>\n`;
             }
-            instruccionRaglanStr += `<p style="font-size:0.9em; padding-left: 20px;">- Esto añade **${puntosAumentadosPorPieza} puntos** a cada una de las 4 piezas (Manga/Delantero/Espalda).</p>`;
-
-            resultado += `* **Indicaciones para los Aumentos:** ${instruccionRaglanStr}\n`;
             
-            // MODIFICACIÓN 5.2: Eliminar línea redundante
-            // (Se elimina la línea de "Puntos Bajo Manga" que estaba aquí)
+            resultado += instruccionRaglanStr;
             
             
             // MODIFICACIÓN 6: Reescritura completa de las secciones 3.1 y 3.2 (Manga y Cuerpo)
-            // ... eliminando la lógica circular y asumiendo tejido plano.
             
-            // Variables necesarias para la nueva lógica (algunas ya estaban, otras son nuevas)
             const largoMangaCm = medidas.LM; 
             const largoMangaRestanteH = densidadH ? Math.round(largoMangaCm * densidadH) : null;
             const finalLargoMangaCm = largoMangaCm > 0 ? largoMangaCm.toFixed(1) : (0.0).toFixed(1);
@@ -752,14 +769,20 @@ function calcularPatron() {
             // --- 3.1. MANGAS (Nueva estructura) ---
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
             resultado += `* **Manga:** Añade **${puntosAnadirSisaPts_Media} puntos** antes y después de los **${puntosMangaFinal_PreSisa} puntos** de la manga (son los puntos que corresponden a la parte de la axila y hace que la manga sea mas cómoda).\n`;
-            resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos** (**${anchoSisaMangaCm.toFixed(1)} cm**).\n`;
+            
+            // Nota de ajuste por redondeo
+            if (puntosMangaConSisa !== puntosSisaManga) {
+                 resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**. (El objetivo ideal era ${puntosSisaManga} p. Esta diferencia de ${puntosMangaConSisa - puntosSisaManga} p. se debe al redondeo inicial. Puedes ajustarlo al añadir los puntos de la sisa).\n`;
+            } else {
+                 resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos** (**${anchoSisaMangaCm.toFixed(1)} cm**).\n`;
+            }
 
             resultado += `* **Disminuciones para llegar al puño:**\n`;
             
             const disminucionesTotales = puntosMangaConSisa - puntosPuño;
             const vecesDisminuir = Math.floor(disminucionesTotales / 2);
             
-            if (vecesDisminuir > 0) {
+            if (vecesDisminuir > 0 && largoMangaCm > 0) {
                 const largoMangaParaDisminuir = largoMangaCm > tiraCuelloCm ? largoMangaCm - tiraCuelloCm : largoMangaCm;
                 let frecuenciaCm = 0;
                 if (vecesDisminuir > 0) { // Evitar división por cero si no hay disminuciones
@@ -771,8 +794,12 @@ function calcularPatron() {
                 let frecuenciaPasadasStr = "";
                 if (densidadH && largoMangaRestanteH && largoMangaRestanteH > 0 && vecesDisminuir > 0) {
                     const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
-                    const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
-                    frecuenciaPasadasStr = `cada **${Math.max(1, frecuenciaPasadas)} pasadas** ${freqStr}`;
+                     if (largoMangaRestanteHAjustado > 0) {
+                        const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
+                        frecuenciaPasadasStr = `cada **${Math.max(1, frecuenciaPasadas)} pasadas** ${freqStr}`;
+                     } else {
+                        frecuenciaPasadasStr = `cada ${freqStr}`;
+                     }
                 } else {
                     frecuenciaPasadasStr = `cada ${freqStr}`; // Fallback si no hay densidadH
                 }
@@ -794,11 +821,20 @@ function calcularPatron() {
             resultado += `* **Ahora vas a tejer el delantero:**\n`;
             resultado += `<p style="padding-left: 20px;">- Para ello pondrás en la aguja los **${puntosPiezaDelantera} puntos** del delantero y, recogiendo de las mangas o añadiéndolos nuevos, **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después de los puntos del delantero (estos puntos son los de debajo del brazo añadidos en las mangas anteriormente).</p>\n`;
             resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroConSisa} puntos** (${cmTotalDelanteroConSisa} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
+            // Nota de ajuste por redondeo
+             if (puntosTotalDelanteroConSisa !== puntosObjetivoDelanteroTotal) {
+                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: Este total debería ser ${puntosObjetivoDelanteroTotal} puntos. La diferencia de ${puntosTotalDelanteroConSisa - puntosObjetivoDelanteroTotal} p. se debe al redondeo inicial).</p>\n`;
+            }
+
 
             // ESPALDA (Flat)
             resultado += `* **Espalda:**\n`;
             resultado += `<p style="padding-left: 20px;">- Se teje de la misma manera que el delantero, usando los **${puntosPiezaEspalda} puntos** de la espalda y añadiendo los **${puntosAnadirSisaPts_Media} puntos** a cada lado.</p>\n`;
             resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalEspaldaConSisa} puntos** (${cmTotalEspaldaConSisa} cm). Teje recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
+             // Nota de ajuste por redondeo
+             if (puntosTotalEspaldaConSisa !== puntosObjetivoEspalda) {
+                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: Este total debería ser ${puntosObjetivoEspalda} puntos. La diferencia de ${puntosTotalEspaldaConSisa - puntosObjetivoEspalda} p. se debe al redondeo inicial).</p>\n`;
+            }
 
             // Final note
             resultado += `<p style="font-size:0.9em; padding-left: 20px; margin-top: 10px;">- Ten en cuenta, como en los puños, que si quieres hacer un acabado con otro punto o punto elástico, lo empieces antes de llegar a los **${finalLargoCuerpoCm} cm** de largo, dependiendo del ancho de borde que te guste.</p>\n`;
