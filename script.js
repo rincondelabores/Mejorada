@@ -22,14 +22,14 @@ const MEDIDAS_ANTROPOMETRICAS = {
     '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 17.75, AE: 38.0, CED: 9.0, CCa: 52.0 },
     
     // Tallas de Mujer (Adulto) (Se añade CCa)
-    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.75, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
-    '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.0, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
-    '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
-    '42': { CP: 100.0, CC: 38.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.0, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
-    '44': { CP: 104.0, CC: 40.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 22.0, AE: 38.6, CED: 13.0, CCa: 55.0 }, 
-    '46': { CP: 108.0, CC: 39.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 23.0, AE: 39.6, CED: 13.5, CCa: 55.0 }, 
-    '48': { CP: 112.0, CC: 40.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 24.0, AE: 40.6, CED: 14.0, CCa: 55.0 }, 
-    '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 25.0, AE: 41.6, CED: 14.5, CCa: 55.0 } 
+    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.75, AE: 35.0, CED: 11.0, CCa: 55.0 }, 
+    '38': { CP: 86.0, CC: 36.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.0, AE: 36.0, CED: 11.5, CCa: 55.5 }, 
+    '40': { CP: 92.0, CC: 37.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 55.0 }, 
+    '42': { CP: 100.0, CC: 38.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.0, AE: 37.6, CED: 12.5, CCa: 56.5 }, 
+    '44': { CP: 104.0, CC: 40.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 22.0, AE: 38.6, CED: 13.0, CCa: 56.0 }, 
+    '46': { CP: 108.0, CC: 39.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 23.0, AE: 39.6, CED: 13.5, CCa: 56.0 }, 
+    '48': { CP: 112.0, CC: 40.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 24.0, AE: 40.6, CED: 14.0, CCa: 57.0 }, 
+    '50': { CP: 116.0, CC: 41.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 25.0, AE: 41.6, CED: 14.5, CCa: 57.0 } 
 };
 
 
@@ -404,16 +404,16 @@ function calcularPatron() {
         }
         const puntosTapeta = calculatedTapetaPts;
 
-        // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 3/5/8 cm)
+        // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/4/6 cm)
         let holguraAxilaCm; 
         if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 3.0; // 3 cm
+            holguraAxilaCm = 2.0; // 2 cm
         } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 5.0; // 5 cm
+            holguraAxilaCm = 4.0; // 4 cm
         } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 8.0; // 8 cm
+            holguraAxilaCm = 6.0; // 6 cm
         } else {
-            holguraAxilaCm = 8.0; // Default
+            holguraAxilaCm = 5.0; // Default
         }
         
         // Puntos a añadir bajo la sisa (holgura)
@@ -598,7 +598,7 @@ function calcularPatron() {
                 return;
             }
             
-            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2;
+            const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 1;
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             // ** FIN CÁLCULO ESCOTE **
             
