@@ -4,32 +4,32 @@
 
 const MEDIDAS_ANTROPOMETRICAS = {
     // Tallas de Bebé (Se añade CCa - Contorno de Cabeza)
-    '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 13.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 7.5, AE: 14.0, CED: 3.0, CCa: 32.0 },
-    '0 meses': { CP: 38.0, CC: 20.0, CA: 14.0, 'C Puño': 11.0, LT: 22.0, LM: 12.0, PSisa: 8.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
-    '1-3 meses': { CP: 40.0, CC: 21.0, CA: 15.0, 'C Puño': 11.0, LT: 23.0, LM: 14.0, PSisa: 9.0, AE: 18.0, CED: 4.0, CCa: 35.0 },
-    '3-6 meses': { CP: 42.0, CC: 22.0, CA: 17.0, 'C Puño': 12.0, LT: 24.0, LM: 16.0, PSisa: 9.5, AE: 20.0, CED: 4.5, CCa: 37.0 },
-    '6-9 meses': { CP: 44.0, CC: 23.0, CA: 18.0, 'C Puño': 12.0, LT: 26.0, LM: 18.0, PSisa: 10.0, AE: 22.0, CED: 5.0, CCa: 40.0 },
-    '9-12 meses': { CP: 46.0, CC: 24.0, CA: 19.0, 'C Puño': 12.5, LT: 28.0, LM: 20.0, PSisa: 10.5, AE: 24.0, CED: 5.5, CCa: 42.0 },
-    '12-15 meses': { CP: 48.0, CC: 25.0, CA: 20.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa:11.0, AE: 26.0, CED: 6.0, CCa: 43.0 },
-    '15-18 meses': { CP: 49.0, CC: 25.0, CA: 22.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 12.0, AE: 28.0, CED: 6.5, CCa: 44.0 },
-    '18-24 meses': { CP: 50.0, CC: 26.0, CA: 24.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 13.0, AE: 30.0, CED: 7.0, CCa: 45.0 },
+    '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 11.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 7.0, AE: 14.0, CED: 3.0, CCa: 32.0 },
+    '0 meses': { CP: 38.0, CC: 20.0, CA: 12.0, 'C Puño': 11.0, LT: 22.0, LM: 12.0, PSisa: 8.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
+    '1-3 meses': { CP: 40.0, CC: 21.0, CA: 13.0, 'C Puño': 11.0, LT: 23.0, LM: 14.0, PSisa: 8.75, AE: 18.0, CED: 4.0, CCa: 35.0 },
+    '3-6 meses': { CP: 42.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 24.0, LM: 16.0, PSisa: 9.0, AE: 20.0, CED: 4.5, CCa: 37.0 },
+    '6-9 meses': { CP: 44.0, CC: 23.0, CA: 15.0, 'C Puño': 12.0, LT: 26.0, LM: 18.0, PSisa: 9.5, AE: 22.0, CED: 5.0, CCa: 40.0 },
+    '9-12 meses': { CP: 46.0, CC: 24.0, CA: 16.0, 'C Puño': 12.5, LT: 28.0, LM: 20.0, PSisa: 10.0, AE: 24.0, CED: 5.5, CCa: 42.0 },
+    '12-15 meses': { CP: 48.0, CC: 25.0, CA: 16.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa: 10.5, AE: 26.0, CED: 6.0, CCa: 43.0 },
+    '15-18 meses': { CP: 49.0, CC: 25.0, CA: 17.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 11.0, AE: 28.0, CED: 6.5, CCa: 44.0 },
+    '18-24 meses': { CP: 50.0, CC: 26.0, CA: 18.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 11.5, AE: 30.0, CED: 7.0, CCa: 45.0 },
 
     // Tallas de Niños (Se añade CCa)
-    '3 años': { CP: 56.0, CC: 26.5, CA: 26.0, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 15.0, AE: 31.0, CED: 7.3, CCa: 46.0 }, 
-    '4 años': { CP: 57.0, CC: 27.0, CA: 27.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 15.5, AE: 32.0, CED: 7.5, CCa: 48.0 },
-    '6 años': { CP: 60.0, CC: 28.0, CA: 28.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 16.0, AE: 34.0, CED: 8.0, CCa: 59.0 },
-    '8 años': { CP: 64.0, CC: 29.0, CA: 29.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 16.5, AE: 36.0, CED: 8.5, CCa: 50.0 },
-    '10 años': { CP: 68.0, CC: 30.0, CA: 30.0, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 17.0, AE: 38.0, CED: 9.0, CCa: 52.0 },
+    '3 años': { CP: 56.0, CC: 26.5, CA: 19, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 13.0, AE: 31.0, CED: 7.3, CCa: 46.0 }, 
+    '4 años': { CP: 57.0, CC: 27.0, CA: 20.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 14.0, AE: 32.0, CED: 7.5, CCa: 48.0 },
+    '6 años': { CP: 60.0, CC: 28.0, CA: 24.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 15.0, AE: 34.0, CED: 8.0, CCa: 59.0 },
+    '8 años': { CP: 64.0, CC: 29.0, CA: 24.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 16.0, AE: 36.0, CED: 8.5, CCa: 50.0 },
+    '10 años': { CP: 68.0, CC: 30.0, CA: 25.0, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 17.0, AE: 38.0, CED: 9.0, CCa: 52.0 },
     
     // Tallas de Mujer (Adulto) (Se añade CCa)
-    '36': { CP: 81.0, CC: 35.0, CA: 32.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 20.0, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
-    '38': { CP: 86.0, CC: 35.0, CA: 33.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 20.5, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
-    '40': { CP: 92.0, CC: 35.0, CA: 34.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 21.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
-    '42': { CP: 100.0, CC: 36.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.5, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
-    '44': { CP: 104.0, CC: 36.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 22.5, AE: 38.6, CED: 13.0, CCa: 55.0 }, 
+    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.0, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
+    '38': { CP: 86.0, CC: 35.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.0, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
+    '40': { CP: 92.0, CC: 35.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
+    '42': { CP: 100.0, CC: 36.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.0, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
+    '44': { CP: 104.0, CC: 36.0, CA: 37.0, 'C Puño': 21.5, LT: 63.0, LM: 50.0, PSisa: 22.0, AE: 38.6, CED: 13.0, CCa: 55.0 }, 
     '46': { CP: 108.0, CC: 37.0, CA: 38.0, 'C Puño': 22.2, LT: 64.0, LM: 51.0, PSisa: 23.0, AE: 39.6, CED: 13.5, CCa: 56.0 }, 
-    '48': { CP: 112.0, CC: 37.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 23.5, AE: 40.6, CED: 14.0, CCa: 56.0 }, 
-    '50': { CP: 116.0, CC: 38.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 24.0, AE: 41.6, CED: 14.5, CCa: 57.0 } 
+    '48': { CP: 112.0, CC: 37.0, CA: 39.0, 'C Puño': 23.4, LT: 66.0, LM: 52.0, PSisa: 24.0, AE: 40.6, CED: 14.0, CCa: 56.0 }, 
+    '50': { CP: 116.0, CC: 38.0, CA: 40.0, 'C Puño': 23.6, LT: 68.0, LM: 54.0, PSisa: 25.0, AE: 41.6, CED: 14.5, CCa: 57.0 } 
 };
 
 
@@ -404,14 +404,14 @@ function calcularPatron() {
         }
         const puntosTapeta = calculatedTapetaPts;
 
-        // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/4/8 cm)
+        // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/4/6 cm)
         let holguraAxilaCm; 
         if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
             holguraAxilaCm = 2.0; // 2cm
         } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
             holguraAxilaCm = 4.0; // 4 cm
         } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 8.0; // 8 cm
+            holguraAxilaCm = 6.0; // 6 cm
         } else {
             holguraAxilaCm = 5.0; // Default
         }
@@ -619,6 +619,7 @@ function calcularPatron() {
             const puntosEspaldaPreSisaTarget = puntosObjetivoEspalda - puntosAnadirSisaPts; // ej: 120 - 18 = 102
             const puntosDelanteroPreSisaTarget = puntosObjetivoDelanteroTotal - puntosAnadirSisaPts; // ej: 120 - 18 = 102
             
+            
             // 3. CÁLCULO DE RONDAS (R) Y REPARTO INICIAL (pManga, pEspalda, pDelanteroBase)
             
             const puntosBase = puntosMontaje - 4; // Restar 4 puntos para los marcadores de raglán
@@ -640,6 +641,9 @@ function calcularPatron() {
             
             
             // 5. AJUSTE DE NÚMEROS MÍNIMOS (ANTES de calcular sobrantes)
+            // =================================================================================
+            // INICIO DE CORRECCIÓN (Simetría del Delantero)
+            // =================================================================================
             
             // Asegurar que ninguna pieza sea negativa (para tallas muy pequeñas)
             if (pManga < 1) { pManga = 1; }
@@ -654,21 +658,31 @@ function calcularPatron() {
             // Repartir los puntos sobrantes (o faltantes)
             if (tipoPrenda === "CHAQUETA") {
                 // =================================================================================
-                // INICIO DE CORRECCIÓN (Reparto simétrico de sobrantes)
+                // CORRECCIÓN 1: REPARTO SIMÉTRICO DE SOBRANTES ENTRE ESPALDA Y DELANTERO TOTAL
                 // =================================================================================
-                // Repartir equitativamente para mantener simetría
                 let sobranteEspalda = Math.ceil(puntosSobrantes / 2);
                 let sobranteDelantero = puntosSobrantes - sobranteEspalda;
                 pEspalda += sobranteEspalda;
                 pDelanteroBase += sobranteDelantero;
+
                 // =================================================================================
-                // FIN DE CORRECCIÓN
+                // CORRECCIÓN 2: FORZAR LA SIMETRÍA DE LOS DELANTEROS (Del. 1 y Del. 2)
+                // Esto se hace asegurando que pDelanteroBase sea PAR, moviendo el punto impar a la espalda.
                 // =================================================================================
+                if (pDelanteroBase % 2 !== 0) {
+                    pDelanteroBase -= 1; // Hacemos el delantero par
+                    pEspalda += 1; // El punto impar se lo damos a la espalda para cuadrar el total.
+                }
+
             } else {
                 // En Jersey, todo a la espalda
                 pEspalda += puntosSobrantes; 
             }
             
+            // =================================================================================
+            // FIN DE CORRECCIÓN DE LA LÓGICA DE REPARTO
+            // =================================================================================
+
             // 7. CÁLCULO DE PUNTOS FINALES (Para la salida)
             
             // Puntos finales REALES de cada pieza (antes de añadir los puntos bajo manga)
@@ -830,7 +844,7 @@ function calcularPatron() {
             resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroConSisa} puntos** (${cmTotalDelanteroConSisa} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
             // Nota de ajuste por redondeo
              if (puntosTotalDelanteroConSisa !== puntosObjetivoDelanteroTotal) {
-                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: Este total debería ser ${puntosObjetivoDelanteroTotal} puntos. La diferencia de ${puntosTotalDelanteroConSisa - puntosObjetivoDelanteroTotal} p. se debe al redondeo inicial).</p>\n`;
+                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: Este total debería ser ${puntosObjetivoDelanteroTotal} puntos. La diferencia de ${puntosTotalDelanteroConSisa - puntosObjetivoDelanteroTotal} p. se debe al redondeo inicial).\n`;
             }
 
 
