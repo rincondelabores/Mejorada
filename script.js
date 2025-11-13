@@ -725,8 +725,14 @@ function calcularPatron() {
             const largoCuerpoRestanteH = densidadH ? Math.round(largoCuerpoCm * densidadH) : null;
             const finalLargoCuerpoCm = largoCuerpoCm > 0 ? largoCuerpoCm.toFixed(1) : (0.0).toFixed(1);
 
-            const puntosPiezaDelantera = puntosCuerpoDelanteroFinal;
-            const puntosPiezaEspalda = puntosCuerpoEspaldaFinal;
+            // =================================================================================
+            // INICIO DE CORRECCIÓN (Líneas 707-708)
+            // =================================================================================
+            const puntosPiezaDelantera = puntosDelanteroFinal_PreSisa;
+            const puntosPiezaEspalda = puntosEspaldaFinal_PreSisa;
+            // =================================================================================
+            // FIN DE CORRECCIÓN
+            // =================================================================================
 
             const puntosTotalDelanteroConSisa = puntosPiezaDelantera + puntosAnadirSisaPts;
             const puntosTotalEspaldaConSisa = puntosPiezaEspalda + puntosAnadirSisaPts;
