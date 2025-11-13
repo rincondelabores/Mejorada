@@ -609,24 +609,23 @@ function calcularPatron() {
             
             // 1. DEFINIR OBJETIVOS (Targets)
             
-            // Puntos Objetivo (Igual que en BAJO)
-            // cpPts = Contorno total de la prenda (ej: 240)
-            // puntosSisaManga = Puntos totales de la manga en la sisa (ej: 97)
-            // puntosAnadirSisaPts = Puntos de holgura bajo el brazo (ej: 18)
-            
             const puntosObjetivoEspalda = Math.round(cpPts / 2); // ej: 120
             const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda; // ej: 120 (para compensar redondeos)
             
             // 2. DEFINIR OBJETIVOS PRE-SISA (Lo que hay que tejer ANTES de añadir holgura)
             
-            // El target de la manga ANTES de añadir la holgura
             const puntosMangaPreSisaTarget = puntosSisaManga - puntosAnadirSisaPts; // ej: 97 - 18 = 79
             
-            // El target de la espalda ANTES de añadir la holgura
-            const puntosEspaldaPreSisaTarget = puntosObjetivoEspalda - puntosAnadirSisaPts; // ej: 120 - 18 = 102
+            // CORRECCIÓN: La lógica de Jersey/Chaqueta estaba mal planteada aquí.
+            // La holgura SÓLO se resta del cuerpo si es un JERSEY (unido en redondo).
+            // Para una chaqueta (plano), el delantero y la espalda NO se unen, por lo que el target PRE-SISA es el mismo que el target FINAL.
+            // ... NO, ESO ESTÁ MAL.
+            // La lógica de 3.2 (Cuerpo) SÍ AÑADE la holgura (puntosAnadirSisaPts_Media) a cada lado.
+            // POR TANTO, LA LÓGICA DE RESTAR 'puntosAnadirSisaPts' ES CORRECTA.
             
-            // El target del delantero ANTES de añadir la holgura
+            const puntosEspaldaPreSisaTarget = puntosObjetivoEspalda - puntosAnadirSisaPts; // ej: 120 - 18 = 102
             const puntosDelanteroPreSisaTarget = puntosObjetivoDelanteroTotal - puntosAnadirSisaPts; // ej: 120 - 18 = 102
+
 
             
             // 3. CÁLCULO DE RONDAS (R) Y REPARTO INICIAL (pManga, pEspalda, pDelanteroBase)
@@ -665,8 +664,22 @@ function calcularPatron() {
             let puntosSobrantes = puntosBase - puntosRepartidos;
             
             // Repartir los puntos sobrantes (o faltantes)
-            // Se añaden a la espalda (pieza más grande y central)
-            pEspalda += puntosSobrantes; 
+            if (tipoPrenda === "CHAQUETA") {
+                // =================================================================================
+                // INICIO DE CORRECCIÓN (Reparto simétrico de sobrantes)
+                // =================================================================================
+                // Repartir equitativamente para mantener simetría
+                let sobranteEspalda = Math.ceil(puntosSobrantes / 2);
+                let sobranteDelantero = puntosSobrantes - sobranteEspalda;
+                pEspalda += sobranteEspalda;
+                pDelanteroBase += sobranteDelantero;
+                // =================================================================================
+                // FIN DE CORRECCIÓN
+                // =================================================================================
+            } else {
+                // En Jersey, todo a la espalda
+                pEspalda += puntosSobrantes; 
+            }
             
             // =================================================================================
             // FIN DE CORRECCIÓN
@@ -864,4 +877,6 @@ function calcularPatron() {
     resultado += `<p style="font-size:0.9em; text-align: center;">💡 **Nota:** Esta calculadora es válida tanto para **tejido en dos agujas** (donde 'puntos' = puntos y 'pasadas' = hileras) como para **Ganchillo/Crochet** (donde 'puntos' = cadenetas y 'pasadas' = vueltas). Solo tiene que sustituir la terminología.</p>`;
 
     resultadoDiv.innerHTML = resultado.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+}
+
 }
