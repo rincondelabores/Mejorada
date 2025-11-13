@@ -150,8 +150,8 @@ function manejarVisibilidadCampos() {
         metodoGroup.style.display = 'none';
         cmGroup.style.display = 'none';
         tallaSelect.setAttribute('required', 'required');
-        tallaSelect.style.display = 'block';
         document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
+        tallaSelect.style.display = 'block';
     }
 }
 
@@ -616,17 +616,8 @@ function calcularPatron() {
             
             const puntosMangaPreSisaTarget = puntosSisaManga - puntosAnadirSisaPts; // ej: 97 - 18 = 79
             
-            // CORRECCIÓN: La lógica de Jersey/Chaqueta estaba mal planteada aquí.
-            // La holgura SÓLO se resta del cuerpo si es un JERSEY (unido en redondo).
-            // Para una chaqueta (plano), el delantero y la espalda NO se unen, por lo que el target PRE-SISA es el mismo que el target FINAL.
-            // ... NO, ESO ESTÁ MAL.
-            // La lógica de 3.2 (Cuerpo) SÍ AÑADE la holgura (puntosAnadirSisaPts_Media) a cada lado.
-            // POR TANTO, LA LÓGICA DE RESTAR 'puntosAnadirSisaPts' ES CORRECTA.
-            
             const puntosEspaldaPreSisaTarget = puntosObjetivoEspalda - puntosAnadirSisaPts; // ej: 120 - 18 = 102
             const puntosDelanteroPreSisaTarget = puntosObjetivoDelanteroTotal - puntosAnadirSisaPts; // ej: 120 - 18 = 102
-
-
             
             // 3. CÁLCULO DE RONDAS (R) Y REPARTO INICIAL (pManga, pEspalda, pDelanteroBase)
             
@@ -649,9 +640,6 @@ function calcularPatron() {
             
             
             // 5. AJUSTE DE NÚMEROS MÍNIMOS (ANTES de calcular sobrantes)
-            // =================================================================================
-            // INICIO DE CORRECCIÓN (Orden de operaciones)
-            // =================================================================================
             
             // Asegurar que ninguna pieza sea negativa (para tallas muy pequeñas)
             if (pManga < 1) { pManga = 1; }
@@ -681,10 +669,6 @@ function calcularPatron() {
                 pEspalda += puntosSobrantes; 
             }
             
-            // =================================================================================
-            // FIN DE CORRECCIÓN
-            // =================================================================================
-
             // 7. CÁLCULO DE PUNTOS FINALES (Para la salida)
             
             // Puntos finales REALES de cada pieza (antes de añadir los puntos bajo manga)
@@ -877,6 +861,4 @@ function calcularPatron() {
     resultado += `<p style="font-size:0.9em; text-align: center;">💡 **Nota:** Esta calculadora es válida tanto para **tejido en dos agujas** (donde 'puntos' = puntos y 'pasadas' = hileras) como para **Ganchillo/Crochet** (donde 'puntos' = cadenetas y 'pasadas' = vueltas). Solo tiene que sustituir la terminología.</p>`;
 
     resultadoDiv.innerHTML = resultado.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-}
-
 }
