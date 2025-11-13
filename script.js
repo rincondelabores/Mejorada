@@ -4,25 +4,25 @@
 
 const MEDIDAS_ANTROPOMETRICAS = {
     // Tallas de Bebé (Se añade CCa - Contorno de Cabeza)
-    '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 12.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 9.0, AE: 14.0, CED: 3.0, CCa: 32.0 },
-    '0 meses': { CP: 38.0, CC: 21.0, CA: 13.0, 'C Puño': 12.0, LT: 22.0, LM: 12.0, PSisa: 7.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
-    '1-3 meses': { CP: 40.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 23.0, LM: 14.0, PSisa: 7.75, AE: 18.0, CED: 4.0, CCa: 35.0 },
-    '3-6 meses': { CP: 44.0, CC: 23.0, CA: 16.0, 'C Puño': 12.5, LT: 24.0, LM: 16.0, PSisa: 8.75, AE: 20.0, CED: 4.5, CCa: 37.0 },
-    '6-9 meses': { CP: 48.0, CC: 27.0, CA: 17.0, 'C Puño': 12.5, LT: 26.0, LM: 18.0, PSisa: 9.75, AE: 22.0, CED: 5.0, CCa: 40.0 },
-    '9-12 meses': { CP: 52.0, CC: 25.0, CA: 18.0, 'C Puño': 12.5, LT: 28.0, LM: 20.0, PSisa: 10.75, AE: 24.0, CED: 5.5, CCa: 42.0 },
-    '12-15 meses': { CP: 56.0, CC: 25.0, CA: 19.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa: 11.75, AE: 26.0, CED: 6.0, CCa: 43.0 },
-    '15-18 meses': { CP: 60.0, CC: 26.0, CA: 20.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 11.75, AE: 28.0, CED: 6.5, CCa: 44.0 },
-    '18-24 meses': { CP: 61.0, CC: 26.0, CA: 22.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 12.75, AE: 30.0, CED: 7.0, CCa: 45.0 },
+    '00 (Prematuro)': { CP: 37.0, CC: 20.0, CA: 11.0, 'C Puño': 11.0, LT: 20.0, LM: 10.0, PSisa: 7.0, AE: 14.0, CED: 3.0, CCa: 32.0 },
+    '0 meses': { CP: 38.0, CC: 20.0, CA: 12.0, 'C Puño': 11.0, LT: 22.0, LM: 12.0, PSisa: 8.0, AE: 16.0, CED: 3.5, CCa: 33.0 },
+    '1-3 meses': { CP: 40.0, CC: 21.0, CA: 13.0, 'C Puño': 11.0, LT: 23.0, LM: 14.0, PSisa: 8.75, AE: 18.0, CED: 4.0, CCa: 35.0 },
+    '3-6 meses': { CP: 42.0, CC: 22.0, CA: 14.0, 'C Puño': 12.0, LT: 24.0, LM: 16.0, PSisa: 9.0, AE: 20.0, CED: 4.5, CCa: 37.0 },
+    '6-9 meses': { CP: 44.0, CC: 23.0, CA: 15.0, 'C Puño': 12.0, LT: 26.0, LM: 18.0, PSisa: 9.5, AE: 22.0, CED: 5.0, CCa: 40.0 },
+    '9-12 meses': { CP: 46.0, CC: 24.0, CA: 16.0, 'C Puño': 12.5, LT: 28.0, LM: 20.0, PSisa: 10.0, AE: 24.0, CED: 5.5, CCa: 42.0 },
+    '12-15 meses': { CP: 48.0, CC: 25.0, CA: 16.0, 'C Puño': 13.0, LT: 30.0, LM: 22.0, PSisa: 10.5, AE: 26.0, CED: 6.0, CCa: 43.0 },
+    '15-18 meses': { CP: 49.0, CC: 25.0, CA: 17.0, 'C Puño': 13.5, LT: 32.0, LM: 25.0, PSisa: 11.0, AE: 28.0, CED: 6.5, CCa: 44.0 },
+    '18-24 meses': { CP: 50.0, CC: 26.0, CA: 18.0, 'C Puño': 14.0, LT: 34.0, LM: 27.0, PSisa: 11.5, AE: 30.0, CED: 7.0, CCa: 45.0 },
 
     // Tallas de Niños (Se añade CCa)
-    '3 años': { CP: 62.0, CC: 28.5, CA: 23, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 13.75, AE: 31.0, CED: 7.3, CCa: 46.0 }, 
-    '4 años': { CP: 63.0, CC: 30.0, CA: 24.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 14.75, AE: 32.0, CED: 7.5, CCa: 48.0 },
-    '6 años': { CP: 66.0, CC: 31.0, CA: 25.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 15.75, AE: 34.0, CED: 8.0, CCa: 59.0 },
-    '8 años': { CP: 68.0, CC: 32.0, CA: 26.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 16.75, AE: 36.0, CED: 8.5, CCa: 50.0 },
-    '10 años': { CP: 72.0, CC: 33.0, CA: 26.5, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 17.75, AE: 38.0, CED: 9.0, CCa: 52.0 },
+    '3 años': { CP: 56.0, CC: 26.5, CA: 19, 'C Puño': 15.5, LT: 36.0, LM: 28.5, PSisa: 13.0, AE: 31.0, CED: 7.3, CCa: 46.0 }, 
+    '4 años': { CP: 57.0, CC: 27.0, CA: 20.0, 'C Puño': 16.0, LT: 38.0, LM: 32.0, PSisa: 14.0, AE: 32.0, CED: 7.5, CCa: 48.0 },
+    '6 años': { CP: 60.0, CC: 28.0, CA: 24.0, 'C Puño': 16.5, LT: 42.0, LM: 35.5, PSisa: 15.0, AE: 34.0, CED: 8.0, CCa: 59.0 },
+    '8 años': { CP: 64.0, CC: 29.0, CA: 24.0, 'C Puño': 17.0, LT: 47.0, LM: 39.0, PSisa: 16.0, AE: 36.0, CED: 8.5, CCa: 50.0 },
+    '10 años': { CP: 68.0, CC: 30.0, CA: 25.0, 'C Puño':18.0, LT: 50.0, LM: 43.0, PSisa: 17.0, AE: 38.0, CED: 9.0, CCa: 52.0 },
     
     // Tallas de Mujer (Adulto) (Se añade CCa)
-    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.75, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
+    '36': { CP: 81.0, CC: 35.0, CA: 30.0, 'C Puño': 19.3, LT: 58.0, LM: 47.0, PSisa: 18.0, AE: 35.0, CED: 11.0, CCa: 54.0 }, 
     '38': { CP: 86.0, CC: 35.0, CA: 32.0, 'C Puño': 19.5, LT: 60.0, LM: 48.0, PSisa: 19.0, AE: 36.0, CED: 11.5, CCa: 54.5 }, 
     '40': { CP: 92.0, CC: 35.0, CA: 33.0, 'C Puño': 20.6, LT: 61.0, LM: 48.5, PSisa: 20.0, AE: 36.8, CED: 12.0, CCa: 54.0 }, 
     '42': { CP: 100.0, CC: 36.0, CA: 35.0, 'C Puño': 20.8, LT: 62.0, LM: 49.0, PSisa: 21.0, AE: 37.6, CED: 12.5, CCa: 55.5 }, 
