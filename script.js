@@ -658,7 +658,7 @@ function calcularPatron() {
             
             let notaMetodo = "";
             if (numAumentosRondas === rondasPorAncho && numAumentosRondas > rondasPorSisa) {
-                notaMetodo = `<b>Nota sobre el Cálculo:</b> Para alcanzar el **ancho** deseado de la talla (${rondasPorAncho} rondas), se ha añadido una holgura natural a la sisa (la sisa mínima requería solo ${rondasPorSisa} rondas). El patrón está equilibrado.`;
+                notaMetodo = `<b>Nota sobre el Cálculo:</b> Para alcanzar el **ancho** deseado de la talla (${rondasPorAncho} rondas), se ha añadido una holgura a la sisa (la sisa mínima requería solo ${rondasPorSisa} rondas). El patrón está equilibrado.`;
             } else if (numAumentosRondas === rondasPorSisa && numAumentosRondas > rondasPorAncho) {
                 notaMetodo = `<b>Nota sobre el Cálculo:</b> Para alcanzar la **sisa mínima** de ${raglanCmBase} cm (${rondasPorSisa} rondas), la prenda quedará ligeramente más ancha que el estándar de la talla (el ancho requería solo ${rondasPorAncho} rondas). Esto asegura que la sisa no tire.`;
             } else { // Son iguales
@@ -684,12 +684,12 @@ function calcularPatron() {
             const targetAnchoMangaCm = (anchoSisaMangaCm).toFixed(1); 
 
             // 5. GENERAR OUTPUT (RAGLÁN)
-            resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán) - MÉTODO HÍBRIDO</h4>\n`;
+            resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán) </h4>\n`;
             resultado += `<p style='background-color: #eef5f8; border: 1px solid #a4c7d6; padding: 10px; border-radius: 4px;'>${notaMetodo}</p>\n`;
             resultado += `\n<u>Comparativa de Medidas (Objetivo vs. Resultado Calculado)</u>\n`;
-            resultado += `* **Objetivo de Ancho (Talla + Holgura):** ${targetAnchoPrendaCm} cm / **Ancho Resultante:** **${cmContornoTotal} cm**.\n`;
-            resultado += `* **Objetivo de Manga (CA + Holgura):** ${targetAnchoMangaCm} cm / **Ancho Manga Resultante:** **${cmMangaFinal} cm**.\n`;
-            resultado += `* **Sisa Mínima (Psisa):** ${raglanCmBase} cm / **Sisa Resultante:** **${raglanCmResultante} cm**.\n\n`;
+            resultado += `* **Ancho de espalda/delantero (Talla + Holgura):** ${targetAnchoPrendaCm} cm / **El ancho de la prenda sera de:** **${cmContornoTotal} cm**.\n`;
+            resultado += `* ** Manga (CA + Holgura):** ${targetAnchoMangaCm} cm / **La manga tejida quedara de:** **${cmMangaFinal} cm de ancha**.\n`;
+            resultado += `* **Sisa Mínima:** ${raglanCmBase} cm / **la sisa medirá:** **${raglanCmResultante} cm**.\n\n`;
 
             resultado += `<u>1. Empezamos a tejer por el escote:</u>\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (para un escote de **${escoteCmDeseado.toFixed(1)} cm**).\n`;
@@ -895,12 +895,12 @@ function calcularPatron() {
 
             // 4. GENERAR OUTPUT (CANESÚ REDONDO)
             resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Canesú Redondo)</h4>\n`;
-            resultado += `<p>Este método crea un canesú circular sin las "esquinas" del raglán, distribuyendo los aumentos uniformemente.</p>\n`;
+            resultado += `<p>Este método crea un canesú circular distribuyendo los aumentos uniformemente.</p>\n`;
             
             resultado += `\n<u>Comparativa de Medidas (Objetivos)</u>\n`;
-            resultado += `* **Ancho Total de Prenda (Objetivo):** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n`;
-            resultado += `* **Ancho de Manga (Objetivo):** **${anchoSisaMangaCm.toFixed(1)} cm** (**${puntosSisaManga} puntos**).\n`;
-            resultado += `* **Profundidad de Sisa (Objetivo):** ${raglanCmBase.toFixed(1)} cm. (Se tejerán **${sisaCmResultante} cm** para distribuir los aumentos).\n\n`;
+            resultado += `* **Ancho Total de Prenda:** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n`;
+            resultado += `* **Ancho de Manga:** **${anchoSisaMangaCm.toFixed(1)} cm** (**${puntosSisaManga} puntos**).\n`;
+            resultado += `* **Profundidad de Sisa:** ${raglanCmBase.toFixed(1)} cm. (Se tejerán **${sisaCmResultante} cm** para distribuir los aumentos).\n\n`;
 
             resultado += `<u>1. Empezamos a tejer por el escote:</u>\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (para un escote de **${escoteCmDeseado.toFixed(1)} cm**).\n`;
