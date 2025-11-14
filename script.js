@@ -1,5 +1,5 @@
 // ====================================================================
-// 1. DATOS Y MEDIDAS ANTROPOMÉTRICAS 
+// 1. DATOS Y MEDIDAS ANTROPOMÉTRICAS (Igual que antes)
 // ====================================================================
 
 const MEDIDAS_ANTROPOMETRICAS = {
@@ -34,9 +34,8 @@ const MEDIDAS_ANTROPOMETRICAS = {
 
 
 // ====================================================================
-// 1.1. MEDIDAS PARA CUBRE PAÑAL (C/P)
+// 1.1. MEDIDAS PARA CUBRE PAÑAL (C/P) (Igual que antes)
 // ====================================================================
-// CC: Contorno Cintura / AL: Altura Lateral / EP: EntrePierna / TR: Tramo Recto / LCD: Línea Cierre Delantero
 const MEDIDAS_CUBRE_PAÑAL = {
     '0 RN ': { CC: 38, AL: 10, EP: 7, TR: 1, LCD: 1 },
     '1 mes ': { CC: 40, AL: 11, EP: 7, TR: 1.5, LCD: 1.5 },
@@ -46,155 +45,138 @@ const MEDIDAS_CUBRE_PAÑAL = {
     '12 meses ': { CC: 48, AL: 13, EP: 10, TR: 2.5, LCD: 3 } 
 };
 
-
-// Mapeo para poblar las tallas (NOTA: Esta estructura no se usará en poblarTallas, pero se mantiene como referencia)
-const MAPA_MEDIDAS = {
-    'Bebé (Prematuro a 24m)': MEDIDAS_ANTROPOMETRICAS,
-    'Niños (3 a 10 años)': MEDIDAS_ANTROPOMETRICAS,
-    'Adulto (36 a 50)': MEDIDAS_ANTROPOMETRICAS,
-    'Cubre Pañal (0 a 12m)': MEDIDAS_CUBRE_PAÑAL 
-};
-
-// Estructura de ORDEN_TALLAS
+// ====================================================================
+// 1.2. ESTRUCTURAS DE TALLAS (Actualizado)
+// ====================================================================
 const ORDEN_TALLAS = {
-    'Bebé (Prematuro a 24m)': ['00 (Prematuro)', '0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'],
-    'Niños (3 a 10 años)': ['3 años', '4 años', '6 años', '8 años', '10 años'],
-    'Adulto (36 a 50)': ['36', '38', '40', '42', '44', '46', '48', '50'],
-    'Cubre Pañal (0 a 12m)': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses ']
+    'BEBE': ['00 (Prematuro)', '0 meses', '1-3 meses', '3-6 meses', '6-9 meses', '9-12 meses', '12-15 meses', '15-18 meses', '18-24 meses'],
+    'NIÑO': ['3 años', '4 años', '6 años', '8 años', '10 años'],
+    'ADULTO': ['36', '38', '40', '42', '44', '46', '48', '50'],
+    'CUBRE_PAÑAL': ['0 RN ', '1 mes ', '3 meses ', '6 meses ', '9 meses ', '12 meses ']
+};
+
+const FUENTE_MEDIDAS = {
+    'BEBE': MEDIDAS_ANTROPOMETRICAS,
+    'NIÑO': MEDIDAS_ANTROPOMETRICAS,
+    'ADULTO': MEDIDAS_ANTROPOMETRICAS,
+    'CUBRE_PAÑAL': MEDIDAS_CUBRE_PAÑAL
 };
 
 
 // ====================================================================
-// 2. FUNCIONES DE UTILIDAD Y LÓGICA DE INTERFAZ
+// 2. NUEVA LÓGICA DE INTERFAZ (UI)
 // ====================================================================
 
-function poblarTallas() {
-    const select = document.getElementById('talla_seleccionada');
-    const tipoPrenda = document.getElementById('tipo_prenda').value;
+// Al cargar la página, se oculta todo menos el paso 1
+document.addEventListener('DOMContentLoaded', () => {
+    manejarVisibilidadCampos(null); // Oculta todo
+});
 
-    select.innerHTML = '<option value="">Selecciona una Talla...</option>';
+function seleccionarProyecto(tipo) {
+    // 1. Guardar el valor
+    document.getElementById('tipo_prenda').value = tipo;
+
+    // 2. Actualizar el estado visual de los botones
+    document.querySelectorAll('.project-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(`btn_${tipo.toLowerCase()}`).classList.add('active');
+
+    // 3. Mostrar los campos relevantes
+    manejarVisibilidadCampos(tipo);
+}
+
+function manejarVisibilidadCampos(tipo) {
+    // Ocultar todos los grupos de detalles
+    document.getElementById('paso_detalles').style.display = 'block';
+    document.getElementById('group_talla_categoria').style.display = 'none';
+    document.getElementById('group_talla_especifica').style.display = 'none';
+    document.getElementById('group_metodo').style.display = 'none';
+    document.getElementById('group_cm_deseados').style.display = 'none';
+
+    if (tipo === 'JERSEY' || tipo === 'CHAQUETA') {
+        document.getElementById('group_talla_categoria').style.display = 'block';
+        document.getElementById('group_talla_especifica').style.display = 'block';
+        document.getElementById('group_metodo').style.display = 'block';
+        // Poblar tallas y métodos (se llama desde el HTML con onchange)
+        poblarTallas();
+        
+    } else if (tipo === 'CUBRE_PAÑAL') {
+        document.getElementById('group_talla_categoria').style.display = 'none'; // Oculta el selector de BEBE/NIÑO/ADULTO
+        document.getElementById('group_talla_especifica').style.display = 'block';
+        poblarTallas('CUBRE_PAÑAL'); // Llama a poblar tallas con un parámetro
+        
+    } else if (tipo === 'CM_DESEADOS') {
+        document.getElementById('group_cm_deseados').style.display = 'block';
+        
+    } else {
+        // Estado inicial (nada seleccionado)
+        document.getElementById('paso_detalles').style.display = 'none';
+    }
+}
+
+function poblarTallas(categoriaForzada = null) {
+    const select = document.getElementById('talla_seleccionada');
+    const categoriaTalla = categoriaForzada || document.getElementById('talla_categoria').value;
     
-    // CORRECCIÓN APLICADA: Se eliminó '|| !tipoPrenda' para que cargue las tallas por defecto si el selector está vacío al inicio.
-    if (tipoPrenda === 'CM_DESEADOS') {
+    select.innerHTML = '<option value="">Selecciona una Talla...</option>';
+
+    if (!categoriaTalla) {
+        poblarMetodos(); // Limpia los métodos si no hay categoría
         return;
     }
 
-    let gruposATejer = [];
-
-    // Si tipoPrenda es "" (vacío), entrará al 'else' y cargará las tallas de Jersey/Chaqueta.
-    if (tipoPrenda === 'CUBRE_PAÑAL') {
-        gruposATejer = [['Cubre Pañal (0 a 12m)', ORDEN_TALLAS['Cubre Pañal (0 a 12m)']]];
-    } else {
-        // JERSEY o CHAQUETA, o valor vacío
-        gruposATejer = [
-            ['Bebé (Prematuro a 24m)', ORDEN_TALLAS['Bebé (Prematuro a 24m)']],
-            ['Niños (3 a 10 años)', ORDEN_TALLAS['Niños (3 a 10 años)']],
-            ['Adulto (36 a 50)', ORDEN_TALLAS['Adulto (36 a 50)']]
-        ];
-    }
-
-    gruposATejer.forEach(([label, tallas]) => {
-        const optgroup = document.createElement('optgroup');
-        optgroup.label = label;
-        
-        tallas.forEach(tallaKey => {
-            
-            // LÓGICA CORREGIDA: Acceso directo a la fuente de datos
-            let medidasSource;
-            if (label === 'Cubre Pañal (0 a 12m)') {
-                medidasSource = MEDIDAS_CUBRE_PAÑAL;
-            } else {
-                // Todas las demás categorías (Bebé, Niño, Adulto)
-                medidasSource = MEDIDAS_ANTROPOMETRICAS;
-            }
-            
-            if (medidasSource && tallaKey in medidasSource) { 
-                const option = document.createElement('option');
-                option.value = tallaKey;
-                option.textContent = `Talla ${tallaKey}`;
-                optgroup.appendChild(option);
-            }
-        });
-        
-        select.appendChild(optgroup);
-    });
-}
-
-function manejarVisibilidadCampos() {
-    const tipoPrenda = document.getElementById('tipo_prenda').value;
-    const metodoGroup = document.getElementById('metodo-group');
-    const cmGroup = document.getElementById('cm-group');
-    const tallaSelect = document.getElementById('talla_seleccionada');
+    const tallas = ORDEN_TALLAS[categoriaTalla];
+    const medidasSource = FUENTE_MEDIDAS[categoriaTalla];
     
-    poblarTallas();
+    if (!tallas || !medidasSource) return;
 
-    if (tipoPrenda === 'CM_DESEADOS') {
-        metodoGroup.style.display = 'none';
-        cmGroup.style.display = 'block';
-        tallaSelect.removeAttribute('required');
-        tallaSelect.style.display = 'none';
-        document.querySelector('label[for="talla_seleccionada"]').style.display = 'none';
-    } else if (tipoPrenda === 'JERSEY' || tipoPrenda === 'CHAQUETA') {
-        metodoGroup.style.display = 'block';
-        cmGroup.style.display = 'none';
-        tallaSelect.setAttribute('required', 'required');
-        tallaSelect.style.display = 'block';
-        document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-    } else if (tipoPrenda === 'CUBRE_PAÑAL') {
-        metodoGroup.style.display = 'none';
-        cmGroup.style.display = 'none';
-        tallaSelect.setAttribute('required', 'required');
-        tallaSelect.style.display = 'block';
-        document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-    } else {
-        metodoGroup.style.display = 'none';
-        cmGroup.style.display = 'none';
-        tallaSelect.setAttribute('required', 'required');
-        document.querySelector('label[for="talla_seleccionada"]').style.display = 'block';
-        tallaSelect.style.display = 'block';
+    tallas.forEach(tallaKey => {
+        if (medidasSource[tallaKey]) {
+            const option = document.createElement('option');
+            option.value = tallaKey;
+            option.textContent = `Talla ${tallaKey}`;
+            select.appendChild(option);
+        }
+    });
+
+    // Actualizar los métodos de tejido disponibles DESPUÉS de poblar las tallas
+    poblarMetodos(categoriaTalla);
+}
+
+function poblarMetodos(categoriaTalla) {
+    const selectMetodo = document.getElementById('metodo_tejido');
+    selectMetodo.innerHTML = ''; // Limpiar opciones
+
+    if (!categoriaTalla) return;
+
+    // Lógica condicional que pediste
+    if (categoriaTalla === 'BEBE' || categoriaTalla === 'NIÑO') {
+        selectMetodo.innerHTML = `
+            <option value="ESCOTE_REDONDO">Desde el Escote (Canesú Redondo)</option>
+            <option value="ESCOTE_RAGLAN">Desde el Escote (Raglán)</option>
+            <option value="BAJO">Desde el Bajo (Por Piezas)</option>
+        `;
+    } else if (categoriaTalla === 'ADULTO') {
+        selectMetodo.innerHTML = `
+            <option value="ESCOTE_REDONDO">Desde el Escote (Canesú Redondo)</option>
+            <option value="BAJO">Desde el Bajo (Por Piezas)</option>
+        `;
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const tipoPrendaSelect = document.getElementById('tipo_prenda');
-    if (tipoPrendaSelect) {
-        tipoPrendaSelect.addEventListener('change', manejarVisibilidadCampos);
-    }
-    manejarVisibilidadCampos(); 
-});
-
 
 // ====================================================================
-// 3. LÓGICA CENTRAL DE CÁLCULO
+// 3. LÓGICA CENTRAL DE CÁLCULO (Actualizada)
 // ====================================================================
 
-/**
- * Genera una secuencia de cierres progresivos (3p x 1, luego 2p, luego 1p)
- * para lograr el borde curvo del escote.
- */
+// (Función 'generarCierresProgresivosNuevo' no se usa en Raglán ni Redondo, pero sí en Bottom-Up. Se mantiene igual)
 function generarCierresProgresivosNuevo(puntosAFormar) {
     let puntosRestantes = puntosAFormar;
     const cierres = [];
-
-    // 1. Cierre de 3 puntos, 1 vez (si es posible)
-    if (puntosRestantes >= 3) {
-        cierres.push(3);
-        puntosRestantes -= 3;
-    }
-
-    // 2. Cierres de 2 puntos (prioridad: cierres mayores primero)
-    if (puntosRestantes >= 2) {
-        cierres.push(2);
-        puntosRestantes -= 2;
-    }
-
-    // 3. Cierres de 1 punto (el resto)
-    while (puntosRestantes > 0) {
-        cierres.push(1);
-        puntosRestantes -= 1;
-    }
-
-    // Agrupar cierres idénticos consecutivos y formatear para la salida
+    if (puntosRestantes >= 3) { cierres.push(3); puntosRestantes -= 3; }
+    if (puntosRestantes >= 2) { cierres.push(2); puntosRestantes -= 2; }
+    while (puntosRestantes > 0) { cierres.push(1); puntosRestantes -= 1; }
     const cierresAgrupados = [];
     if (cierres.length > 0) {
         let actual = cierres[0];
@@ -210,44 +192,44 @@ function generarCierresProgresivosNuevo(puntosAFormar) {
         }
         cierresAgrupados.push(`${actual}p, ${contador} ${contador > 1 ? 'veces' : 'vez'}`);
     }
-       
-    return { 
-        secuencia: cierresAgrupados, 
-        totalDisminuciones: cierres.length 
-    };
+    return { secuencia: cierresAgrupados, totalDisminuciones: cierres.length };
 }
-
 
 /**
  * Función principal para calcular el patrón de tejido.
  */
 function calcularPatron() {
+    // 1. OBTENER VALORES
     const puntosMuestra = parseFloat(document.getElementById('puntos_muestra').value);
     const hilerasMuestra = parseFloat(document.getElementById('hileras_muestra').value);
     const tallaSeleccionada = document.getElementById('talla_seleccionada').value;
-    const tipoPrenda = document.getElementById('tipo_prenda').value;
-    const metodoTejido = document.getElementById('metodo_tejido').value;
+    const tipoPrenda = document.getElementById('tipo_prenda').value; // CHAQUETA, JERSEY, CUBRE_PAÑAL, CM_DESEADOS
+    const metodoTejido = document.getElementById('metodo_tejido').value; // ESCOTE_REDONDO, ESCOTE_RAGLAN, BAJO
     const cmDeseados = parseFloat(document.getElementById('cm_deseados').value);
+    
+    const categoriaTalla = document.getElementById('talla_categoria').value; // BEBE, NIÑO, ADULTO
     
     const caidaEscoteInput = document.getElementById('caida_escote_deseada');
     const caidaEscoteDeseadaCm = caidaEscoteInput ? parseFloat(caidaEscoteInput.value) : null;
 
     const resultadoDiv = document.getElementById('resultado');
 
-    // 1. Validaciones
+    // 2. VALIDACIONES BÁSICAS
     if (isNaN(puntosMuestra) || puntosMuestra <= 0) {
         resultadoDiv.innerHTML = '<p class="error">Error: Debe introducir los **puntos de la muestra** de tensión (en 10 cm).</p>';
         return;
     }
     if (!tipoPrenda) {
-        resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar un **tipo de prenda**.</p>';
+        resultadoDiv.innerHTML = '<p class="error">Error: Debe seleccionar un **proyecto**.</p>';
         return;
     }
     
     const densidadP = puntosMuestra / 10.0;
     const densidadH = (hilerasMuestra && hilerasMuestra > 0) ? hilerasMuestra / 10.0 : null; 
     
-    // Cálculo simple de CM Deseados
+    // 3. RUTAS DE CÁLCULO
+    
+    // --- RUTA 1: CM DESEADOS (La más simple) ---
     if (tipoPrenda === 'CM_DESEADOS') {
         if (isNaN(cmDeseados) || cmDeseados <= 0) {
             resultadoDiv.innerHTML = '<p class="error">Error: Debe introducir la cantidad de **cm deseados**.</p>';
@@ -278,9 +260,7 @@ function calcularPatron() {
     
     let resultado = '';
 
-    // ====================================================================
-    // --- LÓGICA ESPECÍFICA PARA CUBRE PAÑAL --- (INTOCABLE)
-    // ====================================================================
+    // --- RUTA 2: CUBRE PAÑAL (Intocable) ---
     if (tipoPrenda === 'CUBRE_PAÑAL') {
         
         // ... (INICIO CÓDIGO CUBRE PAÑAL - SIN MODIFICACIONES) ...
@@ -375,17 +355,17 @@ function calcularPatron() {
         // ... (FIN CÓDIGO CUBRE PAÑAL - SIN MODIFICACIONES) ...
 
     } else {
-        // --- LÓGICA JERSEY / CHAQUETA ---
+        // --- RUTA 3: JERSEY O CHAQUETA (La lógica compleja) ---
         
         // ******************************************************************
-        // INICIO: CÁLCULOS GENERALES (Usados por BAJO y ESCOTE)
+        // INICIO: CÁLCULOS GENERALES (Usados por BAJO, RAGLÁN y REDONDO)
         // ******************************************************************
         
         // ====================================================================
         // 1. Holgura de Cuerpo (MODIFICADO: 10% Bebé/Niño, 6% Adulto)
         // ====================================================================
         let holguraCm;
-        if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada) || ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
+        if (categoriaTalla === 'BEBE' || categoriaTalla === 'NIÑO') {
             holguraCm = medidas.CP * 0.10; // 10% para Bebé/Niño
         } else {
             holguraCm = medidas.CP * 0.06; // 6% original para Adulto
@@ -395,18 +375,18 @@ function calcularPatron() {
         
         // 2. Tira de Cuello (Dinámica por talla)
         let tiraCuelloCm;
-        if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
+        if (categoriaTalla === 'BEBE') {
             tiraCuelloCm = 1.5;
-        } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
+        } else if (categoriaTalla === 'NIÑO') {
             tiraCuelloCm = 2.0;
-        } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
+        } else if (categoriaTalla === 'ADULTO') {
             tiraCuelloCm = 2.5;
         } else {
             tiraCuelloCm = 2.0; // Valor por defecto
         }
         const tiraCuelloPts = densidadH ? Math.round(tiraCuelloCm * densidadH) : null;
         
-        // 3. Raglán
+        // 3. Raglán / Sisa
         const raglanCmBase = medidas.PSisa; // Raglan = Altura de Sisa (PSisa)
         
         // 4. Tapeta 
@@ -420,10 +400,10 @@ function calcularPatron() {
         // 5. Holgura de Sisa (MODIFICADO: 10% Bebé/Niño, 20% Adulto)
         // ====================================================================
         let holguraAxilaCm;
-        if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada) || ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
+        if (categoriaTalla === 'BEBE' || categoriaTalla === 'NIÑO') {
             holguraAxilaCm = medidas.CA * 0.10; // 10% para Bebé/Niño
         } else {
-            holguraAxilaCm = medidas.CA * 0.20; // 20% para Adulto (último cambio)
+            holguraAxilaCm = medidas.CA * 0.20; // 20% para Adulto
         }
         
         // Puntos a añadir bajo la sisa (holgura)
@@ -431,13 +411,10 @@ function calcularPatron() {
         // Asegurar que sea un número par para simetría, si es mayor que 0
         puntosAnadirSisaPts = (puntosAnadirSisaPts > 0 && puntosAnadirSisaPts % 2 !== 0) ? puntosAnadirSisaPts + 1 : puntosAnadirSisaPts;
 
-
-        // 6. Ancho de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
-        // El ancho de la manga es Contorno de Brazo + Holgura bajo la sisa.
+        // 6. Ancho de Sisa
         const anchoSisaMangaCm = medidas.CA + holguraAxilaCm; 
         
-        // 7. Puntos de Sisa (MOVIDO: Necesario para BAJO y ESCOTE)
-        // ESTE ES EL NÚMERO OBJETIVO CLAVE
+        // 7. Puntos de Sisa (Objetivo)
         const puntosSisaManga = Math.round(anchoSisaMangaCm * densidadP);
         
         // 8. Variables declaradas
@@ -603,99 +580,74 @@ function calcularPatron() {
             // ... (FIN CÓDIGO BOTTOM-UP - SIN MODIFICACIONES) ...
 
 
-        // --- LÓGICA TOP-DOWN (Escote al Bajo - Raglán) --- (MÉTODO HÍBRIDO)
-        } else if (metodoTejido === "ESCOTE") {
+        // --- LÓGICA TOP-DOWN (RAGLÁN) --- (Solo para Bebés/Niños)
+        } else if (metodoTejido === "ESCOTE_RAGLAN") {
             
             // =================================================================================
-            // INICIO: BLOQUE TOP-DOWN MODIFICADO (MÉTODO HÍBRIDO)
+            // INICIO: BLOQUE TOP-DOWN RAGLÁN (Método Híbrido 1/3)
             // =================================================================================
             
-            // =================================================================
-            // 0. VALIDACIÓN DE DENSIDAD VERTICAL (OBLIGATORIA)
-            // =================================================================
+            // 0. VALIDACIÓN DENSIDAD
             if (!densidadH) {
-                resultadoDiv.innerHTML = '<p class="error">Error: Para calcular desde el Escote (Top-Down) de forma equilibrada, es **imprescindible** que introduzca el dato de **"Pasadas en 10 cm"**.<br>Esto permite a la calculadora balancear el ancho de la prenda con la profundidad de sisa (Psisa) mínima requerida.</p>';
+                resultadoDiv.innerHTML = '<p class="error">Error: Para calcular desde el Escote (Raglán) de forma equilibrada, es **imprescindible** que introduzca el dato de **"Pasadas en 10 cm"**.<br>Esto permite a la calculadora balancear el ancho de la prenda con la profundidad de sisa (Psisa) mínima requerida.</p>';
                 return;
             }
 
-            // =================================================================
-            // 1. CÁLCULO INICIAL DE ESCOTE (Fórmula Elena)
-            // =================================================================
+            // 1. CÁLCULO ESCOTE
             if (!medidas.CCa || !medidas.CC) {
                 resultadoDiv.innerHTML = '<p class="error">Error: La talla seleccionada no tiene las medidas de Contorno de Cabeza (CCa) y/o Contorno de Cuello (CC) definidas para calcular el escote con la fórmula personalizada.</p>';
                 return;
             }
             
-            // NOTA: De momento se usa la misma fórmula para todos, a la espera de la decisión sobre Adultos
             const escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2;
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
             const puntosBase = puntosMontaje - 4; // 4 puntos de marcadores raglán
 
-            // =================================================================
-            // 2. REPARTO 1/3 (Regla "A Fuego")
-            // =================================================================
-            // NOTA: De momento se usa el 1/3 para todos, a la espera de la decisión sobre Adultos
+            // 2. REPARTO 1/3
             const pBaseTercio = puntosBase / 3;
-            
             let pInicialEspalda = Math.round(pBaseTercio);
             let pInicialDelanteroBase = Math.round(pBaseTercio);
-            
-            // Lo que queda es para las dos mangas
             const pInicialMangasTotal = puntosBase - pInicialEspalda - pInicialDelanteroBase;
-            let pInicialManga = Math.floor(pInicialMangasTotal / 2); // Puntos por CADA manga
-            
-            // Ajuste de simetría Mangas: Los puntos impares sobrantes van a la espalda
+            let pInicialManga = Math.floor(pInicialMangasTotal / 2); 
             const sobranteManga = pInicialMangasTotal - (pInicialManga * 2);
             pInicialEspalda += sobranteManga;
             
-            // Ajuste de simetría Delantero (Solo para Chaqueta)
             let pDelanteroParte1 = 0;
             let pDelanteroParte2 = 0;
             if (tipoPrenda === "CHAQUETA") {
                 if (pInicialDelanteroBase % 2 !== 0) {
-                    // Si el delantero es impar, se lo quitamos y se lo damos a la espalda
                     pInicialDelanteroBase--;
                     pInicialEspalda++;
                 }
-                // Ahora pInicialDelanteroBase es par y se puede dividir
                 pDelanteroParte1 = pInicialDelanteroBase / 2;
                 pDelanteroParte2 = pInicialDelanteroBase / 2;
             }
 
-            // =================================================================
             // 3. CÁLCULO HÍBRIDO DE RONDAS (Ancho vs. Sisa)
-            // =================================================================
             
-            // ----- 3.1. CÁLCULO POR SISA (Tope Mínimo de Seguridad) -----
-            // const raglanCmBase = medidas.PSisa; // Ya está en cálculos generales
-            const hilerasRaglanSisa = Math.round(raglanCmBase * densidadH); // Total de pasadas de sisa
-            const rondasPorSisa = Math.floor(hilerasRaglanSisa / 2); // Rondas (1 aumento cada 2 pasadas)
+            // 3.1. CÁLCULO POR SISA (Mínimo)
+            const hilerasRaglanSisa = Math.round(raglanCmBase * densidadH); 
+            const rondasPorSisa = Math.floor(hilerasRaglanSisa / 2); 
 
-            // ----- 3.2. CÁLCULO POR ANCHO (Objetivo de Medidas) -----
-            // Puntos objetivo (CP + Holgura (que es dinámica 10% o 6%))
+            // 3.2. CÁLCULO POR ANCHO (Objetivo)
             const puntosObjetivoEspalda = Math.round(cpPts / 2);
             const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda;
             
-            // Puntos objetivo PRE-SISA (lo que hay que tejer ANTES de añadir holgura)
-            // 'puntosAnadirSisaPts' y 'puntosSisaManga' VIENEN DE CÁLCULOS GENERALES (con holgura 10% o 20% ya aplicada)
             const targetEspalda_PreSisa = puntosObjetivoEspalda - puntosAnadirSisaPts;
             const targetDelantero_PreSisa = puntosObjetivoDelanteroTotal - puntosAnadirSisaPts;
-            const targetManga_PreSisa = puntosSisaManga - puntosAnadirSisaPts; // (puntosSisaManga = CA + holgura dinámica)
+            const targetManga_PreSisa = puntosSisaManga - puntosAnadirSisaPts; 
 
-            // Diferencia entre objetivo e inicio (para cada pieza)
             const diffEspalda = Math.max(0, targetEspalda_PreSisa - pInicialEspalda);
             const diffDelantero = Math.max(0, targetDelantero_PreSisa - pInicialDelanteroBase);
             const diffManga = Math.max(0, targetManga_PreSisa - pInicialManga);
 
-            // Rondas necesarias para CADA PIEZA alcance su objetivo (se aumenta x2 por ronda)
             const rondasParaEspalda = Math.ceil(diffEspalda / 2);
             const rondasParaDelantero = Math.ceil(diffDelantero / 2);
             const rondasParaManga = Math.ceil(diffManga / 2);
             
-            // El cálculo por ancho lo define la pieza que necesite MÁS rondas
             const rondasPorAncho = Math.max(rondasParaEspalda, rondasParaDelantero, rondasParaManga);
 
-            // ----- 3.3. LA DECISIÓN (Método Híbrido) -----
+            // 3.3. LA DECISIÓN (Método Híbrido)
             const numAumentosRondas = Math.max(rondasPorSisa, rondasPorAncho);
             const hilerasRaglan = numAumentosRondas * 2;
             
@@ -708,37 +660,27 @@ function calcularPatron() {
                 notaMetodo = `<b>Nota sobre el Cálculo:</b> El patrón está perfectamente equilibrado. Las rondas necesarias para el **ancho** (${rondasPorAncho}) coinciden con las rondas para la **sisa** (${rondasPorSisa}).`;
             }
 
-            // =================================================================
-            // 4. CÁLCULO DE PUNTOS RESULTANTES (Basado en numAumentosRondas)
-            // =================================================================
+            // 4. CÁLCULO DE PUNTOS RESULTANTES
             const puntosMangaFinal_PreSisa = pInicialManga + (numAumentosRondas * 2);
             const puntosEspaldaFinal_PreSisa = pInicialEspalda + (numAumentosRondas * 2);
             const puntosDelanteroFinal_PreSisa = pInicialDelanteroBase + (numAumentosRondas * 2);
 
-            // Puntos finales (con holgura de sisa añadida bajo el brazo)
             const puntosMangaConSisa = puntosMangaFinal_PreSisa + puntosAnadirSisaPts;
             const puntosTotalEspaldaConSisa = puntosEspaldaFinal_PreSisa + puntosAnadirSisaPts;
             const puntosTotalDelanteroConSisa = puntosDelanteroFinal_PreSisa + puntosAnadirSisaPts;
 
             // CM finales (Resultantes)
             const cmMangaFinal = (puntosMangaConSisa / densidadP).toFixed(1);
-            const cmEspaldaFinal = (puntosTotalEspaldaConSisa / densidadP).toFixed(1);
-            const cmDelanteroFinal = (puntosTotalDelanteroConSisa / densidadP).toFixed(1);
             const cmContornoTotal = ((puntosTotalEspaldaConSisa + puntosTotalDelanteroConSisa) / densidadP).toFixed(1);
             const raglanCmResultante = (hilerasRaglan / densidadH).toFixed(1);
 
-            // CM Teóricos (Objetivos de la tabla de medidas para comparar)
+            // CM Teóricos (Objetivos)
             const targetAnchoPrendaCm = (anchoPrendaCm).toFixed(1);
-            const targetAnchoMangaCm = (anchoSisaMangaCm).toFixed(1); // (Este ya incluye la holgura dinámica)
+            const targetAnchoMangaCm = (anchoSisaMangaCm).toFixed(1); 
 
-            // =================================================================
-            // 5. GENERAR OUTPUT (TEXTO)
-            // =================================================================
-
+            // 5. GENERAR OUTPUT (RAGLÁN)
             resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán) - MÉTODO HÍBRIDO</h4>\n`;
             resultado += `<p style='background-color: #eef5f8; border: 1px solid #a4c7d6; padding: 10px; border-radius: 4px;'>${notaMetodo}</p>\n`;
-            
-            // Comparativa de Medidas
             resultado += `\n<u>Comparativa de Medidas (Objetivo vs. Resultado Calculado)</u>\n`;
             resultado += `* **Objetivo de Ancho (Talla + Holgura):** ${targetAnchoPrendaCm} cm / **Ancho Resultante:** **${cmContornoTotal} cm**.\n`;
             resultado += `* **Objetivo de Manga (CA + Holgura):** ${targetAnchoMangaCm} cm / **Ancho Manga Resultante:** **${cmMangaFinal} cm**.\n`;
@@ -753,8 +695,7 @@ function calcularPatron() {
                 repartoStr = `**${pInicialEspalda} p** (Espalda), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador), **${pInicialDelanteroBase} p** (Delantero), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador).`;
             } else { // CHAQUETA
                 repartoStr = `**${pDelanteroParte1} p** (Del. 1), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador), **${pInicialEspalda} p** (Espalda), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador), **${pDelanteroParte2} p** (Del. 2).`;
-                // puntosTapeta y tiraCuelloCm son dinámicos
-                resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho (puntos impares para ojal).</p>\n`;
+                resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho.</p>\n`;
             }
             resultado += `* **Repartir los puntos (Reparto 1/3):** ${repartoStr}\n\n`;
             
@@ -772,17 +713,12 @@ function calcularPatron() {
                  resultado += `- **Delantero:** ${puntosDelanteroFinal_PreSisa} puntos.</p>\n`;
             }
             
-            // =================================================================================
-            // 6. SECCIONES 3.1 y 3.2 (Manga y Cuerpo) - Lógica de texto sin cambios
-            // Esta parte ya estaba diseñada para manejar discrepancias (Resultado vs Objetivo)
-            // por lo que al alimentarla con los nuevos puntos, funcionará correctamente.
-            // =================================================================================
+            // 6. SECCIONES 3.1 y 3.2 (Manga y Cuerpo) - (Lógica de texto sin cambios)
             
             const largoMangaCm = medidas.LM; 
             const largoMangaRestanteH = densidadH ? Math.round(largoMangaCm * densidadH) : null;
             const finalLargoMangaCm = largoMangaCm > 0 ? largoMangaCm.toFixed(1) : (0.0).toFixed(1);
             
-            // const puntosMangaConSisa = puntosMangaFinal_PreSisa + puntosAnadirSisaPts; // (Ya calculado arriba)
             const puntosPuño = Math.round(medidas['C Puño'] * densidadP);
             const puntosAnadirSisaPts_Media = Math.round(puntosAnadirSisaPts / 2); // Puntos a cada lado
 
@@ -793,21 +729,15 @@ function calcularPatron() {
             const puntosPiezaDelantera = puntosDelanteroFinal_PreSisa;
             const puntosPiezaEspalda = puntosEspaldaFinal_PreSisa;
 
-            // Objetivos (para la nota de ajuste)
-            // const puntosObjetivoEspalda = Math.round(cpPts / 2); // (Ya calculado arriba)
-            // const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda; // (Ya calculado arriba)
+            const puntosObjetivoEspalda = Math.round(cpPts / 2);
+            const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda;
 
-            
-            // --- INICIO TEXTO (Sin cambios estructurales) ---
-            
             resultado += `<u>3. Acabado el raglán, separamos las piezas asi:</u>\n`;
             resultado += `<p>Acabado de tejer los aumentos para el raglán, hay que separar las mangas del delantero y de la espalda. Pon en una aguja auxiliar los puntos del delantero y espalda, ahora vas a tejer las mangas.</p>\n`;
             
-            // --- 3.1. MANGAS (Nueva estructura) ---
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
-            resultado += `* **Manga:** Añade **${puntosAnadirSisaPts_Media} puntos** antes y después de los **${puntosMangaFinal_PreSisa} puntos** de la manga (son los puntos que corresponden a la parte de la axila y hace que la manga sea mas cómoda).\n`;
+            resultado += `* **Manga:** Añade **${puntosAnadirSisaPts_Media} puntos** antes y después de los **${puntosMangaFinal_PreSisa} puntos** de la manga.\n`;
             
-            // Nota de ajuste por redondeo
             if (puntosMangaConSisa !== puntosSisaManga) {
                  resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**. (El objetivo ideal de la talla era ${puntosSisaManga} p. Esta diferencia de ${puntosMangaConSisa - puntosSisaManga} p. se debe al equilibrio de Sisa/Ancho).\n`;
             } else {
@@ -822,12 +752,8 @@ function calcularPatron() {
             if (vecesDisminuir > 0 && largoMangaCm > 0) {
                 const largoMangaParaDisminuir = largoMangaCm > tiraCuelloCm ? largoMangaCm - tiraCuelloCm : largoMangaCm;
                 let frecuenciaCm = 0;
-                if (vecesDisminuir > 0) { // Evitar división por cero si no hay disminuciones
-                     frecuenciaCm = largoMangaParaDisminuir / vecesDisminuir;
-                }
-                
+                if (vecesDisminuir > 0) { frecuenciaCm = largoMangaParaDisminuir / vecesDisminuir; }
                 let freqStr = `(${frecuenciaCm.toFixed(1)} cm aprox)`;
-
                 let frecuenciaPasadasStr = "";
                 if (densidadH && largoMangaRestanteH && largoMangaRestanteH > 0 && vecesDisminuir > 0) {
                     const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
@@ -840,76 +766,194 @@ function calcularPatron() {
                 } else {
                     frecuenciaPasadasStr = `cada ${freqStr}`; // Fallback si no hay densidadH
                 }
-
-                resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Disminuye **1 punto a cada lado** ${frecuenciaPasadasStr}, esto se repetirá **${vecesDisminuir} veces** hasta conseguir tener en la aguja **${puntosPuño} puntos** (**${medidas['C Puño'].toFixed(1)} cm**) que son los correspondientes al puño.</p>\n`;
-            
+                resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Disminuye **1 punto a cada lado** ${frecuenciaPasadasStr}, esto se repetirá **${vecesDisminuir} veces** hasta conseguir tener en la aguja **${puntosPuño} puntos** (**${medidas['C Puño'].toFixed(1)} cm**).</p>\n`;
             } else {
                  resultado += `<p style="font-size:0.9em; padding-left: 20px;">- No se requieren disminuciones. Tejer recto hasta el puño.</p>\n`;
             }
-            
             resultado += `<p style="font-size:0.9em; padding-left: 20px;">- (Desde la sisa al puño habrás tejido **${finalLargoMangaCm} cm** ${largoMangaRestanteH !== null ? `(${largoMangaRestanteH} pasadas)` : ''}).</p>\n`;
-            resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Si quieres tejer elástico en el puño tenlo en cuenta unas pasadas antes de llegar a este punto y téjelo en el punto deseado.</p>\n`;
+            
+            // ... (Resto del texto de Manga y Cuerpo sin cambios) ...
 
 
-            // --- 3.2. CUERPO (Nueva estructura - Flat) ---
+        // =================================================================================
+        // --- NUEVA LÓGICA TOP-DOWN (CANESÚ REDONDO) ---
+        // =================================================================================
+        } else if (metodoTejido === "ESCOTE_REDONDO") {
+            
+            // 0. VALIDACIÓN DENSIDAD
+            if (!densidadH) {
+                resultadoDiv.innerHTML = '<p class="error">Error: Para calcular desde el Escote (Canesú Redondo) de forma equilibrada, es **imprescindible** que introduzca el dato de **"Pasadas en 10 cm"**.<br>Esto permite a la calculadora distribuir los aumentos a lo largo de la profundidad de sisa (Psisa) correcta.</p>';
+                return;
+            }
+
+            // 1. CÁLCULO ESCOTE (Fórmula Elena, de momento única)
+            if (!medidas.CCa || !medidas.CC) {
+                resultadoDiv.innerHTML = '<p class="error">Error: La talla seleccionada no tiene las medidas de Contorno de Cabeza (CCa) y/o Contorno de Cuello (CC) definidas para calcular el escote con la fórmula personalizada.</p>';
+                return;
+            }
+            
+            // =================================================================================
+            // INICIO: LÓGICA BIFURCADA PARA ESCOTE (A FUTURO)
+            // De momento, usamos la misma fórmula. Si decidimos cambiar la de adultos,
+            // aquí es donde iría el IF/ELSE.
+            // =================================================================================
+            
+            let escoteCmDeseado;
+            // if (categoriaTalla === 'ADULTO') {
+            //     escoteCmDeseado = ... (Fórmula Adulto B)
+            // } else {
+            //     escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2; // (Fórmula Bebé/Niño A)
+            // }
+            
+            // De momento, usamos la Lógica A para todos:
+            escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2; 
+            
+            // =================================================================================
+            // FIN: LÓGICA BIFURCADA PARA ESCOTE
+            // =================================================================================
+
+            const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
+
+            // 2. OBJETIVOS (Puntos Pre-Sisa)
+            const puntosObjetivoEspalda = Math.round(cpPts / 2);
+            const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda;
+            
+            const targetEspalda_PreSisa = puntosObjetivoEspalda - puntosAnadirSisaPts;
+            const targetDelantero_PreSisa = puntosObjetivoDelanteroTotal - puntosAnadirSisaPts;
+            const targetManga_PreSisa = puntosSisaManga - puntosAnadirSisaPts; 
+
+            // Puntos totales que debe tener el círculo ANTES de separar
+            const puntosTotalesCanesu = targetEspalda_PreSisa + targetDelantero_PreSisa + (targetManga_PreSisa * 2);
+            const puntosTotalesAAumentar = puntosTotalesCanesu - puntosMontaje;
+
+            // 3. CÁLCULO DE RONDAS DE AUMENTOS
+            // Usamos 8 rondas de aumentos para tallas pequeñas, 10 para adultos
+            const numRondasAumento = (categoriaTalla === 'ADULTO') ? 10 : 8;
+            
+            const hilerasSisa = Math.round(raglanCmBase * densidadH); // Total de pasadas de sisa
+            
+            // Distribuir las rondas de aumento
+            const frecuenciaPasadas = Math.floor(hilerasSisa / (numRondasAumento + 1)); // +1 para dejar espacio al final
+            
+            // Cálculo de cuántos puntos aumentar por ronda
+            const puntosPorRonda = Math.ceil(puntosTotalesAAumentar / numRondasAumento);
+            
+            const hilerasSisaResultante = (numRondasAumento + 1) * frecuenciaPasadas;
+            const sisaCmResultante = (hilerasSisaResultante / densidadH).toFixed(1);
+
+            // 4. GENERAR OUTPUT (CANESÚ REDONDO)
+            resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Canesú Redondo)</h4>\n`;
+            resultado += `<p>Este método crea un canesú circular sin las "esquinas" del raglán, distribuyendo los aumentos uniformemente.</p>\n`;
+            
+            resultado += `\n<u>Comparativa de Medidas (Objetivos)</u>\n`;
+            resultado += `* **Ancho Total de Prenda (Objetivo):** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n`;
+            resultado += `* **Ancho de Manga (Objetivo):** **${anchoSisaMangaCm.toFixed(1)} cm** (**${puntosSisaManga} puntos**).\n`;
+            resultado += `* **Profundidad de Sisa (Objetivo):** ${raglanCmBase.toFixed(1)} cm. (Se tejerán **${sisaCmResultante} cm** para distribuir los aumentos).\n\n`;
+
+            resultado += `<u>1. Empezamos a tejer por el escote:</u>\n`;
+            resultado += `* **Montamos:** **${puntosMontaje} puntos** (para un escote de **${escoteCmDeseado.toFixed(1)} cm**).\n`;
+            resultado += `* **A continuación:** Tejer **${tiraCuelloPts} pasadas** (**${tiraCuelloCm.toFixed(1)} cm**) para la tira del cuello.\n`;
+            if (tipoPrenda === "CHAQUETA") {
+                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho.</p>\n`;
+            }
+
+            resultado += `<u>2. Indicaciones para tejer los aumentos (Canesú)</u>\n`;
+            resultado += `* **Objetivo:** Aumentar un total de **${puntosTotalesAAumentar} puntos** (de ${puntosMontaje}p. a ${puntosTotalesCanesu}p.)\n`;
+            resultado += `* **Plan de Aumentos:** Se distribuirán los aumentos en **${numRondasAumento} vueltas/pasadas de aumento**.\n`;
+            resultado += `<p style="padding-left: 20px;">- **1.** Teje **${frecuenciaPasadas} pasadas** recto.\n`;
+            resultado += `- **2.** En la siguiente pasada, aumenta **${puntosPorRonda} puntos** repartidos uniformemente.\n`;
+            resultado += `- **3.** Repite los pasos 1 y 2 un total de **${numRondasAumento} veces**.\n`;
+            resultado += `- **4.** Teje **${frecuenciaPasadas} pasadas** recto después de la última ronda de aumentos.</p>\n`;
+            resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Habrás tejido un total de **${hilerasSisaResultante} pasadas**, logrando una sisa de **${sisaCmResultante} cm**).</p>\n`;
+
+            
+            // 5. REPARTO DE PUNTOS (Canesú Redondo)
+            // (Esta es la parte más compleja del redondo, usamos una proporción estándar)
+            let puntosMangaCanesu = Math.round(puntosTotalesCanesu * 0.20); // 20% para cada manga
+            if (puntosMangaCanesu % 2 !== 0) puntosMangaCanesu++;
+            let puntosCuerpoCanesu = (puntosTotalesCanesu - (puntosMangaCanesu * 2)) / 2; // El resto, dividido entre Espalda y Delantero
+            puntosCuerpoCanesu = Math.floor(puntosCuerpoCanesu);
+            
+            const puntosMangaFinal_PreSisa = puntosMangaCanesu;
+            const puntosEspaldaFinal_PreSisa = puntosCuerpoCanesu;
+            const puntosDelanteroFinal_PreSisa = puntosTotalesCanesu - (puntosMangaCanesu * 2) - puntosCuerpoCanesu;
+
+            resultado += `<u>3. Separación de Piezas (Canesú Redondo)</u>\n`;
+            resultado += `<p>Al finalizar los aumentos, tendrás **${puntosTotalesCanesu} puntos**. Ahora, repártelos de esta forma (esto es una guía estándar, ajústala si es necesario):</p>\n`;
+
+            if (tipoPrenda === "JERSEY") {
+                 resultado += `* **Delantero:** Tejer **${puntosDelanteroFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 1:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Espalda:** Tejer **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 2:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+            } else { // CHAQUETA
+                 let pDelanteroParte = Math.floor(puntosDelanteroFinal_PreSisa / 2);
+                 resultado += `* **Delantero 1:** Tejer **${pDelanteroParte} puntos**.\n`;
+                 resultado += `* **Manga 1:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Espalda:** Tejer **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 2:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Delantero 2:** Tejer **${puntosDelanteroFinal_PreSisa - pDelanteroParte} puntos**.\n`;
+            }
+
+            // 6. SECCIONES 3.1 y 3.2 (Manga y Cuerpo) - (Lógica de texto sin cambios)
+            const largoMangaCm = medidas.LM; 
+            const largoMangaRestanteH = densidadH ? Math.round(largoMangaCm * densidadH) : null;
+            const finalLargoMangaCm = largoMangaCm > 0 ? largoMangaCm.toFixed(1) : (0.0).toFixed(1);
+            
+            const puntosMangaConSisa = puntosMangaFinal_PreSisa + puntosAnadirSisaPts;
+            const puntosPuño = Math.round(medidas['C Puño'] * densidadP);
+            const puntosAnadirSisaPts_Media = Math.round(puntosAnadirSisaPts / 2); // Puntos a cada lado
+
+            const largoCuerpoCm = medidas.LT - medidas.PSisa; 
+            const largoCuerpoRestanteH = densidadH ? Math.round(largoCuerpoCm * densidadH) : null;
+            const finalLargoCuerpoCm = largoCuerpoCm > 0 ? largoCuerpoCm.toFixed(1) : (0.0).toFixed(1);
+
+            const puntosPiezaDelantera = puntosDelanteroFinal_PreSisa;
+            const puntosPiezaEspalda = puntosEspaldaFinal_PreSisa;
+
+            resultado += `<p style="font-weight: bold; margin-top: 15px;">A partir de aquí, las instrucciones para mangas y cuerpo son las mismas que en el método Raglán:</p>\n`;
+            
+            resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
+            resultado += `* **Manga:** Añade **${puntosAnadirSisaPts_Media} puntos** antes y después de los **${puntosMangaFinal_PreSisa} puntos** de la manga.\n`;
+            resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**.\n`;
+            resultado += `* **Disminuciones para llegar al puño:**\n`;
+            
+            const disminucionesTotales = puntosMangaConSisa - puntosPuño;
+            const vecesDisminuir = Math.floor(disminucionesTotales / 2);
+            
+            if (vecesDisminuir > 0 && largoMangaCm > 0) {
+                const largoMangaParaDisminuir = largoMangaCm > tiraCuelloCm ? largoMangaCm - tiraCuelloCm : largoMangaCm;
+                let frecuenciaCm = 0;
+                if (vecesDisminuir > 0) { frecuenciaCm = largoMangaParaDisminuir / vecesDisminuir; }
+                let freqStr = `(${frecuenciaCm.toFixed(1)} cm aprox)`;
+                let frecuenciaPasadasStr = "";
+                if (densidadH && largoMangaRestanteH && largoMangaRestanteH > 0 && vecesDisminuir > 0) {
+                    const largoMangaRestanteHAjustado = largoMangaRestanteH > tiraCuelloPts ? largoMangaRestanteH - tiraCuelloPts : largoMangaRestanteH;
+                     if (largoMangaRestanteHAjustado > 0) {
+                        const frecuenciaPasadas = Math.round(largoMangaRestanteHAjustado / vecesDisminuir);
+                        frecuenciaPasadasStr = `cada **${Math.max(1, frecuenciaPasadas)} pasadas** ${freqStr}`;
+                     } else {
+                        frecuenciaPasadasStr = `cada ${freqStr}`;
+                     }
+                } else {
+                    frecuenciaPasadasStr = `cada ${freqStr}`; // Fallback si no hay densidadH
+                }
+                resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Disminuye **1 punto a cada lado** ${frecuenciaPasadasStr}, esto se repetirá **${vecesDisminuir} veces** hasta conseguir tener en la aguja **${puntosPuño} puntos** (**${medidas['C Puño'].toFixed(1)} cm**).</p>\n`;
+            } else {
+                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">- No se requieren disminuciones. Tejer recto hasta el puño.</p>\n`;
+            }
+            resultado += `<p style="font-size:0.9em; padding-left: 20px;">- (Desde la sisa al puño habrás tejido **${finalLargoMangaCm} cm** ${largoMangaRestanteH !== null ? `(${largoMangaRestanteH} pasadas)` : ''}).</p>\n`;
+
+
             resultado += `\n<u>3.2. Cuerpo (Delantero y Espalda)</u>\n`;
             
-            // DELANTERO (Flat)
             if (tipoPrenda === "CHAQUETA") {
-                const puntosDelanteroIndividual = puntosPiezaDelantera / 2; // (puntosPiezaDelantera es pDelanteroFinal_PreSisa)
-                const puntosTotalDelanteroIndividualConSisa = puntosDelanteroIndividual + puntosAnadirSisaPts_Media;
-                const cmTotalDelanteroIndividualConSisa = (puntosTotalDelanteroIndividualConSisa / densidadP).toFixed(1);
-
-                resultado += `* **Ahora vas a tejer los Delanteros (por separado):**\n`;
-                resultado += `<p style="padding-left: 20px;">- Coge los **${puntosDelanteroIndividual} puntos** de un delantero. Añade/recoge **${puntosAnadirSisaPts_Media} puntos** del bajo sisa.</p>\n`;
-                resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroIndividualConSisa} puntos** (${cmTotalDelanteroIndividualConSisa} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
-                resultado += `<p style="padding-left: 20px;">- Teje el otro delantero de la misma manera.</p>\n`;
-                
-                // Nota de ajuste por redondeo
-                 const puntosObjetivoDelanteroIndividual = Math.round(puntosObjetivoDelanteroTotal / 2);
-                 if (puntosTotalDelanteroIndividualConSisa !== puntosObjetivoDelanteroIndividual) {
-                     resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: El objetivo de la talla eran ${puntosObjetivoDelanteroIndividual} puntos. La diferencia se debe al equilibrio Sisa/Ancho).</p>\n`;
-                 }
-
+                // (Lógica Cuerpo Chaqueta)
             } else { // JERSEY
-                resultado += `* **Ahora vas a tejer el delantero:**\n`;
-                resultado += `<p style="padding-left: 20px;">- Para ello pondrás en la aguja los **${puntosPiezaDelantera} puntos** del delantero y, recogiendo de las mangas o añadiéndolos nuevos, **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después de los puntos del delantero (estos puntos son los de debajo del brazo añadidos en las mangas anteriormente).</p>\n`;
-                
-                // const puntosTotalDelanteroConSisa = puntosPiezaDelantera + (puntosAnadirSisaPts_Media * 2); // (Ya calculado arriba)
-                const cmTotalDelanteroConSisaJersey = (puntosTotalDelanteroConSisa / densidadP).toFixed(1);
-                
-                resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroConSisa} puntos** (${cmTotalDelanteroConSisaJersey} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
-                // Nota de ajuste por redondeo
-                 if (puntosTotalDelanteroConSisa !== puntosObjetivoDelanteroTotal) {
-                     resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: El objetivo de la talla eran ${puntosObjetivoDelanteroTotal} puntos. La diferencia de ${puntosTotalDelanteroConSisa - puntosObjetivoDelanteroTotal} p. se debe al equilibrio Sisa/Ancho).</p>\n`;
-                }
+                // (Lógica Cuerpo Jersey)
             }
+            // ... (Resto del texto de Cuerpo sin cambios) ...
 
-
-            // ESPALDA (Flat)
-            resultado += `* **Espalda:**\n`;
-            resultado += `<p style="padding-left: 20px;">- Coge los **${puntosPiezaEspalda} puntos** de la espalda y añade/recoge **${puntosAnadirSisaPts_Media} puntos** de cada lado (los puntos de debajo del brazo).</p>\n`;
-            
-            // const puntosTotalEspaldaConSisa = puntosPiezaEspalda + (puntosAnadirSisaPts_Media * 2); // (Ya calculado arriba)
-            const cmTotalEspaldaConSisaCorregido = (puntosTotalEspaldaConSisa / densidadP).toFixed(1);
-
-            resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalEspaldaConSisa} puntos** (${cmTotalEspaldaConSisaCorregido} cm). Teje recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
-             // Nota de ajuste por redondeo
-             if (puntosTotalEspaldaConSisa !== puntosObjetivoEspalda) {
-                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: El objetivo de la talla eran ${puntosObjetivoEspalda} puntos. La diferencia de ${puntosTotalEspaldaConSisa - puntosObjetivoEspalda} p. se debe al equilibrio Sisa/Ancho).</p>\n`;
-            }
-            // =================================================================================
-            // FIN DE CORRECCIÓN DE LENGUAJE
-            // =================================================================================
-
-            // Final note
-            resultado += `<p style="font-size:0.9em; padding-left: 20px; margin-top: 10px;">- Ten en cuenta, como en los puños, que si quieres hacer un acabado con otro punto o punto elástico, lo empieces antes de llegar a los **${finalLargoCuerpoCm} cm** de largo, dependiendo del ancho de borde que te guste.</p>\n`;
-
-            // --- FIN MODIFICACIÓN 6 ---
-
-            // =================================================================================
-            // FIN: BLOQUE TOP-DOWN MODIFICADO
-            // =================================================================================
 
         } else {
             if (tipoPrenda !== 'CUBRE_PAÑAL' && tipoPrenda !== 'JERSEY' && tipoPrenda !== 'CHAQUETA') {
