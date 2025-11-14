@@ -1,8 +1,8 @@
 /* Paleta de colores neutra con toques de color */
 :root {
     --color-fondo: #f8f8f8; /* Beige claro, neutro */
-    --color-primario: #d6a4a4; /* Rosa suave (tono cálido) */
-    --color-secundario: #a4c7d6; /* Azul claro (tono frío, para contraste) */
+    --color-primario: #FCC0D9; /* Rosa suave (tono cálido) */
+    --color-secundario: #09B8C8; /* Azul claro (tono frío, para contraste) */
     --color-texto-oscuro: #333333;
     --color-borde: #cccccc;
     --color-sombra: rgba(0, 0, 0, 0.08);
@@ -159,6 +159,19 @@ footer {
     color: #666;
     border-top: 1px solid var(--color-borde);
 }
+
+/* ================== NUEVO ESTILO AQUÍ ================== */
+.nota-aclaratoria {
+    display: block;
+    font-size: 0.85em;
+    color: #555; /* No es un error, es info */
+    margin-top: 4px;
+    padding-left: 10px;
+    font-style: italic;
+    line-height: 1.4;
+}
+/* ======================================================= */
+
 
 /* ======================================================= */
 /* === AJUSTES DE RESPONSIVIDAD PARA DISPOSITIVOS MÓVILES === */
