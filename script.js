@@ -861,10 +861,6 @@ function calcularPatron() {
             const puntosTotalesCanesu = targetEspalda_PreSisa + targetDelantero_PreSisa + (targetManga_PreSisa * 2);
             const puntosTotalesAAumentar = puntosTotalesCanesu - puntosMontaje;
 
-            // =================================================================================
-            // INICIO: LÓGICA DE CANESÚ CORREGIDA
-            // =================================================================================
-            
             // 3. CÁLCULO DE RONDAS DE AUMENTOS (LÓGICA CORREGIDA)
             const hilerasSisa = Math.round(raglanCmBase * densidadH); // Total de pasadas OBJETIVO (Ej: 60)
             const numRondasAumento = (categoriaTalla === 'ADULTO') ? 10 : 8; // Número de "tandas" de aumentos (Ej: 10)
@@ -881,10 +877,6 @@ function calcularPatron() {
             // Recalcular la sisa resultante real con esta lógica
             const hilerasSisaResultante = numRondasAumento * frecuenciaBloque; // (Ej: 10 * 6 = 60)
             const sisaCmResultante = (hilerasSisaResultante / densidadH).toFixed(1); // (Ej: 60 / 2.6 = 23.1 cm)
-            
-            // =================================================================================
-            // FIN: LÓGICA DE CANESÚ CORREGIDA
-            // =================================================================================
 
             // 4. GENERAR OUTPUT (CANESÚ REDONDO)
             resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Canesú Redondo)</h4>\n`;
@@ -902,26 +894,47 @@ function calcularPatron() {
                  resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho.</p>\n`;
             }
 
+            // =================================================================================
+            // INICIO: SECCIÓN DE AUMENTOS POR PASADA (MODIFICADA)
+            // =================================================================================
             resultado += `<u>2. Indicaciones para tejer los aumentos (Canesú)</u>\n`;
             resultado += `* **Objetivo:** Aumentar un total de **${puntosTotalesAAumentar} puntos** (de ${puntosMontaje}p. a ${puntosTotalesCanesu}p.)\n`;
-            resultado += `* **Plan de Aumentos:** Se distribuirán los aumentos en **${numRondasAumento} vueltas/pasadas de aumento**.\n`;
-            
-            // --- TEXTO DE INSTRUCCIONES CORREGIDO ---
-            resultado += `<p style="padding-left: 20px;">Repite la siguiente secuencia **${numRondasAumento} veces**:\n`;
-            resultado += `<p style="padding-left: 40px;">- **1.** Teje **1 pasada** aumentando **${puntosPorRonda} puntos** repartidos uniformemente.\n`;
-            if (pasadasRectas > 0) {
-                resultado += `- **2.** Teje **${pasadasRectas} pasadas** recto, sin aumentar.\n`;
+            resultado += `* **Plan de Aumentos:** Se distribuirán los aumentos en **${numRondasAumento} vueltas/pasadas de aumento**.\n\n`;
+
+            let pasadaActual = 1;
+            let puntosActuales = puntosMontaje;
+
+            for (let i = 1; i <= numRondasAumento; i++) {
+                // Calcular la frecuencia de aumento para esta ronda
+                let cadaCuantosPuntos = 0;
+                if (puntosPorRonda > 0) {
+                     cadaCuantosPuntos = Math.floor(puntosActuales / puntosPorRonda);
+                }
+                
+                // 1. La pasada de aumento
+                resultado += `* **Pasada ${pasadaActual}:** `;
+                if (cadaCuantosPuntos > 0) {
+                    resultado += `Teje *${cadaCuantosPuntos} puntos, 1 aumento*. Repite de *a* toda la pasada. `;
+                } else {
+                    resultado += `Aumenta ${puntosPorRonda} puntos repartidos uniformemente. `;
+                }
+                puntosActuales += puntosPorRonda;
+                resultado += `(Tendrás **${puntosActuales} puntos**).\n`;
+
+                // 2. Las pasadas rectas
+                if (pasadasRectas > 0) {
+                    const finPasadasRectas = pasadaActual + pasadasRectas;
+                    resultado += `* **Pasada ${pasadaActual + 1} a ${finPasadasRectas}:** Teje recto sin aumentos.\n`;
+                    pasadaActual = finPasadasRectas + 1;
+                } else {
+                    pasadaActual++;
+                }
             }
-            resultado += `</p>`;
             
-            resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Al terminar, habrás tejido un total de **${hilerasSisaResultante} pasadas**, logrando una sisa de **${sisaCmResultante} cm**, clavando tu objetivo de ${raglanCmBase} cm).</p>\n`;
-            
-            if(puntosMontaje > 0 && puntosPorRonda > 0) {
-                 const cadaCuantosPuntos = Math.floor(puntosMontaje / puntosPorRonda);
-                 if (cadaCuantosPuntos > 0) {
-                     resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Consejo para la 1ª ronda de aumentos:** Teje *${cadaCuantosPuntos} puntos, 1 aumento*. Repite de *a* toda la pasada.</p>\n`;
-                 }
-            }
+            resultado += `\n<p style="font-size:0.9em; padding-left: 20px;">(Al terminar, habrás tejido un total de **${hilerasSisaResultante} pasadas**, logrando una sisa de **${sisaCmResultante} cm**, clavando tu objetivo de ${raglanCmBase} cm).</p>\n`;
+            // =================================================================================
+            // FIN: SECCIÓN DE AUMENTOS POR PASADA
+            // =================================================================================
 
 
             
@@ -935,7 +948,10 @@ function calcularPatron() {
             const puntosMangaFinal_PreSisa = puntosMangaCanesu;
             const puntosEspaldaFinal_PreSisa = puntosCuerpoCanesu;
             const puntosDelanteroFinal_PreSisa = puntosTotalesCanesu - (puntosMangaCanesu * 2) - puntosCuerpoCanesu;
-
+            
+            // =================================================================================
+            // INICIO: SECCIÓN DE SEPARACIÓN (MODIFICADA)
+            // =================================================================================
             resultado += `<u>3. Separación de Piezas (Canesú Redondo)</u>\n`;
             resultado += `<p>Al finalizar los aumentos, tendrás **${puntosTotalesCanesu} puntos**. Ahora, repártelos de esta forma (esto es una guía estándar, ajústala si es necesario):</p>\n`;
 
@@ -946,14 +962,17 @@ function calcularPatron() {
                  resultado += `* **Manga 2:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
             } else { // CHAQUETA
                  let pDelanteroParte = Math.floor(puntosDelanteroFinal_PreSisa / 2);
+                 let pDelanteroParte2 = puntosDelanteroFinal_PreSisa - pDelanteroParte;
                  resultado += `* **Delantero 1:** Tejer **${pDelanteroParte} puntos**.\n`;
                  resultado += `* **Manga 1:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
                  resultado += `* **Espalda:** Tejer **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
                  resultado += `* **Manga 2:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Delantero 2:** Tejer **${puntosDelanteroFinal_PreSisa - pDelanteroParte} puntos**.\n`;
+                 resultado += `* **Delantero 2:** Tejer **${pDelanteroParte2} puntos**.\n`;
             }
+            resultado += `<p style="margin-top: 10px;">A continuación, teje primero las dos mangas.</p>\n`;
 
-            // 6. SECCIONES 3.1 y 3.2 (Manga y Cuerpo) - (Lógica de texto sin cambios)
+
+            // 6. SECCIONES 3.1 y 3.2 (Manga y Cuerpo) - (Lógica de texto MODIFICADA)
             const largoMangaCm = medidas.LM; 
             const largoMangaRestanteH = densidadH ? Math.round(largoMangaCm * densidadH) : null;
             const finalLargoMangaCm = largoMangaCm > 0 ? largoMangaCm.toFixed(1) : (0.0).toFixed(1);
@@ -969,10 +988,8 @@ function calcularPatron() {
             const puntosPiezaDelantera = puntosDelanteroFinal_PreSisa;
             const puntosPiezaEspalda = puntosEspaldaFinal_PreSisa;
 
-            resultado += `<p style="font-weight: bold; margin-top: 15px;">A partir de aquí, las instrucciones para mangas y cuerpo son las mismas que en el método Raglán:</p>\n`;
-            
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
-            resultado += `* **Manga:** Añade **${puntosAnadirSisaPts_Media} puntos** antes y después de los **${puntosMangaFinal_PreSisa} puntos** de la manga.\n`;
+            resultado += `* **Manga:** Coge los **${puntosMangaFinal_PreSisa} puntos** de la manga en espera. Añade **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después (para la sisa).\n`;
             resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**.\n`;
             resultado += `* **Disminuciones para llegar al puño:**\n`;
             
@@ -996,11 +1013,11 @@ function calcularPatron() {
                 } else {
                     frecuenciaPasadasStr = `cada ${freqStr}`; // Fallback si no hay densidadH
                 }
-                resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Disminuye **1 punto a cada lado** ${frecuenciaPasadasStr}, esto se repetirá **${vecesDisminuir} veces** hasta conseguir tener en la aguja **${puntosPuño} puntos** (**${medidas['C Puño'].toFixed(1)} cm**).</p>\n`;
+                resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Disminuye **1 punto a cada lado** ${frecuenciaPasadasStr}, repitiendo **${vecesDisminuir} veces**.\n- (Llegarás a **${puntosPuño} puntos** para el puño de **${medidas['C Puño'].toFixed(1)} cm**).</p>\n`;
             } else {
                  resultado += `<p style="font-size:0.9em; padding-left: 20px;">- No se requieren disminuciones. Tejer recto hasta el puño.</p>\n`;
             }
-            resultado += `<p style="font-size:0.9em; padding-left: 20px;">- (Desde la sisa al puño habrás tejido **${finalLargoMangaCm} cm** ${largoMangaRestanteH !== null ? `(${largoMangaRestanteH} pasadas)` : ''}).</p>\n`;
+            resultado += `<p style="font-size:0.9em; padding-left: 20px;">- Teje recto hasta que la manga mida **${finalLargoMangaCm} cm** desde la sisa ${largoMangaRestanteH !== null ? `(${largoMangaRestanteH} pasadas)` : ''}.</p>\n`;
 
 
             resultado += `\n<u>3.2. Cuerpo (Delantero y Espalda)</u>\n`;
@@ -1012,30 +1029,26 @@ function calcularPatron() {
                 const puntosTotalDelanteroIndividualConSisa2 = puntosDelanteroIndividual2 + puntosAnadirSisaPts_Media;
                 const cmTotalDelanteroIndividualConSisa = (puntosTotalDelanteroIndividualConSisa / densidadP).toFixed(1);
                 
-                resultado += `* **Ahora vas a tejer los Delanteros (por separado):**\n`;
-                resultado += `<p style="padding-left: 20px;">- Coge los **${puntosDelanteroIndividual} puntos** de un delantero. Añade/recoge **${puntosAnadirSisaPts_Media} puntos** del bajo sisa.</p>\n`;
-                resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroIndividualConSisa} puntos** (${cmTotalDelanteroIndividualConSisa} cm). Continúa tejiendo recto.</p>\n`;
-                resultado += `<p style="padding-left: 20px;">- Teje el otro delantero (**${puntosDelanteroIndividual2} puntos**) de la misma manera (tendrá **${puntosTotalDelanteroIndividualConSisa2} puntos**).</p>\n`;
+                resultado += `* **Ahora vas a tejer el cuerpo (en plano):**\n`;
+                resultado += `<p style="padding-left: 20px;">- Coge los **${puntosDelanteroIndividual} puntos** de un delantero, recoge **${puntosAnadirSisaPts_Media} puntos** (de la sisa 1), teje los **${puntosPiezaEspalda} puntos** de la espalda, recoge **${puntosAnadirSisaPts_Media} puntos** (de la sisa 2) y teje los **${puntosDelanteroIndividual2} puntos** del otro delantero.</p>\n`;
+                const puntosTotalCuerpo = puntosDelanteroIndividual + puntosDelanteroIndividual2 + puntosPiezaEspalda + puntosAnadirSisaPts;
+                const cmTotalCuerpo = (puntosTotalCuerpo / densidadP).toFixed(1);
+                resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalCuerpo} puntos** (${cmTotalCuerpo} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
 
             } else { // JERSEY
-                resultado += `* **Ahora vas a tejer el cuerpo:**\n`;
-                resultado += `<p style="padding-left: 20px;">- Para ello pondrás en la aguja los **${puntosPiezaDelantera} puntos** del delantero, añade/recoge **${puntosAnadirSisaPts_Media} puntos** (bajo sisa 1), teje los **${puntosPiezaEspalda} puntos** de la espalda, y añade/recoge **${puntosAnadirSisaPts_Media} puntos** (bajo sisa 2).</p>\n`;
+                resultado += `* **Ahora vas a tejer el cuerpo (en redondo):**\n`;
+                resultado += `<p style="padding-left: 20px;">- Para ello pondrás en la aguja los **${puntosPiezaDelantera} puntos** del delantero, recoge **${puntosAnadirSisaPts_Media} puntos** (bajo sisa 1), teje los **${puntosPiezaEspalda} puntos** de la espalda, y recoge **${puntosAnadirSisaPts_Media} puntos** (bajo sisa 2).</p>\n`;
                 
-                const puntosTotalCuerpo = puntosPiezaDelantera + puntosPiezaEspalda + (puntosAnadirSisaPts_Media * 2);
+                const puntosTotalCuerpo = puntosPiezaDelantera + puntosPiezaEspalda + puntosAnadirSisaPts;
                 const cmTotalCuerpo = (puntosTotalCuerpo / densidadP).toFixed(1);
                 
                 resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalCuerpo} puntos** (${cmTotalCuerpo} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
             }
             
-            if (tipoPrenda === "CHAQUETA") {
-                resultado += `* **Espalda:**\n`;
-                resultado += `<p style="padding-left: 20px;">- Coge los **${puntosPiezaEspalda} puntos** de la espalda y añade/recoge **${puntosAnadirSisaPts_Media} puntos** de cada lado.</p>\n`;
-                const puntosTotalEspaldaConSisaCorregido = puntosPiezaEspalda + (puntosAnadirSisaPts_Media * 2);
-                const cmTotalEspaldaConSisaCorregido = (puntosTotalEspaldaConSisaCorregido / densidadP).toFixed(1);
-                resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalEspaldaConSisaCorregido} puntos** (${cmTotalEspaldaConSisaCorregido} cm). Teje recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
-            }
-
             resultado += `<p style="font-size:0.9em; padding-left: 20px; margin-top: 10px;">- Ten en cuenta, como en los puños, que si quieres hacer un acabado con otro punto o elástico, lo empieces antes de llegar a los **${finalLargoCuerpoCm} cm** de largo.</p>\n`;
+            // =================================================================================
+            // FIN: SECCIÓN SEPARACIÓN Y MANGA/CUERPO (MODIFICADA)
+            // =================================================================================
 
 
         } else {
