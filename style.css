@@ -1,7 +1,7 @@
 /* Paleta de colores neutra con toques de color */
 :root {
     --color-fondo: #f8f8f8; /* Beige claro, neutro */
-    --color-primario: #FCC0D9; /* Rosa suave (tono cálido) */
+    --color-primario: #CC76AB; /* Rosa suave (tono cálido) */
     --color-secundario: #09B8C8; /* Azul claro (tono frío, para contraste) */
     --color-texto-oscuro: #333333;
     --color-borde: #cccccc;
@@ -47,7 +47,7 @@ header h1 {
     gap: 20px;
 }
 
-/* --- Tarjeta de Presentación (ASIDE) --- */
+/* --- Tarjeta de Presentación (ASIDE) --- (INTOCABLE) */
 .contact-card {
     background-color: white;
     padding: 20px;
@@ -160,7 +160,6 @@ footer {
     border-top: 1px solid var(--color-borde);
 }
 
-/* ================== NUEVO ESTILO AQUÍ ================== */
 .nota-aclaratoria {
     display: block;
     font-size: 0.85em;
@@ -170,7 +169,55 @@ footer {
     font-style: italic;
     line-height: 1.4;
 }
+
 /* ======================================================= */
+/* === NUEVOS ESTILOS PARA INTERFAZ DE ICONOS === */
+/* ======================================================= */
+.project-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+    gap: 10px;
+}
+
+.project-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 5px;
+    border: 2px solid var(--color-borde);
+    background-color: #ffffff;
+    color: var(--color-texto-oscuro);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9em;
+    height: 90px;
+}
+
+.project-button:hover {
+    background-color: #fdfdfd;
+    border-color: var(--color-secundario);
+    box-shadow: 0 2px 4px var(--color-sombra);
+}
+
+/* Estado "pulsado" o "activo" */
+.project-button.active {
+    background-color: var(--color-primario);
+    color: white;
+    border-color: var(--color-primario);
+    box-shadow: 0 2px 4px var(--color-sombra);
+}
+
+.project-icon {
+    font-size: 2.2em; /* Tamaño del emoji */
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+.project-label {
+    font-weight: bold;
+}
 
 
 /* ======================================================= */
@@ -194,6 +241,19 @@ footer {
 
     /* Reducir el tamaño de la cabecera en móviles */
     header h1 {
+        font-size: 1.8em;
+    }
+
+    /* En móvil, los botones-icono se ponen en 2 columnas */
+    .project-selector {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .project-button {
+        height: 80px;
+        padding: 10px 5px;
+    }
+    .project-icon {
         font-size: 1.8em;
     }
 }
