@@ -18,6 +18,7 @@
         
         <section class="calculator-form">
             <h2>Introduce los datos:</h2>
+
             <div class="input-group">
                 <label for="puntos_muestra">Puntos en 10 cm (Muestra de tensión):</label>
                 <input type="number" id="puntos_muestra" required min="1">
@@ -27,38 +28,59 @@
                 <label for="hileras_muestra">Pasadas en 10 cm (Opcional):</label>
                 <input type="number" id="hileras_muestra" min="1">
                 <small class="nota-aclaratoria" id="nota-hileras">
-                    ↳ Obligatorio si tejes desde el Escote (Top-Down) para calcular la sisa correctamente.
+                    ↳ Obligatorio si tejes desde el Escote (Raglán o Redondo).
                 </small>
+            </div>
+
+            <div class="input-group">
+                <label>Elige tu proyecto:</label>
+                <div class="project-selector">
+                    <button class="project-button" id="btn_chaqueta" onclick="seleccionarProyecto('CHAQUETA')">
+                        <span class="project-icon">🧥</span>
+                        <span class="project-label">Chaqueta</span>
+                    </button>
+                    <button class="project-button" id="btn_jersey" onclick="seleccionarProyecto('JERSEY')">
+                        <span class="project-icon">👕</span>
+                        <span class="project-label">Jersey</span>
+                    </button>
+                    <button class="project-button" id="btn_cubre" onclick="seleccionarProyecto('CUBRE_PAÑAL')">
+                        <span class="project-icon">🍼</span>
+                        <span class="project-label">Cubre Pañal</span>
+                    </button>
+                    <button class="project-button" id="btn_cm" onclick="seleccionarProyecto('CM_DESEADOS')">
+                        <span class="project-icon">📏</span>
+                        <span class="project-label">Medida Libre</span>
+                    </button>
                 </div>
-            
-            <div class="input-group">
-                <label for="tipo_prenda">Elige que prenda te gustaria tejer:</label>
-                <select id="tipo_prenda" required>
-                    <option value="">Selecciona...</option>
-                    <option value="JERSEY">Jersey</option>
-                    <option value="CHAQUETA">Chaqueta</option>
-                    <option value="RANITA">Cubre pañal</option>
-                    <option value="CM_DESEADOS">Cm Deseados (ancho libre)</option>
-                </select>
+                <input type="hidden" id="tipo_prenda" value="">
             </div>
 
-            <div class="input-group">
-                <label for="talla_seleccionada">¿Que talla quieres tejer?:</label>
-                <select id="talla_seleccionada" required></select>
-            </div>
+            <div id="paso_detalles" style="display: none;">
+                
+                <div class="input-group" id="group_talla_categoria">
+                    <label for="talla_categoria">Categoría de Talla:</label>
+                    <select id="talla_categoria" onchange="poblarTallas()">
+                        <option value="">Selecciona...</option>
+                        <option value="BEBE">Bebé (Prematuro a 24m)</option>
+                        <option value="NIÑO">Niños (3 a 10 años)</option>
+                        <option value="ADULTO">Adulto (36 a 50)</option>
+                    </select>
+                </div>
+                
+                <div class="input-group" id="group_talla_especifica">
+                    <label for="talla_seleccionada">Talla a tejer:</label>
+                    <select id="talla_seleccionada" required></select>
+                </div>
 
+                <div class="input-group" id="group_metodo">
+                    <label for="metodo_tejido">Método de Tejido:</label>
+                    <select id="metodo_tejido"></select>
+                </div>
 
-            <div class="input-group metodo-group" id="metodo-group" style="display:none;">
-                <label for="metodo_tejido">¿Por donde quieres empezar a tejer?:</label>
-                <select id="metodo_tejido">
-                    <option value="ESCOTE">Desde el Escote (Top-Down)</option>
-                    <option value="BAJO">Desde el Bajo (Bottom-Up)</option>
-                </select>
-            </div>
-
-            <div class="input-group cm-group" id="cm-group" style="display:none;">
-                <label for="cm_deseados">Ancho Deseado (cm):</label>
-                <input type="number" id="cm_deseados" min="1">
+                <div class="input-group" id="group_cm_deseados">
+                    <label for="cm_deseados">Ancho Deseado (cm):</label>
+                    <input type="number" id="cm_deseados" min="1">
+                </div>
             </div>
 
             <button onclick="calcularPatron()">Calcular Instrucciones</button>
@@ -79,9 +101,9 @@
             </section>
 
         <section class="results">
-            <h2>Indicaciones para tejer esta prenda:</h2>
+            <h2>Instrucciones de Tejido</h2>
             <div id="resultado" class="output-box">
-                <p>Introduce los datos de tu muestra para comenzar.</p>
+                <p>Introduce los datos de tu muestra y patrón para comenzar.</p>
             </div>
         </section>
 
