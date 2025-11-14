@@ -411,6 +411,7 @@ function calcularPatron() {
         // Asegurar que sea un número par para simetría, si es mayor que 0
         puntosAnadirSisaPts = (puntosAnadirSisaPts > 0 && puntosAnadirSisaPts % 2 !== 0) ? puntosAnadirSisaPts + 1 : puntosAnadirSisaPts;
 
+
         // 6. Ancho de Sisa
         const anchoSisaMangaCm = medidas.CA + holguraAxilaCm; 
         
@@ -729,8 +730,12 @@ function calcularPatron() {
             const puntosPiezaDelantera = puntosDelanteroFinal_PreSisa;
             const puntosPiezaEspalda = puntosEspaldaFinal_PreSisa;
 
-            const puntosObjetivoEspalda = Math.round(cpPts / 2);
-            const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda;
+            // ====================================================================
+            // INICIO DE LA CORRECCIÓN DEL SYNTAX ERROR (Línea ~732)
+            // He quitado 'const' de las dos líneas siguientes
+            // ====================================================================
+            const puntosObjetivoEspalda_CHK = Math.round(cpPts / 2);
+            const puntosObjetivoDelanteroTotal_CHK = cpPts - puntosObjetivoEspalda_CHK;
 
             resultado += `<u>3. Acabado el raglán, separamos las piezas asi:</u>\n`;
             resultado += `<p>Acabado de tejer los aumentos para el raglán, hay que separar las mangas del delantero y de la espalda. Pon en una aguja auxiliar los puntos del delantero y espalda, ahora vas a tejer las mangas.</p>\n`;
@@ -772,7 +777,49 @@ function calcularPatron() {
             }
             resultado += `<p style="font-size:0.9em; padding-left: 20px;">- (Desde la sisa al puño habrás tejido **${finalLargoMangaCm} cm** ${largoMangaRestanteH !== null ? `(${largoMangaRestanteH} pasadas)` : ''}).</p>\n`;
             
-            // ... (Resto del texto de Manga y Cuerpo sin cambios) ...
+            // --- 3.2. CUERPO (RAGLÁN) ---
+            resultado += `\n<u>3.2. Cuerpo (Delantero y Espalda)</u>\n`;
+            
+            if (tipoPrenda === "CHAQUETA") {
+                const puntosDelanteroIndividual = puntosPiezaDelantera / 2;
+                const puntosTotalDelanteroIndividualConSisa = puntosDelanteroIndividual + puntosAnadirSisaPts_Media;
+                const cmTotalDelanteroIndividualConSisa = (puntosTotalDelanteroIndividualConSisa / densidadP).toFixed(1);
+
+                resultado += `* **Ahora vas a tejer los Delanteros (por separado):**\n`;
+                resultado += `<p style="padding-left: 20px;">- Coge los **${puntosDelanteroIndividual} puntos** de un delantero. Añade/recoge **${puntosAnadirSisaPts_Media} puntos** del bajo sisa.</p>\n`;
+                resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroIndividualConSisa} puntos** (${cmTotalDelanteroIndividualConSisa} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
+                resultado += `<p style="padding-left: 20px;">- Teje el otro delantero de la misma manera.</p>\n`;
+                
+                 const puntosObjetivoDelanteroIndividual = Math.round(puntosObjetivoDelanteroTotal_CHK / 2);
+                 if (puntosTotalDelanteroIndividualConSisa !== puntosObjetivoDelanteroIndividual) {
+                     resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: El objetivo de la talla eran ${puntosObjetivoDelanteroIndividual} puntos. La diferencia se debe al equilibrio Sisa/Ancho).</p>\n`;
+                 }
+
+            } else { // JERSEY
+                resultado += `* **Ahora vas a tejer el delantero:**\n`;
+                resultado += `<p style="padding-left: 20px;">- Para ello pondrás en la aguja los **${puntosPiezaDelantera} puntos** del delantero y, recogiendo de las mangas o añadiéndolos nuevos, **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después de los puntos del delantero.</p>\n`;
+                
+                const puntosTotalDelanteroConSisaJersey = puntosPiezaDelantera + (puntosAnadirSisaPts_Media * 2);
+                const cmTotalDelanteroConSisaJersey = (puntosTotalDelanteroConSisaJersey / densidadP).toFixed(1);
+                
+                resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroConSisaJersey} puntos** (${cmTotalDelanteroConSisaJersey} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
+                 if (puntosTotalDelanteroConSisaJersey !== puntosObjetivoDelanteroTotal_CHK) {
+                     resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: El objetivo de la talla eran ${puntosObjetivoDelanteroTotal_CHK} puntos. La diferencia de ${puntosTotalDelanteroConSisaJersey - puntosObjetivoDelanteroTotal_CHK} p. se debe al equilibrio Sisa/Ancho).</p>\n`;
+                }
+            }
+
+            // ESPALDA (Flat)
+            resultado += `* **Espalda:**\n`;
+            resultado += `<p style="padding-left: 20px;">- Coge los **${puntosPiezaEspalda} puntos** de la espalda y añade/recoge **${puntosAnadirSisaPts_Media} puntos** de cada lado.</p>\n`;
+            
+            const puntosTotalEspaldaConSisaCorregido = puntosPiezaEspalda + (puntosAnadirSisaPts_Media * 2);
+            const cmTotalEspaldaConSisaCorregido = (puntosTotalEspaldaConSisaCorregido / densidadP).toFixed(1);
+
+            resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalEspaldaConSisaCorregido} puntos** (${cmTotalEspaldaConSisaCorregido} cm). Teje recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
+             if (puntosTotalEspaldaConSisaCorregido !== puntosObjetivoEspalda_CHK) {
+                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">(Nota: El objetivo de la talla eran ${puntosObjetivoEspalda_CHK} puntos. La diferencia de ${puntosTotalEspaldaConSisaCorregido - puntosObjetivoEspalda_CHK} p. se debe al equilibrio Sisa/Ancho).</p>\n`;
+            }
+            resultado += `<p style="font-size:0.9em; padding-left: 20px; margin-top: 10px;">- Ten en cuenta, como en los puños, que si quieres hacer un acabado con otro punto o punto elástico, lo empieces antes de llegar a los **${finalLargoCuerpoCm} cm** de largo.</p>\n`;
 
 
         // =================================================================================
@@ -792,26 +839,10 @@ function calcularPatron() {
                 return;
             }
             
-            // =================================================================================
-            // INICIO: LÓGICA BIFURCADA PARA ESCOTE (A FUTURO)
-            // De momento, usamos la misma fórmula. Si decidimos cambiar la de adultos,
-            // aquí es donde iría el IF/ELSE.
-            // =================================================================================
-            
             let escoteCmDeseado;
-            // if (categoriaTalla === 'ADULTO') {
-            //     escoteCmDeseado = ... (Fórmula Adulto B)
-            // } else {
-            //     escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2; // (Fórmula Bebé/Niño A)
-            // }
-            
             // De momento, usamos la Lógica A para todos:
             escoteCmDeseado = (medidas.CCa + medidas.CC) / 2 - 2; 
             
-            // =================================================================================
-            // FIN: LÓGICA BIFURCADA PARA ESCOTE
-            // =================================================================================
-
             const puntosMontaje = Math.round(escoteCmDeseado * densidadP);
 
             // 2. OBJETIVOS (Puntos Pre-Sisa)
@@ -948,11 +979,36 @@ function calcularPatron() {
             resultado += `\n<u>3.2. Cuerpo (Delantero y Espalda)</u>\n`;
             
             if (tipoPrenda === "CHAQUETA") {
-                // (Lógica Cuerpo Chaqueta)
+                const puntosDelanteroIndividual = Math.floor(puntosPiezaDelantera / 2);
+                const puntosDelanteroIndividual2 = puntosPiezaDelantera - puntosDelanteroIndividual;
+                const puntosTotalDelanteroIndividualConSisa = puntosDelanteroIndividual + puntosAnadirSisaPts_Media;
+                const puntosTotalDelanteroIndividualConSisa2 = puntosDelanteroIndividual2 + puntosAnadirSisaPts_Media;
+                const cmTotalDelanteroIndividualConSisa = (puntosTotalDelanteroIndividualConSisa / densidadP).toFixed(1);
+                
+                resultado += `* **Ahora vas a tejer los Delanteros (por separado):**\n`;
+                resultado += `<p style="padding-left: 20px;">- Coge los **${puntosDelanteroIndividual} puntos** de un delantero. Añade/recoge **${puntosAnadirSisaPts_Media} puntos** del bajo sisa.</p>\n`;
+                resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalDelanteroIndividualConSisa} puntos** (${cmTotalDelanteroIndividualConSisa} cm). Continúa tejiendo recto.</p>\n`;
+                resultado += `<p style="padding-left: 20px;">- Teje el otro delantero (**${puntosDelanteroIndividual2} puntos**) de la misma manera (tendrá **${puntosTotalDelanteroIndividualConSisa2} puntos**).</p>\n`;
+
             } else { // JERSEY
-                // (Lógica Cuerpo Jersey)
+                resultado += `* **Ahora vas a tejer el cuerpo:**\n`;
+                resultado += `<p style="padding-left: 20px;">- Para ello pondrás en la aguja los **${puntosPiezaDelantera} puntos** del delantero, añade/recoge **${puntosAnadirSisaPts_Media} puntos** (bajo sisa 1), teje los **${puntosPiezaEspalda} puntos** de la espalda, y añade/recoge **${puntosAnadirSisaPts_Media} puntos** (bajo sisa 2).</p>\n`;
+                
+                const puntosTotalCuerpo = puntosPiezaDelantera + puntosPiezaEspalda + (puntosAnadirSisaPts_Media * 2);
+                const cmTotalCuerpo = (puntosTotalCuerpo / densidadP).toFixed(1);
+                
+                resultado += `<p style="padding-left: 20px;">- Ahora tendrás en la aguja **${puntosTotalCuerpo} puntos** (${cmTotalCuerpo} cm). Continúa tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
             }
-            // ... (Resto del texto de Cuerpo sin cambios) ...
+            
+            if (tipoPrenda === "CHAQUETA") {
+                resultado += `* **Espalda:**\n`;
+                resultado += `<p style="padding-left: 20px;">- Coge los **${puntosPiezaEspalda} puntos** de la espalda y añade/recoge **${puntosAnadirSisaPts_Media} puntos** de cada lado.</p>\n`;
+                const puntosTotalEspaldaConSisaCorregido = puntosPiezaEspalda + (puntosAnadirSisaPts_Media * 2);
+                const cmTotalEspaldaConSisaCorregido = (puntosTotalEspaldaConSisaCorregido / densidadP).toFixed(1);
+                resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalEspaldaConSisaCorregido} puntos** (${cmTotalEspaldaConSisaCorregido} cm). Teje recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
+            }
+
+            resultado += `<p style="font-size:0.9em; padding-left: 20px; margin-top: 10px;">- Ten en cuenta, como en los puños, que si quieres hacer un acabado con otro punto o elástico, lo empieces antes de llegar a los **${finalLargoCuerpoCm} cm** de largo.</p>\n`;
 
 
         } else {
