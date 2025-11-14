@@ -26,27 +26,30 @@
             <div class="input-group">
                 <label for="hileras_muestra">Pasadas en 10 cm (Opcional):</label>
                 <input type="number" id="hileras_muestra" min="1">
-            </div>
+                <small class="nota-aclaratoria" id="nota-hileras">
+                    ↳ Obligatorio si tejes desde el Escote (Top-Down) para calcular la sisa correctamente.
+                </small>
+                </div>
             
             <div class="input-group">
-                <label for="tipo_prenda">Tipo de Prenda:</label>
+                <label for="tipo_prenda">Elige que prenda te gustaria tejer:</label>
                 <select id="tipo_prenda" required>
                     <option value="">Selecciona...</option>
                     <option value="JERSEY">Jersey</option>
                     <option value="CHAQUETA">Chaqueta</option>
-                    <option value="CUBRE_PAÑAL">Cubre pañal</option>
+                    <option value="RANITA">Cubre pañal</option>
                     <option value="CM_DESEADOS">Cm Deseados (ancho libre)</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="talla_seleccionada">Talla a tejer:</label>
+                <label for="talla_seleccionada">¿Que talla quieres tejer?:</label>
                 <select id="talla_seleccionada" required></select>
             </div>
 
 
             <div class="input-group metodo-group" id="metodo-group" style="display:none;">
-                <label for="metodo_tejido">Método de Tejido:</label>
+                <label for="metodo_tejido">¿Por donde quieres empezar a tejer?:</label>
                 <select id="metodo_tejido">
                     <option value="ESCOTE">Desde el Escote (Top-Down)</option>
                     <option value="BAJO">Desde el Bajo (Bottom-Up)</option>
@@ -76,9 +79,9 @@
             </section>
 
         <section class="results">
-            <h2>Instrucciones de Tejido</h2>
+            <h2>Indicaciones para tejer esta prenda:</h2>
             <div id="resultado" class="output-box">
-                <p>Introduce los datos de tu muestra y patrón para comenzar.</p>
+                <p>Introduce los datos de tu muestra para comenzar.</p>
             </div>
         </section>
 
