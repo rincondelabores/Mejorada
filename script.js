@@ -609,7 +609,7 @@ function calcularPatron() {
             // 0. VALIDACIÓN DE DENSIDAD VERTICAL (OBLIGATORIA)
             // =================================================================
             if (!densidadH) {
-                resultadoDiv.innerHTML = '<p class="error">Error: Para calcular desde el Escote (Top-Down) de forma equilibrada, es **imprescindible** que introduzca el dato de **"Pasadas en 10 cm"**.<br>Esto permite a la calculadora balancear el ancho de la prenda con la profundidad de sisa (Psisa) mínima requerida.</p>';
+                resultadoDiv.innerHTML = '<p class="error">Error: Para tejido desde el Escote (Top-Down) de forma equilibrada, es **imprescindible** que introduzca las **"Pasadas en 10 cm"**.<br>Esto permite a la calculadora darte la información mas completa.</p>';
                 return;
             }
 
@@ -693,11 +693,11 @@ function calcularPatron() {
             
             let notaMetodo = "";
             if (numAumentosRondas === rondasPorAncho && numAumentosRondas > rondasPorSisa) {
-                notaMetodo = `<b>Nota sobre el Cálculo:</b> Para alcanzar el **ancho** deseado de la talla (${rondasPorAncho} rondas), se ha añadido una holgura natural a la sisa (la sisa mínima requería solo ${rondasPorSisa} rondas). El patrón está equilibrado.`;
+                notaMetodo = `<b>Nota sobre el Cálculo:</b> Para alcanzar el **ancho** deseado de la talla (${rondasPorAncho} pasadas de aumentos), se ha añadido una holgura natural a la sisa (la sisa mínima requería solo ${rondasPorSisa} pasadas de aumentos). El patrón está equilibrado.`;
             } else if (numAumentosRondas === rondasPorSisa && numAumentosRondas > rondasPorAncho) {
-                notaMetodo = `<b>Nota sobre el Cálculo:</b> Para alcanzar la **sisa mínima** de ${raglanCmBase} cm (${rondasPorSisa} rondas), la prenda quedará ligeramente más ancha que el estándar de la talla (el ancho requería solo ${rondasPorAncho} rondas). Esto asegura que la sisa no tire.`;
+                notaMetodo = `<b>Nota sobre el Cálculo:</b> Para alcanzar una **sisa adecuada** de ${raglanCmBase} cm (${rondasPorSisa} pasadas de aumentos), la prenda quedará ligeramente más ancha que el estándar de la talla (el ancho requería solo ${rondasPorAncho} pasadas de aumentos). Esto asegura que la sisa no tire.`;
             } else { // Son iguales
-                notaMetodo = `<b>Nota sobre el Cálculo:</b> El patrón está perfectamente equilibrado. Las rondas necesarias para el **ancho** (${rondasPorAncho}) coinciden con las rondas para la **sisa** (${rondasPorSisa}).`;
+                notaMetodo = `<b>Nota sobre el Cálculo:</b> El patrón está perfectamente equilibrado. Las pasadas de aumentos necesarias para el **ancho** (${rondasPorAncho}) coinciden con las necesarias para la **sisa** (${rondasPorSisa}).`;
             }
 
             // =================================================================
@@ -727,14 +727,14 @@ function calcularPatron() {
             // 5. GENERAR OUTPUT (TEXTO)
             // =================================================================
 
-            resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán) - MÉTODO HÍBRIDO</h4>\n`;
+            resultado += `<h4>🧶 Indicaciones para tejer desde el Escote (Raglán) </h4>\n`;
             resultado += `<p style='background-color: #eef5f8; border: 1px solid #a4c7d6; padding: 10px; border-radius: 4px;'>${notaMetodo}</p>\n`;
             
             // Comparativa de Medidas
-            resultado += `\n<u>Comparativa de Medidas (Objetivo vs. Resultado Calculado)</u>\n`;
-            resultado += `* **Objetivo de Ancho (Talla + 6%):** ${targetAnchoPrendaCm} cm / **Ancho Resultante:** **${cmContornoTotal} cm**.\n`;
-            resultado += `* **Objetivo de Manga (CA + Holgura):** ${targetAnchoMangaCm} cm / **Ancho Manga Resultante:** **${cmMangaFinal} cm**.\n`;
-            resultado += `* **Sisa Mínima (Psisa):** ${raglanCmBase} cm / **Sisa Resultante:** **${raglanCmResultante} cm**.\n\n`;
+            resultado += `\n<u>Medidas </u>\n`;
+            resultado += `* **La medida de ancho de esta Talla + la holgura estandar seria de:** ${targetAnchoPrendaCm} cm / **El ancho de tu prenda va a ser de ** **${cmContornoTotal} cm**.\n`;
+            resultado += `* **La manga + la holgura en esta talla seria de:** ${targetAnchoMangaCm} cm / **Tu manga va a ser de ** **${cmMangaFinal} cm de ancha**.\n`;
+            resultado += `* **Medida estandar de la sisa para esta talla:** ${raglanCmBase} cm / **La sisa va a quedar tejida con ** **${raglanCmResultante} cm**.\n\n`;
 
             resultado += `<u>1. Empezamos a tejer por el escote:</u>\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (para un escote de **${escoteCmDeseado.toFixed(1)} cm**).\n`;
@@ -746,7 +746,7 @@ function calcularPatron() {
             } else { // CHAQUETA
                 repartoStr = `**${pDelanteroParte1} p** (Del. 1), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador), **${pInicialEspalda} p** (Espalda), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador), **${pDelanteroParte2} p** (Del. 2).`;
                 // puntosTapeta y tiraCuelloCm son dinámicos
-                resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho (puntos impares para ojal).</p>\n`;
+                resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho.</p>\n`;
             }
             resultado += `* **Repartir los puntos (Reparto 1/3):** ${repartoStr}\n\n`;
             
@@ -801,7 +801,7 @@ function calcularPatron() {
             
             // Nota de ajuste por redondeo
             if (puntosMangaConSisa !== puntosSisaManga) {
-                 resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**. (El objetivo ideal de la talla era ${puntosSisaManga} p. Esta diferencia de ${puntosMangaConSisa - puntosSisaManga} p. se debe al equilibrio de Sisa/Ancho).\n`;
+                 resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**.// (El objetivo ideal de la talla era ${puntosSisaManga} p. Esta diferencia de ${puntosMangaConSisa - puntosSisaManga} p. se debe al equilibrio de Sisa/Ancho).\n`;
             } else {
                  resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos** (**${targetAnchoMangaCm} cm**).\n`;
             }
