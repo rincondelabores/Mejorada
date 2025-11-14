@@ -381,8 +381,8 @@ function calcularPatron() {
         // INICIO: CÁLCULOS GENERALES (Usados por BAJO y ESCOTE)
         // ******************************************************************
         
-        // 1. Holgura de Cuerpo (6% del CP)
-        const holguraCm = medidas.CP * 0.05; 
+        // 1. Holgura de Cuerpo (4% del CP)
+        const holguraCm = medidas.CP * 0.04; 
         const anchoPrendaCm = medidas.CP + holguraCm;
         const cpPts = Math.round(anchoPrendaCm * densidadP); // Puntos de contorno de pecho total
         
@@ -412,13 +412,13 @@ function calcularPatron() {
         // 5. Holgura de Sisa (MODIFICADO: Nueva lógica 2/3/4 cm)
         let holguraAxilaCm; 
         if (ORDEN_TALLAS['Bebé (Prematuro a 24m)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 2.0; // 2cm
+            holguraAxilaCm =  mmedidas.AE* 0.20; //2.0; // 2c
         } else if (ORDEN_TALLAS['Niños (3 a 10 años)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 3.0; // 4 cm
+            holguraAxilaCm = 4.0; // 4 cm
         } else if (ORDEN_TALLAS['Adulto (36 a 50)'].includes(tallaSeleccionada)) {
-            holguraAxilaCm = 4.0; // 6 cm
+            holguraAxilaCm = 6.0; // 6 cm
         } else {
-            holguraAxilaCm = 4.0; // Default
+            holguraAxilaCm = 5.0; // Default
         }
         
         // Puntos a añadir bajo la sisa (holgura)
