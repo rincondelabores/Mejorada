@@ -382,7 +382,7 @@ function calcularPatron() {
         // ******************************************************************
         
         // 1. Holgura de Cuerpo (6% del CP)
-        const holguraCm = medidas.CP * 0.06; 
+        const holguraCm = medidas.CP * 0.05; 
         const anchoPrendaCm = medidas.CP + holguraCm;
         const cpPts = Math.round(anchoPrendaCm * densidadP); // Puntos de contorno de pecho total
         
