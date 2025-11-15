@@ -402,22 +402,27 @@ function calcularPatron() {
         const puntosTapeta = calculatedTapetaPts;
 
         // ====================================================================
-        // 5. Holgura de Sisa (MODIFICADO: 10% Bebé/Niño, 20% Adulto)
+        // 5. Holgura de Sisa (TOTAL)
         // ====================================================================
-        let holguraAxilaCm;
+        let holguraAxilaCm; // Holgura TOTAL de la manga
         if (categoriaTalla === 'BEBE' || categoriaTalla === 'NIÑO') {
             holguraAxilaCm = medidas.CA * 0.10; // 10% para Bebé/Niño
         } else {
             holguraAxilaCm = medidas.CA * 0.20; // 20% para Adulto
         }
         
-        // Puntos a añadir bajo la sisa (holgura)
-        let puntosAnadirSisaPts = Math.round(holguraAxilaCm * densidadP);
+        // ====================================================================
+        // 5.1. PUNTOS BAJO SISA (GUSSET) - ¡CORREGIDO!
+        // ====================================================================
+        // Estos son los puntos que se AÑADEN bajo el brazo, es un gusset pequeño.
+        const cmBajoSisa = medidas.CA * 0.08; // 8% del Contorno de Brazo
+        let puntosAnadirSisaPts = Math.round(cmBajoSisa * densidadP);
         // Asegurar que sea un número par para simetría, si es mayor que 0
         puntosAnadirSisaPts = (puntosAnadirSisaPts > 0 && puntosAnadirSisaPts % 2 !== 0) ? puntosAnadirSisaPts + 1 : puntosAnadirSisaPts;
 
 
         // 6. Ancho de Sisa
+        // El ancho TOTAL de la manga sigue siendo el CA + la HOLGURA TOTAL
         const anchoSisaMangaCm = medidas.CA + holguraAxilaCm; 
         
         // 7. Puntos de Sisa (Objetivo)
@@ -945,10 +950,10 @@ function calcularPatron() {
             // =================================================================================
             // INICIO: CORRECCIÓN DE PASADAS FALTANTES (¡NUEVO!)
             // =================================================================================
-            const pasadasFaltantes = hilerasSisa - hilerasSisaResultanteBloques; // (Ej: 27 - 24 = 3)
+            const pasadasFaltantes = hilerasSisa - (pasadaActual - 1); // (Ej: 27 - 24 = 3)
             if (pasadasFaltantes > 0) {
-                const finPasadasRectas = hilerasSisaResultanteBloques + pasadasFaltantes;
-                resultado += `* **Pasada ${hilerasSisaResultanteBloques + 1} a ${finPasadasRectas}:** Tejes recto para completar la sisa.\n`;
+                const finPasadasRectas = hilerasSisa;
+                resultado += `* **Pasada ${pasadaActual} a ${finPasadasRectas}:** Tejes recto para completar la sisa.\n`;
             }
             // =================================================================================
             // FIN: CORRECCIÓN
