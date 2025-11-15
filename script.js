@@ -684,12 +684,12 @@ function calcularPatron() {
             const targetAnchoMangaCm = (anchoSisaMangaCm).toFixed(1); 
 
             // 5. GENERAR OUTPUT (RAGLÁN)
-            resultado += `<h4>🧶 Resultados de Tejido desde el Escote (Raglán) </h4>\n`;
+            resultado += `<h4>🧶 Indicaciones para tejer desde el Escote (Raglán) </h4>\n`;
             resultado += `<p style='background-color: #eef5f8; border: 1px solid #a4c7d6; padding: 10px; border-radius: 4px;'>${notaMetodo}</p>\n`;
-            resultado += `\n<u>Comparativa de Medidas (Objetivo vs. Resultado Calculado)</u>\n`;
+            resultado += `\n<u>Medidas</u>\n`;
             resultado += `* **Ancho de espalda/delantero (Talla + Holgura):** ${targetAnchoPrendaCm} cm / **El ancho de la prenda sera de:** **${cmContornoTotal} cm**.\n`;
             resultado += `* ** Manga (CA + Holgura):** ${targetAnchoMangaCm} cm / **La manga tejida quedara de:** **${cmMangaFinal} cm de ancha**.\n`;
-            resultado += `* **Sisa Mínima:** ${raglanCmBase} cm / **la sisa medirá:** **${raglanCmResultante} cm**.\n\n`;
+            resultado += `* **Sisa:** ${raglanCmBase} cm / **La sisa medirá:** **${raglanCmResultante} cm**.\n\n`;
 
             resultado += `<u>1. Empezamos a tejer por el escote:</u>\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (para un escote de **${escoteCmDeseado.toFixed(1)} cm**).\n`;
@@ -702,10 +702,10 @@ function calcularPatron() {
                 repartoStr = `**${pDelanteroParte1} p** (Del. 1), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador), **${pInicialEspalda} p** (Espalda), **1 p** (Marcador), **${pInicialManga} p** (Manga), **1 p** (Marcador), **${pDelanteroParte2} p** (Del. 2).`;
                 resultado += `<p style="font-size:0.9em; padding-left: 20px;">* **Tapeta Opcional:** Sugerimos montar **${puntosTapeta} puntos** *adicionales* a cada lado para la tapeta, que serán **${tiraCuelloCm.toFixed(1)} cm** de ancho.</p>\n`;
             }
-            resultado += `* **Repartir los puntos (Reparto 1/3):** ${repartoStr}\n\n`;
+            resultado += `* **Repartir los puntos:** ${repartoStr}\n\n`;
             
             resultado += `<u>2. Indicaciones para tejer los aumentos (Raglán)</u>\n`;
-            resultado += `* **Indicaciones de Aumento:** Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**.\n`;
+            resultado += `* Aumentar 1 punto a cada lado de los 4 marcadores (8 aumentos total) cada **2 pasadas**.\n`;
             resultado += `* **Repetir** un total de **${numAumentosRondas} veces**.\n`;
             resultado += `<p style="font-size:0.9em; padding-left: 20px;">- (Esto completará un total de **${hilerasRaglan} pasadas** de raglán, logrando la altura de sisa de **${raglanCmResultante} cm**).</p>\n`;
             
@@ -900,7 +900,7 @@ function calcularPatron() {
             resultado += `\n<u>Comparativa de Medidas (Objetivos)</u>\n`;
             resultado += `* **Ancho Total de Prenda:** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n`;
             resultado += `* **Ancho de Manga:** **${anchoSisaMangaCm.toFixed(1)} cm** (**${puntosSisaManga} puntos**).\n`;
-            resultado += `* **Profundidad de Sisa:** ${raglanCmBase.toFixed(1)} cm. (Se tejerán **${sisaCmResultante} cm** para distribuir los aumentos).\n\n`;
+            resultado += `* **Sisa:** ${raglanCmBase.toFixed(1)} cm. (Se tejerán **${sisaCmResultante} cm** para distribuir los aumentos).\n\n`;
 
             resultado += `<u>1. Empezamos a tejer por el escote:</u>\n`;
             resultado += `* **Montamos:** **${puntosMontaje} puntos** (para un escote de **${escoteCmDeseado.toFixed(1)} cm**).\n`;
@@ -913,8 +913,8 @@ function calcularPatron() {
             // INICIO: SECCIÓN DE AUMENTOS POR PASADA (MODIFICADA)
             // =================================================================================
             resultado += `<u>2. Indicaciones para tejer los aumentos (Canesú)</u>\n`;
-            resultado += `* **Objetivo:** Aumentar un total de **${puntosTotalesAAumentar} puntos** (de ${puntosMontaje}p. a ${puntosTotalesCanesu}p.)\n`;
-            resultado += `* **Plan de Aumentos:** Se distribuirán los aumentos en **${numRondasAumento} vueltas/pasadas de aumento**.\n\n`;
+            resultado += `* Hay que aumentar un total de **${puntosTotalesAAumentar} puntos** (de ${puntosMontaje}p. a ${puntosTotalesCanesu}p.)\n`;
+            resultado += `que se distribuirán en **${numRondasAumento} pasadas de aumento**.\n\n`;
 
             let pasadaActual = 1;
             let puntosActuales = puntosMontaje;
@@ -946,7 +946,7 @@ function calcularPatron() {
                 }
             }
             
-            resultado += `\n<p style="font-size:0.9em; padding-left: 20px;">(Al terminar, habrás tejido un total de **${hilerasSisaResultante} pasadas**, logrando una sisa de **${sisaCmResultante} cm**, muy cercana a tu objetivo de ${raglanCmBase} cm).</p>\n`;
+            resultado += `\n<p style="font-size:0.9em; padding-left: 20px;">(Al terminar, habrás tejido un total de **${hilerasSisaResultante} pasadas**, logrando una sisa de **${sisaCmResultante} cm**.</p>\n`;
             // =================================================================================
             // FIN: SECCIÓN DE AUMENTOS POR PASADA
             // =================================================================================
@@ -971,18 +971,19 @@ function calcularPatron() {
             resultado += `<p>Al finalizar los aumentos, tendrás **${puntosTotalesCanesu} puntos**. Ahora, repártelos de esta forma (esto es una guía estándar, ajústala si es necesario):</p>\n`;
 
             if (tipoPrenda === "JERSEY") {
-                 resultado += `* **Delantero:** Tejer **${puntosDelanteroFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Manga 1:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Espalda:** Tejer **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Manga 2:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Delantero:**  **${puntosDelanteroFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 1:**  **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Espalda:**  **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 2:**  **${puntosMangaFinal_PreSisa} puntos**.\n`;
             } else { // CHAQUETA
                  let pDelanteroParte = Math.floor(puntosDelanteroFinal_PreSisa / 2);
                  let pDelanteroParte2 = puntosDelanteroFinal_PreSisa - pDelanteroParte;
-                 resultado += `* **Delantero 1:** Tejer **${pDelanteroParte} puntos**.\n`;
-                 resultado += `* **Manga 1:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Espalda:** Tejer **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Manga 2:** Poner en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Delantero 2:** Tejer **${pDelanteroParte2} puntos**.\n`;
+                 resultado += `* **Delantero 1:**  **${pDelanteroParte} puntos**.\n`;
+                 resultado += `* **Manga 1:** **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Espalda:** **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 2:**  **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Delantero 2:**  **${pDelanteroParte2} puntos**.\n`;
+                
             }
             resultado += `<p style="margin-top: 10px;">A continuación, teje primero las dos mangas.</p>\n`;
 
