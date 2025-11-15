@@ -883,8 +883,7 @@ function calcularPatron() {
             const pasadasRectas = frecuenciaBloque - 1; // (Ej: 6 - 1 = 5)
 
             // Recalcular la sisa resultante real con esta lógica
-            const hilerasSisaResultante = numRondasAumento * frecuenciaBloque; // (Ej: 9 * 6 = 54)
-            const sisaCmResultante = (hilerasSisaResultante / densidadH).toFixed(1); // (Ej: 54 / 2.6 = 20.8 cm)
+            const hilerasSisaResultanteBloques = numRondasAumento * frecuenciaBloque; // (Ej: 9 * 6 = 54)
             
             // =================================================================================
             // FIN: LÓGICA DE CANESÚ CORREGIDA
@@ -897,7 +896,7 @@ function calcularPatron() {
             resultado += `\n<u>Comparativa de Medidas (Objetivos)</u>\n`;
             resultado += `* **Ancho Total de Prenda:** **${anchoPrendaCm.toFixed(1)} cm** (**${cpPts} puntos**).\n`;
             resultado += `* **Ancho de Manga:** **${anchoSisaMangaCm.toFixed(1)} cm** (**${puntosSisaManga} puntos**).\n`;
-            resultado += `* **Sisa:** ${raglanCmBase.toFixed(1)} cm. (Se tejerán **${sisaCmResultante} cm** para distribuir los aumentos).\n\n`;
+            resultado += `* **Sisa:** ${raglanCmBase.toFixed(1)} cm. (Vamos a tejer un total de **${hilerasSisa} pasadas** para clavarlo).\n\n`;
 
             resultado += `<u>1. Empezamos a tejer por el escote:</u>\n`;
             resultado += `* **Montas:** **${puntosMontaje} puntos** (para un escote de **${escoteCmDeseado.toFixed(1)} cm**).\n`;
@@ -943,7 +942,19 @@ function calcularPatron() {
                 }
             }
             
-            resultado += `\n<p style="font-size:0.9em; padding-left: 20px;">(Al terminar, habrás tejido un total de **${hilerasSisaResultante} pasadas**, logrando una sisa de **${sisaCmResultante} cm**).</p>\n`;
+            // =================================================================================
+            // INICIO: CORRECCIÓN DE PASADAS FALTANTES (¡NUEVO!)
+            // =================================================================================
+            const pasadasFaltantes = hilerasSisa - hilerasSisaResultanteBloques; // (Ej: 27 - 24 = 3)
+            if (pasadasFaltantes > 0) {
+                const finPasadasRectas = hilerasSisaResultanteBloques + pasadasFaltantes;
+                resultado += `* **Pasada ${hilerasSisaResultanteBloques + 1} a ${finPasadasRectas}:** Tejes recto para completar la sisa.\n`;
+            }
+            // =================================================================================
+            // FIN: CORRECCIÓN
+            // =================================================================================
+
+            resultado += `\n<p style="font-size:0.9em; padding-left: 20px;">(Al terminar, habrás tejido un total de **${hilerasSisa} pasadas**, logrando una sisa de **${(hilerasSisa / densidadH).toFixed(1)} cm**).</p>\n`;
             // =================================================================================
             // FIN: SECCIÓN DE AUMENTOS POR PASADA
             // =================================================================================
@@ -982,7 +993,7 @@ function calcularPatron() {
                  resultado += `* **Delantero 2:** **${pDelanteroParte2} puntos**.\n`;
                 
             }
-            resultado += `<p style="margin-top: 10px;">A continuación, teje primero las dos mangas, los puntos del delantero y la espalda los puedes poner en una aguja auxiliar en espera.</p>\n`;
+            resultado += `<p style="margin-top: 10px;">A continuación, teje primero las dos mangas.</p>\n`;
 
 
             // 6. SECCIONES 3.1 y 3.2 (Manga y Cuerpo) - (Lógica de texto MODIFICADA)
@@ -1002,7 +1013,7 @@ function calcularPatron() {
             const puntosPiezaEspalda = puntosEspaldaFinal_PreSisa;
 
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
-            resultado += `* **Manga:** Trabaja sobre **${puntosMangaFinal_PreSisa} puntos** que serán los de la manga. Añades **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después (para la sisa).\n`;
+            resultado += `* **Manga:** Coges los **${puntosMangaFinal_PreSisa} puntos** de la manga en espera. Añades **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después (para la sisa).\n`;
             resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**.\n`;
             resultado += `* **Disminuciones para llegar al puño:**\n`;
             
@@ -1042,8 +1053,8 @@ function calcularPatron() {
                 const puntosTotalDelanteroIndividualConSisa2 = puntosDelanteroIndividual2 + puntosAnadirSisaPts_Media;
                 const cmTotalDelanteroIndividualConSisa = (puntosTotalDelanteroIndividualConSisa / densidadP).toFixed(1);
                 
-                resultado += `* **Ahora vas a tejer el cuerpo, puedes tejerlo todo junto o separarlo por piezas, segun tu comodidad:**\n`;
-                resultado += `<p style="padding-left: 20px;">- Pon en la aguja **${puntosDelanteroIndividual} puntos** que tenias en espera, recoges **${puntosAnadirSisaPts_Media} puntos** (de la sisa),  **${puntosPiezaEspalda} puntos** de la espalda, recoges **${puntosAnadirSisaPts_Media} puntos** (de la otra sisa) y los **${puntosDelanteroIndividual2} puntos** del otro delantero.</p>\n`;
+                resultado += `* **Ahora vas a tejer el cuerpo (en plano):**\n`;
+                resultado += `<p style="padding-left: 20px;">- Coges los **${puntosDelanteroIndividual} puntos** de un delantero, recoges **${puntosAnadirSisaPts_Media} puntos** (de la sisa 1), tejes los **${puntosPiezaEspalda} puntos** de la espalda, recoges **${puntosAnadirSisaPts_Media} puntos** (de la sisa 2) y tejes los **${puntosDelanteroIndividual2} puntos** del otro delantero.</p>\n`;
                 const puntosTotalCuerpo = puntosDelanteroIndividual + puntosDelanteroIndividual2 + puntosPiezaEspalda + puntosAnadirSisaPts;
                 const cmTotalCuerpo = (puntosTotalCuerpo / densidadP).toFixed(1);
                 resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalCuerpo} puntos** (${cmTotalCuerpo} cm). Continúas tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
@@ -1052,14 +1063,14 @@ function calcularPatron() {
             // INICIO: LÓGICA JERSEY EN PLANO (CORREGIDA)
             // =================================================================================
             } else { // JERSEY
-                resultado += `* **Ahora vas a tejer el delantero:**\n`;
-                resultado += `<p style="padding-left: 20px;">- Coges los **${puntosPiezaDelantera} puntos** del delantero. Añades/recoges **${puntosAnadirSisaPts_Media} puntos** a cada lado (bajo la sisa).</p>\n`;
+                resultado += `* **Ahora vas a tejer el delantero (en plano):**\n`;
+                resultado += `<p style="padding-left: 20px;">- Coges los **${puntosPiezaDelantera} puntos** del delantero. Añades/recoges **${puntosAnadirSisaPts_Media} puntos** a cada lado (bajo sisa).</p>\n`;
                 const puntosTotalDelantero = puntosPiezaDelantera + puntosAnadirSisaPts;
                 const cmTotalDelantero = (puntosTotalDelantero / densidadP).toFixed(1);
-                resultado += `<p style="padding-left: 20px;">- Ahora tendrás **${puntosTotalDelantero} puntos** (${cmTotalDelantero} cm). Continúas tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</post>\n`;
+                resultado += `<p style="padding-left: 20px;">- Ahora tendrás **${puntosTotalDelantero} puntos** (${cmTotalDelantero} cm). Continúas tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
 
                 resultado += `* **Espalda (en plano):**\n`;
-                resultado += `<p style="padding-left: 20px;">- Coges los **${puntosPiezaEspalda} puntos** de la espalda y añades/recoges **${puntosAnadirSisaPts_Media} puntos** de cada lado (bajo la sisa).</p>\n`;
+                resultado += `<p style="padding-left: 20px;">- Coges los **${puntosPiezaEspalda} puntos** de la espalda y añades/recoges **${puntosAnadirSisaPts_Media} puntos** de cada lado (bajo sisa).</p>\n`;
                 const puntosTotalEspalda = puntosPiezaEspalda + puntosAnadirSisaPts;
                 const cmTotalEspalda = (puntosTotalEspalda / densidadP).toFixed(1);
                 resultado += `<p style="padding-left: 20px;">- Tendrás **${puntosTotalEspalda} puntos** (${cmTotalEspalda} cm). Tejes recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
