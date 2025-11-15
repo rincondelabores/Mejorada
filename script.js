@@ -408,7 +408,8 @@ function calcularPatron() {
         if (categoriaTalla === 'BEBE' || categoriaTalla === 'NIÑO') {
             holguraAxilaCm = medidas.CA * 0.10; // 10% para Bebé/Niño
         } else {
-            holguraAxilaCm = medidas.CA * 0.20; // 20% para Adulto
+            // !!!!!!! CORRECCIÓN A 15% SEGÚN TU PREFERENCIA !!!!!!!
+            holguraAxilaCm = medidas.CA * 0.15; // 15% para Adulto
         }
         
         // ====================================================================
@@ -855,9 +856,10 @@ function calcularPatron() {
             const puntosObjetivoEspalda = Math.round(cpPts / 2);
             const puntosObjetivoDelanteroTotal = cpPts - puntosObjetivoEspalda;
             
+            // ESTOS SON LOS OBJETIVOS DE PUNTOS DE CRECIMIENTO DEL CANESÚ
             const targetEspalda_PreSisa = puntosObjetivoEspalda - puntosAnadirSisaPts;
             const targetDelantero_PreSisa = puntosObjetivoDelanteroTotal - puntosAnadirSisaPts;
-            const targetManga_PreSisa = puntosSisaManga - puntosAnadirSisaPts; 
+            const targetManga_PreSisa = puntosSisaManga - puntosAnadirSisaPts; // (puntosSisaManga = CA + Holgura Total)
 
             // Puntos totales que debe tener el círculo ANTES de separar
             const puntosTotalesCanesu = targetEspalda_PreSisa + targetDelantero_PreSisa + (targetManga_PreSisa * 2);
@@ -887,8 +889,8 @@ function calcularPatron() {
             // Pasadas rectas a tejer DESPUÉS de la pasada de aumento
             const pasadasRectas = frecuenciaBloque - 1; // (Ej: 6 - 1 = 5)
 
-            // Recalcular la sisa resultante real con esta lógica
-            const hilerasSisaResultanteBloques = numRondasAumento * frecuenciaBloque; // (Ej: 9 * 6 = 54)
+            // Pasadas que usamos en los bloques de aumento
+            const hilerasSisaBloques = numRondasAumento * frecuenciaBloque; // (Ej: 9 * 6 = 54)
             
             // =================================================================================
             // FIN: LÓGICA DE CANESÚ CORREGIDA
@@ -966,35 +968,40 @@ function calcularPatron() {
 
 
             
+            // =================================================================================
+            // INICIO: SECCIÓN DE SEPARACIÓN (MODIFICADA CON LÓGICA BUENA)
+            // =================================================================================
+            
             // 5. REPARTO DE PUNTOS (Canesú Redondo)
-            // (Esta es la parte más compleja del redondo, usamos una proporción estándar)
-            let puntosMangaCanesu = Math.round(puntosTotalesCanesu * 0.20); // 20% para cada manga
-            if (puntosMangaCanesu % 2 !== 0) puntosMangaCanesu++;
-            let puntosCuerpoCanesu = (puntosTotalesCanesu - (puntosMangaCanesu * 2)) / 2; // El resto, dividido entre Espalda y Delantero
-            puntosCuerpoCanesu = Math.floor(puntosCuerpoCanesu);
+            // ¡ESTA ES LA LÓGICA CORREGIDA!
+            // Ya no usamos el 20%, usamos los objetivos que SÍ calculamos.
+            const puntosMangaFinal_PreSisa = targetManga_PreSisa;
+            const puntosEspaldaFinal_PreSisa = targetEspalda_PreSisa;
+            const puntosDelanteroFinal_PreSisa = targetDelantero_PreSisa;
             
-            const puntosMangaFinal_PreSisa = puntosMangaCanesu;
-            const puntosEspaldaFinal_PreSisa = puntosCuerpoCanesu;
-            const puntosDelanteroFinal_PreSisa = puntosTotalesCanesu - (puntosMangaCanesu * 2) - puntosCuerpoCanesu;
+            // Comprobación de puntos (por si los aumentos no cuadran al 100% con los objetivos)
+            const puntosRepartidos = puntosEspaldaFinal_PreSisa + puntosDelanteroFinal_PreSisa + (puntosMangaFinal_PreSisa * 2);
+            const puntosSobrantes = puntosActuales - puntosRepartidos;
             
-            // =================================================================================
-            // INICIO: SECCIÓN DE SEPARACIÓN (MODIFICADA + CAMBIO DE LÓGICA JERSEY)
-            // =================================================================================
+            let puntosEspaldaFinal_Ajustada = puntosEspaldaFinal_PreSisa + Math.round(puntosSobrantes / 2);
+            let puntosDelanteroFinal_Ajustada = puntosDelanteroFinal_PreSisa + (puntosSobrantes - Math.round(puntosSobrantes / 2));
+
+
             resultado += `<u>3. Separación de Piezas (Canesú Redondo)</u>\n`;
-            resultado += `<p>Al finalizar los aumentos, tendrás **${puntosTotalesCanesu} puntos**. Ahora, repártelos de esta forma (esto es una guía estándar, ajústala si es necesario):</p>\n`;
+            resultado += `<p>Al finalizar los aumentos, tendrás **${puntosActuales} puntos**. Ahora, repártelos de esta forma:</p>\n`;
 
             if (tipoPrenda === "JERSEY") {
-                 resultado += `* **Delantero:** **${puntosDelanteroFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Manga 1:** **${puntosMangaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Espalda:** **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Manga 2:** **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Delantero:** **${puntosDelanteroFinal_Ajustada} puntos**.\n`;
+                 resultado += `* **Manga 1:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Espalda:** **${puntosEspaldaFinal_Ajustada} puntos**.\n`;
+                 resultado += `* **Manga 2:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
             } else { // CHAQUETA
-                 let pDelanteroParte = Math.floor(puntosDelanteroFinal_PreSisa / 2);
-                 let pDelanteroParte2 = puntosDelanteroFinal_PreSisa - pDelanteroParte;
+                 let pDelanteroParte = Math.floor(puntosDelanteroFinal_Ajustada / 2);
+                 let pDelanteroParte2 = puntosDelanteroFinal_Ajustada - pDelanteroParte;
                  resultado += `* **Delantero 1:** **${pDelanteroParte} puntos**.\n`;
-                 resultado += `* **Manga 1:** **${puntosMangaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Espalda:** **${puntosEspaldaFinal_PreSisa} puntos**.\n`;
-                 resultado += `* **Manga 2:** **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 1:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Espalda:** **${puntosEspaldaFinal_Ajustada} puntos**.\n`;
+                 resultado += `* **Manga 2:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
                  resultado += `* **Delantero 2:** **${pDelanteroParte2} puntos**.\n`;
                 
             }
@@ -1014,8 +1021,8 @@ function calcularPatron() {
             const largoCuerpoRestanteH = densidadH ? Math.round(largoCuerpoCm * densidadH) : null;
             const finalLargoCuerpoCm = largoCuerpoCm > 0 ? largoCuerpoCm.toFixed(1) : (0.0).toFixed(1);
 
-            const puntosPiezaDelantera = puntosDelanteroFinal_PreSisa;
-            const puntosPiezaEspalda = puntosEspaldaFinal_PreSisa;
+            const puntosPiezaDelantera = puntosDelanteroFinal_Ajustada;
+            const puntosPiezaEspalda = puntosEspaldaFinal_Ajustada;
 
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
             resultado += `* **Manga:** Coges los **${puntosMangaFinal_PreSisa} puntos** de la manga en espera. Añades **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después (para la sisa).\n`;
@@ -1084,14 +1091,6 @@ function calcularPatron() {
             // FIN: LÓGICA JERSEY EN PLANO
             // =================================================================================
             
-            // Esta sección de "Espalda" era redundante para el Jersey, se elimina
-            /*
-            if (tipoPrenda === "CHAQUETA") {
-                resultado += `* **Espalda:**\n`;
-                ...
-            }
-            */
-
             resultado += `<p style="font-size:0.9em; padding-left: 20px; margin-top: 10px;">- Ten en cuenta, como en los puños, que si quieres hacer un acabado con otro punto o elástico, lo empieces antes de llegar a los **${finalLargoCuerpoCm} cm** de largo.</p>\n`;
             // =================================================================================
             // FIN: SECCIÓN SEPARACIÓN Y MANGA/CUERPO (MODIFICADA)
