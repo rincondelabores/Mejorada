@@ -992,16 +992,16 @@ function calcularPatron() {
 
             if (tipoPrenda === "JERSEY") {
                  resultado += `* **Delantero:** **${puntosDelanteroFinal_Ajustada} puntos**.\n`;
-                 resultado += `* **Manga 1:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 1:** **${puntosMangaFinal_PreSisa} puntos**.\n`;
                  resultado += `* **Espalda:** **${puntosEspaldaFinal_Ajustada} puntos**.\n`;
-                 resultado += `* **Manga 2:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 2:**  **${puntosMangaFinal_PreSisa} puntos**.\n`;
             } else { // CHAQUETA
                  let pDelanteroParte = Math.floor(puntosDelanteroFinal_Ajustada / 2);
                  let pDelanteroParte2 = puntosDelanteroFinal_Ajustada - pDelanteroParte;
                  resultado += `* **Delantero 1:** **${pDelanteroParte} puntos**.\n`;
-                 resultado += `* **Manga 1:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 1:**  **${puntosMangaFinal_PreSisa} puntos**.\n`;
                  resultado += `* **Espalda:** **${puntosEspaldaFinal_Ajustada} puntos**.\n`;
-                 resultado += `* **Manga 2:** Pones en espera **${puntosMangaFinal_PreSisa} puntos**.\n`;
+                 resultado += `* **Manga 2:**  **${puntosMangaFinal_PreSisa} puntos**.\n`;
                  resultado += `* **Delantero 2:** **${pDelanteroParte2} puntos**.\n`;
                 
             }
@@ -1025,7 +1025,7 @@ function calcularPatron() {
             const puntosPiezaEspalda = puntosEspaldaFinal_Ajustada;
 
             resultado += `\n<u>3.1. Mangas (Tejer dos iguales)</u>\n`;
-            resultado += `* **Manga:** Coges los **${puntosMangaFinal_PreSisa} puntos** de la manga en espera. Añades **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después (para la sisa).\n`;
+            resultado += `* **Manga:** Pon en la aguja **${puntosMangaFinal_PreSisa} puntos** de la manga. Añades **${puntosAnadirSisaPts_Media} puntos** antes y **${puntosAnadirSisaPts_Media} puntos** después (para la sisa).\n`;
             resultado += `* Ahora tendrás un total de **${puntosMangaConSisa} puntos**.\n`;
             resultado += `* **Disminuciones para llegar al puño:**\n`;
             
@@ -1066,7 +1066,7 @@ function calcularPatron() {
                 const cmTotalDelanteroIndividualConSisa = (puntosTotalDelanteroIndividualConSisa / densidadP).toFixed(1);
                 
                 resultado += `* **Ahora vas a tejer el cuerpo (en plano):**\n`;
-                resultado += `<p style="padding-left: 20px;">- Coges los **${puntosDelanteroIndividual} puntos** de un delantero, recoges **${puntosAnadirSisaPts_Media} puntos** (de la sisa 1), tejes los **${puntosPiezaEspalda} puntos** de la espalda, recoges **${puntosAnadirSisaPts_Media} puntos** (de la sisa 2) y tejes los **${puntosDelanteroIndividual2} puntos** del otro delantero.</p>\n`;
+                resultado += `<p style="padding-left: 20px;">- Coges los **${puntosDelanteroIndividual} puntos** de un delantero, recoges **${puntosAnadirSisaPts_Media} puntos** (de la sisa 1), **${puntosPiezaEspalda} puntos** de la espalda, recoges **${puntosAnadirSisaPts_Media} puntos** (de la sisa 2) y  **${puntosDelanteroIndividual2} puntos** del otro delantero.</p>\n`;
                 const puntosTotalCuerpo = puntosDelanteroIndividual + puntosDelanteroIndividual2 + puntosPiezaEspalda + puntosAnadirSisaPts;
                 const cmTotalCuerpo = (puntosTotalCuerpo / densidadP).toFixed(1);
                 resultado += `<p style="padding-left: 20px;">- Tendrás en la aguja **${puntosTotalCuerpo} puntos** (${cmTotalCuerpo} cm). Continúas tejiendo recto durante **${finalLargoCuerpoCm} cm** ${largoCuerpoRestanteH !== null ? `(${largoCuerpoRestanteH} pasadas)` : ''}.</p>\n`;
